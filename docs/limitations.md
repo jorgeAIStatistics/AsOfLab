@@ -98,11 +98,12 @@ What AsOfLab does not do, does not show, or has not been tested for.
 - Timings from another machine will differ. Only comparisons between runs with
   equivalent outputs are meaningful, and only those are reported as speedups.
 
-## Not delivered
+## Optional work
 
-- A MIMIC-IV adapter. No restricted data were accessed.
-- A Flink adapter.
-- Authentication, multi-user features, deployment.
-
-See [progress.md](progress.md) for the status of the optional Feast
-comparison.
+- **Delivered:** a comparison with Feast 0.66.0 on one feature shape and two
+  local offline stores ([integrations/feast](../integrations/feast/README.md)).
+  Other Feast stores were not run, and the observation about the Dask store's
+  tie-break has not been reported upstream.
+- **Not delivered:** a MIMIC-IV adapter. No restricted data were accessed.
+- **Not delivered:** a Flink adapter.
+- **Out of scope:** authentication, multi-user features, deployment.

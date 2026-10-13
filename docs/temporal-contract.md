@@ -288,6 +288,7 @@ Errors stop a run. Warnings are counted and reported.
 | `E_RESERVED_TYPE` | error | An `outcome.` event type in the event stream |
 | `E_SPINE_DUPLICATE` | error | Repeated `prediction_id` |
 | `E_FEATURE_CONFIG`, `E_UNSUPPORTED_SCOPE` | error | Invalid feature definition |
+| `E_POLICY` | error | Unknown time policy, or an option that does not apply to it |
 | `W_EXACT_DUPLICATES` | warning | Identical rows were present and had no effect |
 | `W_QUARANTINED_UNKNOWN` | warning | Versions excluded for missing availability |
 | `W_LATER_REVISION_QUARANTINED` | warning | A quarantined version outranks an active one |

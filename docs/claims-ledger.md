@@ -89,7 +89,7 @@ Each is now guarded by a test.
 | The first archive generator exposed the tie-break bug in 1 of 4 runs of 4,000 archives | README, article, `progress.md` | `tests/property/test_bug_discovery.py`; the current measurement is V7 |
 | Batch means differed in the last bits between identical runs (387 of about 60,000 on one 300,000-event workload); ordering the sum cost 0.31 s to 0.48 s there | article, `architecture.md`, `progress.md` | `tests/integration/test_batch_determinism.py` |
 | One SQL mutation survived every fixture until `two_types_same_window` was added | README, article, `interview-guide.md` | `tests/unit/test_seeded_sql_bugs.py` |
-| The demonstration takes about 15 seconds | README, article | Timed informally on the development machine; not a benchmark |
+| The demonstration takes under half a minute | README, article | Timed informally on the development machine (11 s warm, 27 s in a fresh clone); not a benchmark |
 
 ## Not claimed anywhere
 

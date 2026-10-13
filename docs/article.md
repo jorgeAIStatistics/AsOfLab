@@ -175,7 +175,7 @@ uv sync --all-extras --frozen
 uv run asoflab demo
 ```
 
-The demonstration takes about 15 seconds and compares its output with the
+The demonstration takes under half a minute and compares its output with the
 committed reference. [reproducibility.md](reproducibility.md) lists the command
 behind every result file.
 

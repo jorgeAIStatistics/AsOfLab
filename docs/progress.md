@@ -107,6 +107,11 @@ demo command with its reference check.
 Gate: every displayed claim traces to a saved output
 (`docs/claims-ledger.md`); a fresh environment reproduces the small demo.
 
+- Fresh-environment check, local: a fresh clone of commit `9dbdb11`, with the
+  system Python 3.14.5 and no uv on the PATH, ran `make setup` and then
+  `asoflab demo --strict`. The simulated data and the feature tables were
+  identical to the committed reference, which was produced on Python 3.12.15.
+  The 296 unit tests passed there too.
 - Fresh-environment check, remote: the pip-only CI job installed from
   `requirements.lock` on a clean ubuntu runner and ran `asoflab demo`
   successfully (run 38351486559).

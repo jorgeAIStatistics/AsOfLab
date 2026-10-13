@@ -53,7 +53,7 @@ uv sync --all-extras --frozen
 Without uv, `make setup` builds the same environment with pip from the
 hash-pinned `requirements.lock`.
 
-Then run the small end-to-end demonstration (about 15 seconds):
+Then run the small end-to-end demonstration (under half a minute):
 
 ```bash
 uv run asoflab demo
