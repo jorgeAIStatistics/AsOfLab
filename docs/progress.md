@@ -58,12 +58,26 @@ assumed.
 | --- | --- | --- |
 | 38351486559 | `d9f7497` | **Failed.** The "Install without uv" job passed on ubuntu with Python 3.12: pip install from `requirements.lock`, the unit tests, and `asoflab demo`. The four uv matrix jobs failed before running anything, because the workflow referenced `astral-sh/setup-uv@v10`, a tag that does not exist. The UI job failed because `web/` had not been committed yet. |
 
-The workflow now pins `astral-sh/setup-uv` to the commit of release v10.3.0.
-Later runs are appended here as they are observed.
+| 38357488610 | `d51bf24` | **Passed, all six jobs.** Python 3.12, 3.13 and 3.14 on `ubuntu-latest` and Python 3.12 on `macos-latest`: lint, format check, type check, the full test suite, the demo, and the benchmark smoke profile. The pip-only install job. The UI job (`npm ci`, build, tests). |
 
-Not yet established by CI: that the full test suite passes on Linux, on Python
-3.13 or 3.14, and whether the demo's hashes match the macOS reference on
-another platform.
+The workflow pins `astral-sh/setup-uv` to the commit of release v10.3.0.
+
+Also observed in run 38357488610: the step that runs `asoflab demo --strict`
+succeeded in all four Python jobs. The simulated data and the feature tables
+produced on GitHub's Linux and macOS runners, on Python 3.12, 3.13 and 3.14,
+had the same content hashes as the reference produced on the development
+laptop. That is one observation on these platforms and library versions, not a
+guarantee for others.
+
+CI does not run the full experiment matrix, the standard benchmark profile, or
+the Feast comparison. Those results are local only.
+
+A run on a later commit is not recorded here until it has been read. To read
+the latest:
+
+```bash
+curl -s "https://api.github.com/repos/jorgeAIStatistics/AsOfLab/actions/runs?per_page=3"
+```
 
 ## Milestone 1: correctness kernel
 
@@ -229,12 +243,6 @@ working on:
 
 ## Next action
 
-If work resumes: read the latest CI run and record it above.
-
-```bash
-curl -s "https://api.github.com/repos/jorgeAIStatistics/AsOfLab/actions/runs?per_page=3"
-```
-
-Then, in order of value: an adapter with a real availability clock; a lateness
+If work resumes, in order of value: an adapter with a real availability clock; a lateness
 bound for the replay revision index; reporting the Feast Dask-store observation
 upstream, if Jorge decides to.

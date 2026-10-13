@@ -70,6 +70,14 @@ Rules this ledger follows:
 | F4 | Dask store, two rows sharing an event timestamp: later-created row returned for 253 of 500 and 2,548 of 5,000 entities; DuckDB store: all | `results/interop/feast_created_tiebreak.json` | `integrations/feast/.venv/bin/python integrations/feast/repro_created_tiebreak.py` | `20b67ce` | Feast 0.66.0, pandas 2.3.3, dask 2026.8.0. Not reported upstream |
 | F5 | Dask store differed on 96 and 51 predictions in the corrections case, all of them another version at the same event timestamp | `results/interop/feast.json`, `corrections_in_arrival_order.stores.dask` | as F1 | `20b67ce` | as F3 |
 
+## Remote CI
+
+| Id | Claim | Evidence | Commit | Scope |
+| --- | --- | --- | --- | --- |
+| R1 | CI passed: tests, lint, type check, demo and benchmark smoke profile on Python 3.12, 3.13 and 3.14 (`ubuntu-latest`) and 3.12 (`macos-latest`); pip-only install; UI build and tests | GitHub Actions run 38357488610, read through GitHub's API on 13 October 2026 | `d51bf24` | That commit. The README badge shows the current state |
+| R2 | The demo's data and feature hashes on those runners matched the reference from the development laptop | Same run: the step "Demo output is identical to the committed reference" succeeded in all four Python jobs | `d51bf24` | One observation on those platforms and library versions |
+| R3 | The first CI run failed | GitHub Actions run 38351486559: a workflow tag that did not exist, and the UI not yet committed | `d9f7497` | Fixed in the workflow |
+
 ## Statements about other projects
 
 Not measurements. Each is sourced in [prior-art.md](prior-art.md) with a mark

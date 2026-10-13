@@ -1,5 +1,7 @@
 # AsOfLab
 
+[![CI](https://github.com/jorgeAIStatistics/AsOfLab/actions/workflows/ci.yml/badge.svg)](https://github.com/jorgeAIStatistics/AsOfLab/actions/workflows/ci.yml)
+
 A local-first workbench for one question:
 
 > What could this prediction pipeline actually know at time T, and how much do
@@ -12,6 +14,10 @@ on a laptop: no cloud account, no broker, no GPU, no patient data.
 
 **All results in this repository come from simulated data.** Nothing here is
 evidence about a real patient, hospital or model.
+
+The result files were produced on one development laptop. The badge above shows
+what GitHub's own runners currently report for the tests; the two are kept
+separate in [docs/progress.md](docs/progress.md).
 
 ## The problem
 

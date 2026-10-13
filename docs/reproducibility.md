@@ -56,7 +56,7 @@ directory or write to a new root.
 | Replay output | Bit-identical across chunk sizes, partition counts, worker counts and restarts. Tested |
 | `statistics.json` for the same configuration | Byte-identical on the same platform. Tested |
 | Batch against replay against oracle | Exact on identifiers, counts and last values; within 1e-9 relative on means and elapsed times |
-| Across operating systems or CPU architectures | Not guaranteed. Floating-point library functions can differ in the last bit, which can change a simulated value or a fitted coefficient. The demo reports whether the hashes match; see the CI section of [progress.md](progress.md) for what was observed |
+| Across operating systems or CPU architectures | Not guaranteed: floating-point library functions can differ in the last bit. Observed once: the demo's data and feature hashes on GitHub's `ubuntu-latest` and `macos-latest` runners, on Python 3.12, 3.13 and 3.14, matched the reference from the development laptop (CI run 38357488610). The demo prints the comparison every time it runs |
 | Timings | Not reproducible in value. Reported with the hardware they were measured on |
 
 ## What a manifest records
