@@ -1,0 +1,36 @@
+{
+  "name": "exact_duplicate_idempotent",
+  "title": "The same version delivered three times counts once",
+  "invariant": "Exact duplicates cannot double-count.",
+  "narrative": "e1 (6.0) is delivered three times by an at-least-once feed; one copy was archived later and differs only in ingestion_time. e2 (2.0) is delivered once. The count is 2 and the mean is (6.0 + 2.0) / 2 = 4.0, not 4 and 5.0.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_mean_6h", "event_type": "lab.lactate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_since_6h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ],
+  "expected_warnings": {"W_EXACT_DUPLICATES": 2},
+  "events": [
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 6.0, "available": "08:10"},
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 6.0, "available": "08:10"},
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 6.0, "available": "08:10", "ingestion_time": "23:00"},
+    {"logical_event_id": "e2", "event_time": "07:00", "value": 2.0, "available": "07:10"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_6h": 6.0, "lac_count_6h": 2, "lac_mean_6h": 4.0, "lac_since_6h": 1.0}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_6h": 6.0, "lac_count_6h": 2, "lac_mean_6h": 4.0, "lac_since_6h": 1.0}
+    }
+  }
+}

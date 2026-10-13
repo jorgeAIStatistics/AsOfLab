@@ -1,0 +1,35 @@
+{
+  "name": "two_types_two_windows",
+  "title": "Different event types and windows in one feature set",
+  "invariant": "Each feature reads only its own event type and its own window.",
+  "narrative": "Prediction at 10:00. Heart rate uses a 2 h window, (08:00, 10:00]: hr1 at exactly 08:00 is out, hr2 (100 at 09:30) is in, and hr3 (120 at 09:45) is charted late at 10:10 so only the naive policy sees it. Lactate uses a 24 h window: the value from 12:00 the previous day is 22 h old and still inside.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "hr_mean_2h", "event_type": "vital.heart_rate", "aggregation": "mean", "window": "2h"},
+    {"name": "hr_count_2h", "event_type": "vital.heart_rate", "aggregation": "count", "window": "2h"},
+    {"name": "lac_last_24h", "event_type": "lab.lactate", "aggregation": "last", "window": "24h"},
+    {"name": "lac_since_24h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "1d"}
+  ],
+  "events": [
+    {"logical_event_id": "hr1", "event_type": "vital.heart_rate", "unit": "bpm", "event_time": "08:00", "value": 80.0, "available": "08:01"},
+    {"logical_event_id": "hr2", "event_type": "vital.heart_rate", "unit": "bpm", "event_time": "09:30", "value": 100.0, "available": "09:31"},
+    {"logical_event_id": "hr3", "event_type": "vital.heart_rate", "unit": "bpm", "event_time": "09:45", "value": 120.0, "available": "10:10"},
+    {"logical_event_id": "lac1", "event_time": "2025-02-28T12:00:00Z", "value": 1.8, "available": "2025-02-28T13:00:00Z"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "10:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"hr_mean_2h": 100.0, "hr_count_2h": 1, "lac_last_24h": 1.8, "lac_since_24h": 22.0}
+    },
+    "naive_event_time": {
+      "A": {"hr_mean_2h": 110.0, "hr_count_2h": 2, "lac_last_24h": 1.8, "lac_since_24h": 22.0}
+    }
+  }
+}

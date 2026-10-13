@@ -1,0 +1,48 @@
+{
+  "name": "delayed_result",
+  "title": "A result that is not back yet cannot be used",
+  "invariant": "A sample at 08:00 with result availability at 11:00 cannot enter a 09:00 prediction.",
+  "narrative": "Blood is drawn at 08:00 and the lactate result is released at 11:00. At 09:00 nobody has the number, so the 09:00 prediction has no lactate. At 11:00 exactly the result arrives and the 11:00 prediction is issued after it, so it uses 4.2, three hours old. The naive policy sees the 08:00 sample time and hands the 09:00 prediction a value that was two hours in the future.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_mean_6h", "event_type": "lab.lactate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_since_6h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ],
+  "events": [
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 4.2, "available": "11:00"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"},
+    {"prediction_id": "B", "entity_id": "p1", "prediction_time": "11:00"},
+    {"prediction_id": "C", "entity_id": "p1", "prediction_time": "12:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_6h": null, "lac_count_6h": 0, "lac_mean_6h": null, "lac_since_6h": null},
+      "B": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 3.0},
+      "C": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 4.0}
+    },
+    "source_as_known": {
+      "A": {"lac_last_6h": null, "lac_count_6h": 0, "lac_mean_6h": null, "lac_since_6h": null},
+      "B": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 3.0},
+      "C": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 4.0}
+    },
+    "latest_revised": {
+      "A": {"lac_last_6h": null, "lac_count_6h": 0, "lac_mean_6h": null, "lac_since_6h": null},
+      "B": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 3.0},
+      "C": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 4.0}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 1.0},
+      "B": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 3.0},
+      "C": {"lac_last_6h": 4.2, "lac_count_6h": 1, "lac_mean_6h": 4.2, "lac_since_6h": 4.0}
+    }
+  }
+}

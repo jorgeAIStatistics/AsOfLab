@@ -1,0 +1,44 @@
+{
+  "name": "correction_keeps_earlier_version",
+  "title": "A later correction does not rewrite what was known earlier",
+  "invariant": "A value visible at 08:30 and corrected at 12:00 retains its earlier version for 09:00.",
+  "narrative": "A lactate of 2.0 is released at 08:30. At 12:00 the lab corrects it to 5.0. The 09:00 prediction really was made with 2.0. From 12:00 on, the corrected 5.0 is in force. latest_revised respects that the observation had appeared by 09:00 but reads today's 5.0, which is the revision mistake in isolation.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_mean_6h", "event_type": "lab.lactate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_since_6h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ],
+  "events": [
+    {"logical_event_id": "e1", "version_id": "v1", "source_revision": 1, "event_time": "08:00", "value": 2.0, "available": "08:30"},
+    {"logical_event_id": "e1", "version_id": "v2", "source_revision": 2, "event_time": "08:00", "value": 5.0, "available": "12:00"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"},
+    {"prediction_id": "B", "entity_id": "p1", "prediction_time": "12:00"},
+    {"prediction_id": "C", "entity_id": "p1", "prediction_time": "13:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_6h": 2.0, "lac_count_6h": 1, "lac_mean_6h": 2.0, "lac_since_6h": 1.0},
+      "B": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 4.0},
+      "C": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 5.0}
+    },
+    "latest_revised": {
+      "A": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 1.0},
+      "B": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 4.0},
+      "C": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 5.0}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 1.0},
+      "B": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 4.0},
+      "C": {"lac_last_6h": 5.0, "lac_count_6h": 1, "lac_mean_6h": 5.0, "lac_since_6h": 5.0}
+    }
+  }
+}

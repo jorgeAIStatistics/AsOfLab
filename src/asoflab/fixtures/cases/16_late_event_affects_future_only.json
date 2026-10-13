@@ -1,0 +1,39 @@
+{
+  "name": "late_event_affects_future_only",
+  "title": "A late arrival changes later predictions, not issued ones",
+  "invariant": "A late event can affect future predictions inside their window, and never an issued prediction.",
+  "narrative": "e1 (5.5 at 08:00) does not arrive until 11:00. The 09:00 prediction was issued with e2 alone and stays that way. The 12:00 prediction's window (06:00, 12:00] still contains 08:00, so it uses e1: mean (5.5 + 1.0) / 2 = 3.25. By 14:30 the window is (08:30, 14:30] and both observations have aged out.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_mean_6h", "event_type": "lab.lactate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_since_6h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ],
+  "events": [
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 5.5, "available": "11:00"},
+    {"logical_event_id": "e2", "event_time": "07:00", "value": 1.0, "available": "07:05"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"},
+    {"prediction_id": "B", "entity_id": "p1", "prediction_time": "12:00"},
+    {"prediction_id": "C", "entity_id": "p1", "prediction_time": "14:30"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_6h": 1.0, "lac_count_6h": 1, "lac_mean_6h": 1.0, "lac_since_6h": 2.0},
+      "B": {"lac_last_6h": 5.5, "lac_count_6h": 2, "lac_mean_6h": 3.25, "lac_since_6h": 4.0},
+      "C": {"lac_last_6h": null, "lac_count_6h": 0, "lac_mean_6h": null, "lac_since_6h": null}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_6h": 5.5, "lac_count_6h": 2, "lac_mean_6h": 3.25, "lac_since_6h": 1.0},
+      "B": {"lac_last_6h": 5.5, "lac_count_6h": 2, "lac_mean_6h": 3.25, "lac_since_6h": 4.0},
+      "C": {"lac_last_6h": null, "lac_count_6h": 0, "lac_mean_6h": null, "lac_since_6h": null}
+    }
+  }
+}

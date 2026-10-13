@@ -1,0 +1,26 @@
+{
+  "name": "conflicting_duplicate_rejected",
+  "title": "One version identity with two different values is refused",
+  "invariant": "Conflicting duplicates produce an actionable error.",
+  "narrative": "Version v1 of e1 appears twice, once with 6.0 and once with 6.5. There is no rule that could pick between them without inventing information, so the run stops and names the field that differs.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_mean_6h", "event_type": "lab.lactate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_since_6h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ],
+  "expected_error": {"code": "E_DUP_CONFLICT", "differing_fields": ["value"]},
+  "events": [
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 6.0, "available": "08:10"},
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 6.5, "available": "08:10"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"}
+  ]
+}

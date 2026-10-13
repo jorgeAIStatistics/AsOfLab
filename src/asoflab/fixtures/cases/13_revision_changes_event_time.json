@@ -1,0 +1,42 @@
+{
+  "name": "revision_changes_event_time",
+  "title": "Resolve the revision first, then apply the window",
+  "invariant": "Revision resolution precedes window filtering.",
+  "narrative": "2 h window. e1 was first recorded at 09:00, then its collection time was corrected to 07:00 (known 09:40). e2 was first recorded at 06:00, then corrected to 09:30 (known 09:50). At 09:30 neither correction is known: e1 (09:00) is in the window (07:30, 09:30], e2 (06:00) is not. At 10:00 both corrections are in force: e1 is now at 07:00, outside (08:00, 10:00], and e2 at 09:30 is inside. Filtering versions by window before resolving would keep e1's superseded 09:00 version and count 2.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_2h", "event_type": "lab.lactate", "aggregation": "last", "window": "2h"},
+    {"name": "lac_count_2h", "event_type": "lab.lactate", "aggregation": "count", "window": "2h"},
+    {"name": "lac_mean_2h", "event_type": "lab.lactate", "aggregation": "mean", "window": "2h"},
+    {"name": "lac_since_2h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "2h"}
+  ],
+  "events": [
+    {"logical_event_id": "e1", "version_id": "v1", "source_revision": 1, "event_time": "09:00", "value": 2.0, "available": "09:10"},
+    {"logical_event_id": "e1", "version_id": "v2", "source_revision": 2, "event_time": "07:00", "value": 2.0, "available": "09:40"},
+    {"logical_event_id": "e2", "version_id": "v1", "source_revision": 1, "event_time": "06:00", "value": 8.0, "available": "06:10"},
+    {"logical_event_id": "e2", "version_id": "v2", "source_revision": 2, "event_time": "09:30", "value": 8.0, "available": "09:50"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:30"},
+    {"prediction_id": "B", "entity_id": "p1", "prediction_time": "10:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_2h": 2.0, "lac_count_2h": 1, "lac_mean_2h": 2.0, "lac_since_2h": 0.5},
+      "B": {"lac_last_2h": 8.0, "lac_count_2h": 1, "lac_mean_2h": 8.0, "lac_since_2h": 0.5}
+    },
+    "latest_revised": {
+      "A": {"lac_last_2h": 8.0, "lac_count_2h": 1, "lac_mean_2h": 8.0, "lac_since_2h": 0.0},
+      "B": {"lac_last_2h": 8.0, "lac_count_2h": 1, "lac_mean_2h": 8.0, "lac_since_2h": 0.5}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_2h": 8.0, "lac_count_2h": 1, "lac_mean_2h": 8.0, "lac_since_2h": 0.0},
+      "B": {"lac_last_2h": 8.0, "lac_count_2h": 1, "lac_mean_2h": 8.0, "lac_since_2h": 0.5}
+    }
+  }
+}

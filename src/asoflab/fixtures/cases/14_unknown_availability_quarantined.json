@@ -1,0 +1,40 @@
+{
+  "name": "unknown_availability_quarantined",
+  "title": "A version with no availability time is quarantined, not guessed",
+  "invariant": "Strict mode quarantines unknown availability; sensitivity modes are labelled and never strict.",
+  "narrative": "The ingest log for e1 was lost: the source released it at 08:20 but nobody recorded when the pipeline received it. Under pipeline_as_known it is quarantined and counted, leaving only e2. Under source_as_known both are usable. The sensitivity policy that assumes pipeline availability equals event time uses both, and is labelled sensitivity.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_mean_6h", "event_type": "lab.lactate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_since_6h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ],
+  "expected_warnings": {"W_QUARANTINED_UNKNOWN": 1},
+  "events": [
+    {"logical_event_id": "e1", "event_time": "08:00", "value": 3.0, "source_available_time": "08:20", "pipeline_available_time": null, "pipeline_availability_provenance": "unknown"},
+    {"logical_event_id": "e2", "event_time": "08:30", "value": 4.0, "source_available_time": "08:35", "pipeline_available_time": "08:40"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_6h": 4.0, "lac_count_6h": 1, "lac_mean_6h": 4.0, "lac_since_6h": 0.5}
+    },
+    "source_as_known": {
+      "A": {"lac_last_6h": 4.0, "lac_count_6h": 2, "lac_mean_6h": 3.5, "lac_since_6h": 0.5}
+    },
+    "pipeline_as_known-impute0s": {
+      "A": {"lac_last_6h": 4.0, "lac_count_6h": 2, "lac_mean_6h": 3.5, "lac_since_6h": 0.5}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_6h": 4.0, "lac_count_6h": 2, "lac_mean_6h": 3.5, "lac_since_6h": 0.5}
+    }
+  }
+}

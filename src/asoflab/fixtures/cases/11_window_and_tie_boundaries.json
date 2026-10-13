@@ -1,0 +1,37 @@
+{
+  "name": "window_and_tie_boundaries",
+  "title": "Exact boundaries follow the contract",
+  "invariant": "Window boundaries and equal-time arrival/prediction ties match the contract.",
+  "narrative": "Prediction at 10:00 with a 2 h window, so the window is (08:00, 10:00]. e1 is measured and available at exactly 10:00: included on both counts. e2 is measured at exactly 08:00: excluded, the lower bound is open. e3 is one microsecond inside: included. e4 becomes available one microsecond after 10:00: excluded as-known. e5 is measured one microsecond after 10:00: excluded by every policy (its availability of 09:00 precedes its event time, which is reported as a warning and changes nothing). As-known: e1 and e3, mean (1.0 + 3.0) / 2 = 2.0, last is e1. Naive adds e4: mean 8 / 3.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "event_type": "lab.lactate", "unit": "mmol/L", "source": "lis", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "lac_last_2h", "event_type": "lab.lactate", "aggregation": "last", "window": "2h"},
+    {"name": "lac_count_2h", "event_type": "lab.lactate", "aggregation": "count", "window": "2h"},
+    {"name": "lac_mean_2h", "event_type": "lab.lactate", "aggregation": "mean", "window": "2h"},
+    {"name": "lac_since_2h", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "2h"}
+  ],
+  "expected_warnings": {"W_AVAIL_BEFORE_EVENT": 1},
+  "events": [
+    {"logical_event_id": "e1", "event_time": "10:00", "value": 1.0, "available": "10:00"},
+    {"logical_event_id": "e2", "event_time": "08:00", "value": 2.0, "available": "08:10"},
+    {"logical_event_id": "e3", "event_time": "2025-03-01T08:00:00.000001Z", "value": 3.0, "available": "08:10"},
+    {"logical_event_id": "e4", "event_time": "09:00", "value": 4.0, "available": "2025-03-01T10:00:00.000001Z"},
+    {"logical_event_id": "e5", "event_time": "2025-03-01T10:00:00.000001Z", "value": 5.0, "available": "09:00"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "10:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"lac_last_2h": 1.0, "lac_count_2h": 2, "lac_mean_2h": 2.0, "lac_since_2h": 0.0}
+    },
+    "naive_event_time": {
+      "A": {"lac_last_2h": 1.0, "lac_count_2h": 3, "lac_mean_2h": 2.6666666666666665, "lac_since_2h": 0.0}
+    }
+  }
+}

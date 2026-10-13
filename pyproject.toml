@@ -72,6 +72,7 @@ ignore = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["tests"]
 addopts = "-ra --strict-markers"
 markers = [
   "slow: longer-running tests (simulation, statistics, subprocess crash tests)",
