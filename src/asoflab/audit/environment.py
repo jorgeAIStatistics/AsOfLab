@@ -20,8 +20,17 @@ def utc_now() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat()
 
 
+# Paths whose content determines what a run computes. Result files and the UI are not among them.
+CODE_PATHS = ("src", "tests", "benchmarks", "scripts", "pyproject.toml", "uv.lock")
+
+
 def code_revision(root: str | Path | None = None) -> dict[str, Any]:
-    """Git commit of the working tree and whether it has uncommitted changes."""
+    """Git commit of the working tree, and whether the code differs from that commit.
+
+    `dirty` is true when any tracked or untracked file under CODE_PATHS differs
+    from the commit. Generated results and the UI directory are ignored, so
+    writing a result file does not make the next run look modified.
+    """
     directory = Path(root) if root else Path(__file__).resolve().parents[3]
 
     def git(*arguments: str) -> str | None:
@@ -39,7 +48,7 @@ def code_revision(root: str | Path | None = None) -> dict[str, Any]:
         return done.stdout.strip()
 
     commit = git("rev-parse", "HEAD")
-    status = git("status", "--porcelain")
+    status = git("status", "--porcelain", "--", *CODE_PATHS)
     return {"commit": commit, "dirty": None if status is None else bool(status)}
 
 
