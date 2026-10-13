@@ -28,6 +28,7 @@ say nothing about any distributed system.
 import argparse
 import contextlib
 import json
+import os
 import statistics
 import subprocess
 import sys
@@ -172,6 +173,14 @@ def run_configuration(
     return record, last_output
 
 
+def _load_average() -> list[float] | None:
+    """1, 5 and 15 minute load averages, where the platform reports them."""
+    try:
+        return [round(value, 2) for value in os.getloadavg()]
+    except (AttributeError, OSError):
+        return None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--profile", choices=sorted(PROFILES), default="smoke")
@@ -183,6 +192,7 @@ def main() -> None:
     config = workload_features()
     features = config.canonical()
     workloads, runs = [], []
+    load_at_start = _load_average()
 
     with tempfile.TemporaryDirectory(prefix="asoflab-bench-") as temporary:
         scratch = Path(temporary)
@@ -359,6 +369,10 @@ def main() -> None:
             "duckdb_memory_limit": "DuckDB default (not set)",
             "duckdb_threads": "DuckDB default (all logical CPUs)",
             "replay_chunk_size": 50_000,
+            # The machine is a laptop in normal use, not an isolated host. The load averages say
+            # how busy it was with other work while these timings were taken.
+            "system_load_average_at_start": load_at_start,
+            "system_load_average_at_end": _load_average(),
             "peak_memory_method": f"resident set size summed over the worker's process tree, sampled every {int(SAMPLE_SECONDS * 1000)} ms; "
             "short peaks between samples can be missed",
         },
@@ -366,6 +380,8 @@ def main() -> None:
         "runs": runs,
         "notes": [
             "Single machine, synthetic data, local files. Not a measurement of any distributed system.",
+            "The machine was a laptop with other desktop applications running. settings records the "
+            "system load average at the start and end of the run.",
             "The oracle is a correctness reference written for clarity, not speed. Its times are shown for scale only.",
             "end_to_end excludes interpreter start-up; wall_seconds_with_startup includes it.",
             "Speedups are reported only where the outputs were equivalent to the batch backend's.",

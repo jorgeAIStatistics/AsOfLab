@@ -310,6 +310,19 @@ def experiments_section() -> str:
     return "\n".join(parts)
 
 
+def _load_note(settings: dict[str, Any]) -> str:
+    start, end = (
+        settings.get("system_load_average_at_start"),
+        settings.get("system_load_average_at_end"),
+    )
+    if not start or not end:
+        return ""
+    return (
+        f"The laptop was in normal use, not isolated: its one-minute load average was {start[0]:g} when the run "
+        f"started and {end[0]:g} when it ended, on a machine with more cores than that.\n"
+    )
+
+
 def benchmark_section() -> str:
     document = load("benchmarks/standard.json")
     if document is None:
@@ -324,6 +337,7 @@ def benchmark_section() -> str:
         f"Machine: {environment['processor']}, {environment['physical_cpus']} physical cores, "
         f"{environment['memory_bytes'] / 2**30:.0f} GiB memory, {environment['platform']}. Python {environment['python']}, "
         f"DuckDB {environment['libraries']['duckdb']}, PyArrow {environment['libraries']['pyarrow']}.\n",
+        _load_note(settings),
         f"Method: {settings['isolation']}; {settings['warmup']}; {settings['repetitions']} measured repetitions; "
         f"{settings['cache']}; timeout {settings['timeout_seconds']} s; policy `{settings['policy']}`; "
         f"memory: {settings['peak_memory_method']}.\n",
