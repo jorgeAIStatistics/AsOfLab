@@ -24,8 +24,8 @@ All local, on the development machine.
 
 | Command | Result | Code commit |
 | --- | --- | --- |
-| `uv run pytest -q` | 382 passed in about 4 minutes | `e0a0e17` |
-| `uv run ruff check src tests benchmarks scripts`, `ruff format --check`, `uv run mypy` | Clean | `1624483` |
+| `uv run pytest -q` | 390 passed in 3 minutes 23 seconds | `b78e90d` |
+| `uv run ruff check src tests benchmarks scripts`, `ruff format --check`, `uv run mypy` | Clean | `b78e90d` |
 | `uv run asoflab fixtures check` | 153 of 153 checks match the hand calculations | `1624483` |
 | `cd web && npm ci && npm run build && npm test` | Build clean, 49 tests passed | `e0a0e17` |
 | `uv run python scripts/seeded_bug_report.py --trials 10` | Every seeded bug found in 10 of 10 trials | `20b67ce` |
@@ -57,17 +57,17 @@ assumed.
 | Run | Commit | Outcome |
 | --- | --- | --- |
 | 38351486559 | `d9f7497` | **Failed.** The "Install without uv" job passed on ubuntu with Python 3.12: pip install from `requirements.lock`, the unit tests, and `asoflab demo`. The four uv matrix jobs failed before running anything, because the workflow referenced `astral-sh/setup-uv@v10`, a tag that does not exist. The UI job failed because `web/` had not been committed yet. |
-
 | 38357488610 | `d51bf24` | **Passed, all six jobs.** Python 3.12, 3.13 and 3.14 on `ubuntu-latest` and Python 3.12 on `macos-latest`: lint, format check, type check, the full test suite, the demo, and the benchmark smoke profile. The pip-only install job. The UI job (`npm ci`, build, tests). |
+| 38358350745 | `8a407cb` | **Passed, all six jobs**, the same ones. That commit changed documentation only. |
 
 The workflow pins `astral-sh/setup-uv` to the commit of release v10.3.0.
 
-Also observed in run 38357488610: the step that runs `asoflab demo --strict`
+Also observed in both passing runs: the step that runs `asoflab demo --strict`
 succeeded in all four Python jobs. The simulated data and the feature tables
 produced on GitHub's Linux and macOS runners, on Python 3.12, 3.13 and 3.14,
 had the same content hashes as the reference produced on the development
-laptop. That is one observation on these platforms and library versions, not a
-guarantee for others.
+laptop. Both runs used the same code, platforms and library versions, so this
+is one observation, not a guarantee for others.
 
 CI does not run the full experiment matrix, the standard benchmark profile, or
 the Feast comparison. Those results are local only.
@@ -206,6 +206,17 @@ Each of these is now a test.
 6. **An untracked script made runs record a modified tree.** The dirty check
    now covers the code paths only.
 
+## Found by using it
+
+1. **`asoflab serve` announced an address before it held the port.** It printed
+   the address and then let the web server bind. On the development machine
+   another program was already listening on port 8000, so the printed address
+   belonged to that program and the bind error came after it. The command now
+   opens the port itself, prints the address once it holds it, and hands the
+   open socket to the web server. A busy port starts nothing, says so, and
+   names a free one. Fixed in `b78e90d`, which added eight tests; three of
+   them fail against the earlier code.
+
 ## Decisions made after seeing preliminary output
 
 Recorded so that they can be judged.
@@ -228,6 +239,8 @@ Recorded so that they can be judged.
 - Homebrew and the GitHub CLI are not installed. Pushing works through the git
   credential in the macOS keychain. CI results are read from GitHub's public API.
 - Commits are authored with the machine's global git identity.
+- Another program on the development machine listens on port 8000, the default
+  of `asoflab serve`. There, pass another port: `make serve PORT=8020`.
 
 ## Unresolved limitations
 

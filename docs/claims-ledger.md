@@ -20,6 +20,9 @@ Rules this ledger follows:
   tidied tests, one import moved in the replay runner, and the load average
   being recorded with benchmark results. Each result file records the commit it
   was produced at and that the code was unmodified.
+- One code change came after the last of those commits: `b78e90d` changes how
+  `asoflab serve` opens its port. It touches no engine and no analysis, and no
+  result file was regenerated for it.
 
 ## Validation
 
@@ -27,7 +30,7 @@ Rules this ledger follows:
 | --- | --- | --- | --- | --- | --- |
 | V1 | 22 handwritten fixtures | Files in `src/asoflab/fixtures/cases/` | `uv run asoflab fixtures list` | any | 20 with hand-calculated answers, 2 that must be refused |
 | V2 | All three engines match every fixture (153 checks) | Test output | `uv run asoflab fixtures check` | `1624483` | Local |
-| V3 | 382 tests pass | Test output | `uv run pytest -q` | `e0a0e17` | Local run. Remote CI is reported separately in `progress.md` |
+| V3 | 390 tests pass | Test output | `uv run pytest -q` | `b78e90d` | Local run. Remote CI is reported separately in `progress.md` |
 | V4 | 15 seeded wrong implementations, each contradicted by a fixture | `results/validation/seeded_bugs.json`, `python_bugs.*.fixtures_that_expose_it` | `uv run python scripts/seeded_bug_report.py --trials 10` | `20b67ce` | The mistakes that were thought of |
 | V5 | 11 one-line SQL mutations, each exposed by a fixture | same file, `sql_mutations` | same | `20b67ce` | Batch backend, as-known policies |
 | V6 | 3 seeded replay-state bugs are exposed | `tests/unit/test_seeded_replay_bugs.py` | `uv run pytest -q tests/unit/test_seeded_replay_bugs.py` | `e0a0e17` | Test only; no result file |
@@ -77,6 +80,7 @@ Rules this ledger follows:
 | R1 | CI passed: tests, lint, type check, demo and benchmark smoke profile on Python 3.12, 3.13 and 3.14 (`ubuntu-latest`) and 3.12 (`macos-latest`); pip-only install; UI build and tests | GitHub Actions run 38357488610, read through GitHub's API on 13 October 2026 | `d51bf24` | That commit. The README badge shows the current state |
 | R2 | The demo's data and feature hashes on those runners matched the reference from the development laptop | Same run: the step "Demo output is identical to the committed reference" succeeded in all four Python jobs | `d51bf24` | One observation on those platforms and library versions |
 | R3 | The first CI run failed | GitHub Actions run 38351486559: a workflow tag that did not exist, and the UI not yet committed | `d9f7497` | Fixed in the workflow |
+| R4 | CI passed again on the next commit, all six jobs, with the same match to the reference | GitHub Actions run 38358350745, read through GitHub's API on 13 October 2026 | `8a407cb` | A documentation-only commit after R1, so the same code |
 
 ## Statements about other projects
 
@@ -99,6 +103,7 @@ Each is now guarded by a test.
 | The first archive generator exposed the tie-break bug in 1 of 4 runs of 4,000 archives | README, article, `progress.md` | `tests/property/test_bug_discovery.py`; the current measurement is V7 |
 | Batch means differed in the last bits between identical runs (387 of about 60,000 on one 300,000-event workload); ordering the sum cost 0.31 s to 0.48 s there | article, `architecture.md`, `progress.md` | `tests/integration/test_batch_determinism.py` |
 | One SQL mutation survived every fixture until `two_types_same_window` was added | README, article, `interview-guide.md` | `tests/unit/test_seeded_sql_bugs.py` |
+| `asoflab serve` printed its address before binding the port. With the port taken, the address was another program's | `progress.md` | `tests/unit/test_serve_port.py`, `tests/integration/test_serve.py` |
 | The demonstration takes under half a minute | README, article | Timed informally on the development machine (11 s warm, 27 s in a fresh clone); not a benchmark |
 
 ## Not claimed anywhere

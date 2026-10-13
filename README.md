@@ -191,7 +191,7 @@ any distributed system.
 | Task | Command |
 | --- | --- |
 | Small demonstration | `uv run asoflab demo` |
-| All tests (382, about 4 minutes) | `uv run pytest -q` |
+| All tests (390, 3 to 4 minutes) | `uv run pytest -q` |
 | Unit tests only | `make test-fast` |
 | Benchmarks | `uv run python benchmarks/run_benchmarks.py --profile standard` |
 | All scenarios and seeds | `uv run asoflab experiment matrix --out results/experiments --workers 4` |
