@@ -87,10 +87,10 @@ def test_killed_replay_resumes_to_the_same_outputs(tmp_path: Path, crash_at: str
     resumed = asoflab(*run)
     assert resumed.returncode == 0, resumed.stderr
     stats = json.loads(resumed.stdout)["partitions"]
-    if crash_at.startswith("after_commit") or crash_at.endswith(":2") or crash_at.endswith(":1"):
-        assert any(part["resumed_from_offset"] > 0 for part in stats), (
-            "the resume must use a checkpoint"
-        )
+    # Each of the three cases stops after at least one chunk has been committed.
+    assert any(part["resumed_from_offset"] > 0 for part in stats), (
+        "the resume must use a checkpoint"
+    )
 
     exported = asoflab(
         "replay",

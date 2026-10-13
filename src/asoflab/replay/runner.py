@@ -10,6 +10,7 @@ rejects such features.
 import hashlib
 import json
 import multiprocessing
+import sqlite3
 import tempfile
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
@@ -129,8 +130,6 @@ def collect_outputs(result: ReplayResult, config: FeatureConfig) -> pa.Table:
 
 
 def _stored_log_hash(store_path: Path) -> str:
-    import sqlite3
-
     connection = sqlite3.connect(store_path)
     try:
         row = connection.execute("SELECT value FROM meta WHERE key = 'log_sha256'").fetchone()

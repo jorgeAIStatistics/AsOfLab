@@ -25,16 +25,11 @@ def killers(compute) -> list[str]:  # type: ignore[no-untyped-def]
             if slug not in case.expected:
                 continue
             rows = compute(case.events, case.spine, case.config, TimePolicy.parse(slug))
-            table = feature_rows_to_table(_pad(rows, case), case.config)
+            table = feature_rows_to_table(rows, case.config)
             if differences_from_expected(table, case.expected[slug]):
                 exposed.append(case.name)
                 break
     return exposed
-
-
-def _pad(rows, case):  # type: ignore[no-untyped-def]
-    """Leave dropped rows dropped; the comparison reports the missing prediction ids."""
-    return rows
 
 
 def kill_matrix() -> dict[str, list[str]]:

@@ -11,6 +11,7 @@ import sqlite3
 from pathlib import Path
 
 import pyarrow as pa
+import pyarrow.parquet as pq
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -234,12 +235,7 @@ def test_parallel_workers_and_partition_layouts_agree_with_the_batch_backend(
             events, spine, config, PIPELINE, directory / "prepared", n_partitions=n_partitions
         )
         entities_per_file = [
-            set(
-                __import__("pyarrow.parquet")
-                .parquet.read_table(prepared.path(i))
-                .column("entity_id")
-                .to_pylist()
-            )
+            set(pq.read_table(prepared.path(i)).column("entity_id").to_pylist())
             for i in range(n_partitions)
         ]
         for i, mine in enumerate(entities_per_file):

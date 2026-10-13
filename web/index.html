@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="AsOfLab inspection UI. All data shown are synthetic (simulated)." />
+    <!-- No icon: an empty one stops the browser from requesting /favicon.ico from the API server. -->
+    <link rel="icon" href="data:," />
+    <title>AsOfLab</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="font: 15px/1.5 system-ui; max-width: 40rem; margin: 3rem auto; padding: 0 1rem">
+        The AsOfLab inspection UI needs JavaScript. The static report of a run (report.html in the run
+        directory) works without it.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
