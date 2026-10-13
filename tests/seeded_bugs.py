@@ -253,3 +253,23 @@ SEEDED_BUGS: dict[str, Callable[..., list[FeatureRow]]] = {
     "drop_empty_predictions": _run(_correct, drop_empty=True),
     "last_tie_lowest_id": _run(_correct, tie_lowest_id=True),
 }
+
+# One line per bug, for reports. The selection functions above carry the longer explanation.
+DESCRIPTIONS: dict[str, str] = {
+    "latest_then_filter": "Takes today's latest version, then tests whether that version was available.",
+    "window_before_resolve": "Filters versions by event-time window before resolving revisions.",
+    "ignore_availability": "Uses event time alone and ignores availability.",
+    "first_seen_gate_latest_value": "Respects first availability but reads today's value.",
+    "ignore_retractions": "Drops retraction records, so withdrawn observations stay.",
+    "retraction_payload_read": "Reads the value carried on a retraction record.",
+    "arrival_order_resolution": "Lets the most recently arrived version win over a higher revision.",
+    "first_version_wins": "Never applies corrections.",
+    "count_every_version": "Treats every version row as a separate observation.",
+    "exclusive_availability": "Requires availability strictly before the prediction time.",
+    "inclusive_window_start": "Uses the window [T - W, T] instead of (T - W, T].",
+    "exclusive_window_end": "Uses the window (T - W, T) instead of (T - W, T].",
+    "cross_entity_read": "Reads every entity's events for each prediction.",
+    "drop_empty_predictions": "Omits predictions that have no eligible observation.",
+    "last_tie_lowest_id": "Breaks ties for 'last' towards the smaller logical event id.",
+}
+assert DESCRIPTIONS.keys() == SEEDED_BUGS.keys()

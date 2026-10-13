@@ -114,6 +114,72 @@ ORDER BY c.prediction_id
 """
 
 
+def contributions_query(config: FeatureConfig, policy: TimePolicy) -> str:
+    """One row per (prediction, logical event) that at least one feature reads under `policy`.
+
+    This is the feature query before aggregation: which observation, in which
+    revision, with which event time and value. The audit compares two policies
+    with it. An observation counts as read when it lies inside the longest
+    window of any feature on its event type.
+    """
+    types = ", ".join(_literal(event_type) for event_type in config.event_types())
+    cases = " ".join(
+        f"WHEN {_literal(event_type)} THEN {seconds * MICROSECONDS_PER_SECOND}"
+        for event_type, seconds in sorted(config.max_window_seconds().items())
+    )
+    return f"""
+WITH versions AS (
+    SELECT entity_id, logical_event_id, source_revision, operation, event_type,
+           epoch_us(event_time) AS event_us, value,
+           {_known_us_sql(policy)} AS known_us
+    FROM events
+    WHERE event_type IN ({types})
+),
+{_active_sql(policy)}
+SELECT s.prediction_id, s.entity_id, epoch_us(s.prediction_time) AS cutoff_us,
+       a.logical_event_id, a.event_type, a.source_revision, a.event_us, a.value
+FROM spine s
+JOIN active a
+  ON a.entity_id = s.entity_id
+ AND a.valid_from_us <= epoch_us(s.prediction_time) AND epoch_us(s.prediction_time) < a.valid_to_us
+ AND a.event_us <= epoch_us(s.prediction_time)
+ AND a.event_us > epoch_us(s.prediction_time) - CASE a.event_type {cases} END
+"""
+
+
+def in_force_query(config: FeatureConfig, policy: TimePolicy) -> str:
+    """Every interval in which a version (upsert or retraction) is in force, for an as-known policy."""
+    if policy.name not in (PolicyName.SOURCE_AS_KNOWN, PolicyName.PIPELINE_AS_KNOWN):
+        raise ValueError("in-force intervals are defined for as-known policies only")
+    types = ", ".join(_literal(event_type) for event_type in config.event_types())
+    return f"""
+WITH versions AS (
+    SELECT entity_id, logical_event_id, source_revision, operation, event_type,
+           epoch_us(event_time) AS event_us, value,
+           {_known_us_sql(policy)} AS known_us
+    FROM events
+    WHERE event_type IN ({types})
+),
+{_active_sql(policy)}
+SELECT logical_event_id, source_revision, operation, event_us, value,
+       known_us AS valid_from_us, coalesce(replaced_us, {_FOREVER}) AS valid_to_us
+FROM takeovers
+"""
+
+
+def known_us_expression(policy: TimePolicy) -> str:
+    """SQL for a version's known time on the policy's clock (integer microseconds, or NULL)."""
+    return _known_us_sql(policy)
+
+
+def register_sources(
+    connection: duckdb.DuckDBPyConnection, events: TableSource, spine: TableSource
+) -> None:
+    """Make `events` and `spine` available to queries built by this module."""
+    _register(connection, "events", events, EVENT_SCHEMA)
+    _register(connection, "spine", spine, SPINE_SCHEMA)
+
+
 def _known_us_sql(policy: TimePolicy) -> str:
     if policy.clock is None:
         return "CAST(NULL AS BIGINT)"
@@ -135,7 +201,7 @@ def _active_sql(policy: TimePolicy) -> str:
     if policy.name is PolicyName.NAIVE_EVENT_TIME:
         return f"""{latest},
 active AS (
-    SELECT entity_id, logical_event_id, event_type, event_us, value,
+    SELECT entity_id, logical_event_id, source_revision, event_type, event_us, value,
            {_ALWAYS} AS valid_from_us, {_FOREVER} AS valid_to_us
     FROM latest
     WHERE operation = 'upsert'
@@ -149,7 +215,7 @@ first_seen AS (
     GROUP BY logical_event_id
 ),
 active AS (
-    SELECT l.entity_id, l.logical_event_id, l.event_type, l.event_us, l.value,
+    SELECT l.entity_id, l.logical_event_id, l.source_revision, l.event_type, l.event_us, l.value,
            f.first_known_us AS valid_from_us, {_FOREVER} AS valid_to_us
     FROM latest l
     JOIN first_seen f USING (logical_event_id)
@@ -175,7 +241,7 @@ takeovers AS (
 active AS (
     -- Retractions are in force too, but contribute nothing, so they are dropped
     -- only after the intervals have been computed.
-    SELECT entity_id, logical_event_id, event_type, event_us, value,
+    SELECT entity_id, logical_event_id, source_revision, event_type, event_us, value,
            known_us AS valid_from_us, coalesce(replaced_us, {_FOREVER}) AS valid_to_us
     FROM takeovers
     WHERE operation = 'upsert'
@@ -191,7 +257,10 @@ def _feature_sql(feature: FeatureSpec) -> str:
     if feature.aggregation is Aggregation.COUNT:
         expression = f"count(a.logical_event_id) {in_window}"
     elif feature.aggregation is Aggregation.MEAN:
-        expression = f"favg(a.value) {in_window}"
+        # Floating-point addition is not associative, and with several threads the order in
+        # which rows reach an aggregate changes from run to run. Fixing the order makes the
+        # result bit-identical across runs and thread counts.
+        expression = f"favg(a.value ORDER BY a.event_us, a.logical_event_id) {in_window}"
     elif feature.aggregation is Aggregation.LAST:
         expression = f"arg_max(a.value, (a.event_us, a.logical_event_id)) {in_window}"
     else:

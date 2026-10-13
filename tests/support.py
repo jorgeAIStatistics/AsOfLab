@@ -81,6 +81,7 @@ def save_counterexample(
 
 from asoflab.batch import compute_features as _batch_features  # noqa: E402
 from asoflab.oracle import compute_features as _oracle_features  # noqa: E402
+from asoflab.replay import replay_features as _replay_features  # noqa: E402
 from asoflab.schema.tables import (  # noqa: E402
     events_to_table,
     feature_rows_to_table,
@@ -106,4 +107,16 @@ def run_batch(
     return _batch_features(events_to_table(events), spine_to_table(spine), config, policy)
 
 
-ENGINES = {"oracle": run_oracle, "batch": run_batch}
+def run_replay(
+    events: Sequence[EventVersion],
+    spine: Sequence[PredictionRow],
+    config: FeatureConfig,
+    policy: TimePolicy,
+    **options: Any,
+) -> pa.Table:
+    return _replay_features(
+        events_to_table(events), spine_to_table(spine), config, policy, **options
+    )
+
+
+ENGINES = {"oracle": run_oracle, "batch": run_batch, "replay": run_replay}

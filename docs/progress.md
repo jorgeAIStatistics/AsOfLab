@@ -13,8 +13,8 @@ run has actually been observed.
 | Milestone | State | Gate |
 | --- | --- | --- |
 | 1. Correctness kernel | **Complete** (2026-10-13) | Passed locally |
-| 2. Replay and reliability | In progress | Not yet run |
-| 3. Statistical demo | Not started | |
+| 2. Replay and reliability | **Complete** (2026-10-13) | Passed locally |
+| 3. Statistical demo | Core complete; report and full runs pending | Passed locally on small cohorts |
 | 4. Performance and interface | Not started | |
 | 5. Optional interoperability | Not started | |
 
@@ -60,6 +60,81 @@ Design decisions taken in this milestone:
 - **D-006** All SQL time arithmetic uses integer microseconds, so the DuckDB
   session time zone and calendar rules cannot change a result.
 
+## Milestone 2: replay and reliability
+
+Delivered:
+
+- `src/asoflab/replay/log.py`: sorts and compacts an archive into per-partition replay logs.
+- `src/asoflab/replay/state.py`: version-aware state per entity, with a never-evicted revision index.
+- `src/asoflab/replay/store.py`: SQLite store. Outputs, state changes and the checkpoint commit together.
+- `src/asoflab/replay/engine.py`, `runner.py`: chunked replay, crash injection, bounded process pool.
+- `src/asoflab/simulation/workload.py`: engineering workload generator (uniform or Zipf activity).
+- `tests/strategies.py`: adversarial archive generator.
+- `tests/property/`, `tests/integration/test_replay_recovery.py`, `test_process_kill.py`.
+- `scripts/seeded_bug_report.py` and `results/validation/seeded_bugs.json`.
+
+Gate: batch, replay and oracle parity, and the temporal invariance tests.
+
+```bash
+uv run pytest -q                                  # 368 passed, about 4 minutes
+uv run python scripts/seeded_bug_report.py --trials 10
+```
+
+Problems the validation work found (each one is now a test):
+
+1. **The first archive generator was too weak.** It exposed the seeded tie-break
+   bug in only 1 of 4 runs of 4,000 archives. Times were too spread out for two
+   observations to land on the same instant. The generator now concentrates
+   events on shared instants and window edges. After the change every seeded bug
+   was found in 10 of 10 seeded runs; the slowest needed 673 archives. The parity
+   test's example count (1,000) is set above that.
+2. **Batch output was not bit-reproducible.** With DuckDB's default threading, a
+   few hundred of about 60,000 `mean` values differed in the last bits between
+   identical runs, because rows reached the sum in a different order each time.
+   Feature-table hashes changed from run to run. The mean now sums in a fixed
+   order (`ORDER BY event time, logical event id`). Cost on a 300,000-event
+   workload: 0.31 s to 0.48 s. Test: `tests/integration/test_batch_determinism.py`.
+3. **Rewinding a checkpoint is not a recovery path.** State is not versioned per
+   checkpoint. The store turns a re-issued prediction with different content
+   into an error instead of overwriting it. Test:
+   `test_rewinding_a_checkpoint_without_its_state_is_detected`.
+
+Further decisions:
+
+- **D-007** Deterministic summation order in the batch mean (see 2 above).
+- **D-008** The replay engine handles the retrospective and naive policies by
+  changing what arrives when (today's content, at first availability or at
+  event time). One engine, four policies.
+- **D-009** Recovery is by atomic commit of outputs, state changes and
+  checkpoint in one SQLite transaction, plus keyed idempotent output writes
+  that refuse a changed re-issue. Scope: one local file.
+
+## Milestone 3: statistical demo (core)
+
+Delivered so far:
+
+- `src/asoflab/simulation/clinical.py`: declared data-generating process, seven scenarios.
+- `src/asoflab/evaluation/`: labels, patient-level splits, logistic baseline, weighted
+  metrics, paired patient-cluster bootstrap, the two experiments, chronological design,
+  subgroups, label maturity.
+- `src/asoflab/audit/differential.py`, `manifest.py`, `environment.py`.
+
+Decisions made after seeing preliminary output, recorded so they can be judged:
+
+- The regularisation grid was extended from (0.01 ... 10) to (0.001 ... 10) after a
+  trial run on 800 patients selected the lowest value. On 3,000 patients the lowest
+  value was selected again; validation log loss is almost flat across the grid
+  (0.1633 to 0.1639). The grid was not changed again.
+- A comparison of mature labels with labels recorded the moment the horizon ends
+  was added to the label-maturity section after the count of affected predictions
+  was seen, and before its effect on any metric had been computed.
+- No parameter of the data-generating process was changed after any policy
+  comparison was run. The hazard intercept was set earlier, using only the
+  outcome rate.
+
+Still to do in this milestone: HTML report, the full prespecified run matrix
+(7 scenarios x 5 seeds), the cross-seed summary.
+
 ## Environment notes
 
 - `uv` is not installed system-wide on the development machine. It was installed
@@ -75,9 +150,10 @@ Tracked in `docs/limitations.md` once written. Open items so far:
 - The tolerance on `mean` assumes values of comparable magnitude. Sums with
   catastrophic cancellation can exceed any fixed relative tolerance.
 - Moving an observation between entities is rejected rather than modelled.
+- The replay revision index is never evicted: one small entry per logical event.
+- Durability against power loss on macOS needs `fullfsync`, which is not set or tested.
+- Result files under `results/` are regenerated from a clean commit at the end.
 
 ## Next action
 
-Milestone 2: implement `src/asoflab/replay/` (log preparation, version-aware
-state, SQLite store with transactional checkpoints), then the Hypothesis
-strategies and parity, invariance, and crash-restart tests.
+HTML report, experiment CLI and the full run matrix; then the benchmark harness.

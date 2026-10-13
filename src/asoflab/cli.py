@@ -26,6 +26,10 @@ app = typer.Typer(
 )
 fixtures_app = typer.Typer(no_args_is_help=True, help="The handwritten fixture corpus.")
 app.add_typer(fixtures_app, name="fixtures")
+replay_app = typer.Typer(
+    no_args_is_help=True, help="Incremental replay: a local, single-machine stream simulator."
+)
+app.add_typer(replay_app, name="replay")
 
 ALL_POLICIES = ["pipeline_as_known", "source_as_known", "latest_revised", "naive_event_time"]
 
@@ -299,6 +303,86 @@ def fixtures_check(
     typer.echo(f"{len(results) - len(failures)} of {len(results)} checks passed.")
     if failures:
         raise typer.Exit(code=1)
+
+
+@replay_app.command("prepare")
+def replay_prepare(
+    events: EventsOption,
+    spine: SpineOption,
+    config: ConfigOption,
+    out: Annotated[Path, typer.Option("--out", help="Directory for the prepared log.")],
+    policy: PolicyOption = "pipeline_as_known",
+    partitions: Annotated[int, typer.Option("--partitions", help="Number of key groups.")] = 1,
+) -> None:
+    """Sort and compact an archive into per-partition replay logs."""
+    from asoflab.replay import prepare_log
+
+    try:
+        prepared = prepare_log(
+            events,
+            spine,
+            FeatureConfig.from_file(config),
+            TimePolicy.parse(policy),
+            out,
+            n_partitions=partitions,
+        )
+    except ContractViolation as error:
+        _fail(error)
+    except FileExistsError as error:
+        typer.secho(str(error), fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=2) from error
+    rows = sum(int(partition["rows"]) for partition in prepared.partitions)
+    typer.echo(f"Prepared {rows} log rows in {prepared.n_partitions} partition(s) at {out}.")
+
+
+@replay_app.command("run")
+def replay_run(
+    prepared: Annotated[
+        Path, typer.Option("--prepared", help="Directory written by 'replay prepare'.")
+    ],
+    config: ConfigOption,
+    stores: Annotated[
+        Path, typer.Option("--stores", help="Directory for checkpoints and outputs.")
+    ],
+    workers: Annotated[int, typer.Option("--workers", help="Parallel worker processes.")] = 1,
+    chunk_size: Annotated[int, typer.Option("--chunk-size", help="Log rows per commit.")] = 50_000,
+) -> None:
+    """Replay a prepared log. Running it again after an interruption resumes from the last commit."""
+    from asoflab.replay import PreparedLog, run_replay
+
+    result = run_replay(
+        PreparedLog.load(prepared),
+        stores,
+        FeatureConfig.from_file(config),
+        workers=workers,
+        chunk_size=chunk_size,
+    )
+    typer.echo(json.dumps(result.to_dict(), indent=2))
+
+
+@replay_app.command("export")
+def replay_export(
+    prepared: Annotated[
+        Path, typer.Option("--prepared", help="Directory written by 'replay prepare'.")
+    ],
+    config: ConfigOption,
+    stores: Annotated[Path, typer.Option("--stores", help="Directory used by 'replay run'.")],
+    out: Annotated[Path, typer.Option("--out", help="Where to write the feature Parquet file.")],
+) -> None:
+    """Write the committed outputs of a finished replay to one Parquet file."""
+    from asoflab.replay import PreparedLog, collect_outputs, run_replay
+
+    if out.exists():
+        typer.secho(
+            f"{out} already exists. Runs are never overwritten.", fg=typer.colors.RED, err=True
+        )
+        raise typer.Exit(code=2)
+    feature_config = FeatureConfig.from_file(config)
+    # A finished run returns immediately, so this only confirms completion and resolves the run id.
+    result = run_replay(PreparedLog.load(prepared), stores, feature_config)
+    table = collect_outputs(result, feature_config)
+    write_parquet(table, out)
+    typer.echo(f"Wrote {table.num_rows} rows to {out} (run {result.run_id}).")
 
 
 if __name__ == "__main__":

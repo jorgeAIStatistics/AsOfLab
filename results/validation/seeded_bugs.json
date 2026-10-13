@@ -1,0 +1,1460 @@
+{
+  "generated_at": "2026-10-13T04:37:55+00:00",
+  "command": "uv run python scripts/seeded_bug_report.py --trials 10 --budget 4000",
+  "environment": {
+    "asoflab_version": "0.1.0",
+    "contract_version": "1.0.0",
+    "python": "3.12.15",
+    "implementation": "CPython",
+    "platform": "macOS-14.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "Apple M3 Pro",
+    "logical_cpus": 11,
+    "physical_cpus": 11,
+    "memory_bytes": 19327352832,
+    "libraries": {
+      "duckdb": "1.5.6",
+      "pyarrow": "26.0.0",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "pydantic": "2.14.1",
+      "hypothesis": "6.169.0"
+    },
+    "code_commit": "61f3de18efc1c5a186e47973d3bfbca6485e1e89",
+    "code_dirty": true
+  },
+  "scope": "Synthetic archives from tests/strategies.py, policy pipeline_as_known. A seeded bug is one deliberate mistake in an otherwise correct implementation.",
+  "archive_budget_per_trial": 4000,
+  "control": {
+    "fixtures_that_contradict_it": [],
+    "exposed_within_budget": false
+  },
+  "python_bugs": {
+    "arrival_order_resolution": {
+      "what_it_gets_wrong": "Let the most recently *arrived* version win, instead of the highest revision.",
+      "fixtures_that_expose_it": [
+        "late_older_revision",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          116,
+          284,
+          149,
+          117,
+          106,
+          80,
+          106,
+          98,
+          43,
+          114
+        ],
+        "median": 110.0,
+        "worst": 284
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:30:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:30:00Z",
+            "value": 0.1,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:30:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:30:00Z"
+          }
+        ]
+      }
+    },
+    "count_every_version": {
+      "what_it_gets_wrong": "Skip revision resolution: every known upsert row is an observation.",
+      "fixtures_that_expose_it": [
+        "correction_keeps_earlier_version",
+        "retraction_known_later",
+        "late_older_revision",
+        "exact_duplicate_idempotent",
+        "revision_changes_event_time",
+        "upsert_after_retract",
+        "retraction_with_payload",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          47,
+          56,
+          44,
+          117,
+          62,
+          80,
+          104,
+          59,
+          43,
+          78
+        ],
+        "median": 60.5,
+        "worst": 117
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e1",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e2",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p2",
+            "logical_event_id": "e3",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p2",
+            "logical_event_id": "e3",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p2",
+            "logical_event_id": "e3",
+            "version_id": "v3",
+            "source_revision": 3,
+            "operation": "retract",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p2",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "cross_entity_read": {
+      "what_it_gets_wrong": "The right answer, in the same shape as the bugs, to validate this harness.",
+      "fixtures_that_expose_it": [
+        "missing_features_preserve_spine",
+        "entity_isolation"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          30,
+          25,
+          15,
+          32,
+          55,
+          11,
+          79,
+          52,
+          11,
+          4
+        ],
+        "median": 27.5,
+        "worst": 79
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p9",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "drop_empty_predictions": {
+      "what_it_gets_wrong": "The right answer, in the same shape as the bugs, to validate this harness.",
+      "fixtures_that_expose_it": [
+        "delayed_result",
+        "missing_features_preserve_spine",
+        "utc_equivalence",
+        "source_vs_pipeline",
+        "late_event_affects_future_only",
+        "upsert_after_retract",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "median": 1.0,
+        "worst": 1
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p9",
+            "prediction_time": "2025-03-01T10:30:00Z"
+          }
+        ]
+      }
+    },
+    "exclusive_availability": {
+      "what_it_gets_wrong": "Require availability strictly before the cutoff.",
+      "fixtures_that_expose_it": [
+        "delayed_result",
+        "correction_keeps_earlier_version",
+        "retraction_known_later",
+        "utc_equivalence",
+        "window_and_tie_boundaries",
+        "source_vs_pipeline"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          111,
+          56,
+          16,
+          76,
+          40,
+          80,
+          79,
+          20,
+          47,
+          75
+        ],
+        "median": 65.5,
+        "worst": 111
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e1",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e2",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "exclusive_window_end": {
+      "what_it_gets_wrong": "Use (T - W, T) instead of (T - W, T].",
+      "fixtures_that_expose_it": [
+        "window_and_tie_boundaries"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          80,
+          73,
+          16,
+          76,
+          40,
+          80,
+          79,
+          68,
+          47,
+          65
+        ],
+        "median": 70.5,
+        "worst": 80
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e1",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "first_seen_gate_latest_value": {
+      "what_it_gets_wrong": "Respect when the observation first appeared, but read today's value.",
+      "fixtures_that_expose_it": [
+        "correction_keeps_earlier_version",
+        "retraction_known_later",
+        "future_append_invariance",
+        "revision_changes_event_time",
+        "upsert_after_retract",
+        "retraction_with_payload"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          111,
+          56,
+          74,
+          117,
+          62,
+          102,
+          214,
+          20,
+          181,
+          78
+        ],
+        "median": 90.0,
+        "worst": 214
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T01:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T01:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v3",
+            "source_revision": 3,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T01:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v4",
+            "source_revision": 4,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T01:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T01:00:00Z"
+          }
+        ]
+      }
+    },
+    "first_version_wins": {
+      "what_it_gets_wrong": "Never apply corrections: keep the lowest revision.",
+      "fixtures_that_expose_it": [
+        "correction_keeps_earlier_version",
+        "retraction_known_later",
+        "late_older_revision",
+        "revision_changes_event_time",
+        "upsert_after_retract",
+        "retraction_with_payload",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          47,
+          56,
+          44,
+          117,
+          62,
+          80,
+          104,
+          68,
+          43,
+          59
+        ],
+        "median": 60.5,
+        "worst": 117
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e1",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e2",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e3",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e4",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e4",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e4",
+            "version_id": "v3",
+            "source_revision": 3,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e4",
+            "version_id": "v4",
+            "source_revision": 4,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.1,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "ignore_availability": {
+      "what_it_gets_wrong": "Use event time alone. The classic leak.",
+      "fixtures_that_expose_it": [
+        "delayed_result",
+        "correction_keeps_earlier_version",
+        "retraction_known_later",
+        "future_append_invariance",
+        "utc_equivalence",
+        "window_and_tie_boundaries",
+        "revision_changes_event_time",
+        "unknown_availability_quarantined",
+        "source_vs_pipeline",
+        "late_event_affects_future_only",
+        "upsert_after_retract",
+        "two_types_two_windows",
+        "retraction_with_payload"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          29,
+          24,
+          13,
+          25,
+          26,
+          34,
+          11,
+          19,
+          27,
+          54
+        ],
+        "median": 25.5,
+        "worst": 54
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "ignore_retractions": {
+      "what_it_gets_wrong": "Drop retraction records before resolving, so withdrawn observations stay.",
+      "fixtures_that_expose_it": [
+        "retraction_known_later",
+        "upsert_after_retract",
+        "retraction_with_payload",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          240,
+          255,
+          44,
+          337,
+          164,
+          102,
+          164,
+          127,
+          181,
+          78
+        ],
+        "median": 164.0,
+        "worst": 337
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "retract",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "inclusive_window_start": {
+      "what_it_gets_wrong": "Use [T - W, T] instead of (T - W, T].",
+      "fixtures_that_expose_it": [
+        "window_and_tie_boundaries",
+        "two_types_two_windows"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          51,
+          65,
+          71,
+          63,
+          62,
+          80,
+          104,
+          57,
+          53,
+          59
+        ],
+        "median": 62.5,
+        "worst": 104
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T01:00:00Z"
+          }
+        ]
+      }
+    },
+    "last_tie_lowest_id": {
+      "what_it_gets_wrong": "The right answer, in the same shape as the bugs, to validate this harness.",
+      "fixtures_that_expose_it": [
+        "last_tie_break",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          519,
+          636,
+          241,
+          203,
+          673,
+          117,
+          461,
+          428,
+          47,
+          331
+        ],
+        "median": 379.5,
+        "worst": 673
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e1",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e2",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e3",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.1,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "latest_then_filter": {
+      "what_it_gets_wrong": "Take today's latest version, then test whether *it* was available. A correction that arrives after the cutoff erases the earlier version that was genuinely known.",
+      "fixtures_that_expose_it": [
+        "correction_keeps_earlier_version",
+        "retraction_known_later",
+        "future_append_invariance",
+        "revision_changes_event_time",
+        "upsert_after_retract",
+        "retraction_with_payload"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          118,
+          56,
+          74,
+          117,
+          62,
+          80,
+          214,
+          20,
+          181,
+          78
+        ],
+        "median": 79.0,
+        "worst": 214
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v3",
+            "source_revision": 3,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "retraction_payload_read": {
+      "what_it_gets_wrong": "Forget to check the operation: a retraction that carries a value is read.",
+      "fixtures_that_expose_it": [
+        "retraction_with_payload"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          47,
+          21,
+          44,
+          336,
+          62,
+          102,
+          179,
+          88,
+          94,
+          439
+        ],
+        "median": 91.0,
+        "worst": 439
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "retract",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T00:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T00:00:00Z"
+          }
+        ]
+      }
+    },
+    "window_before_resolve": {
+      "what_it_gets_wrong": "Filter versions by event-time window first, then resolve among the survivors. A correction that moves an observation out of the window is discarded and the superseded version comes back.",
+      "fixtures_that_expose_it": [
+        "retraction_known_later",
+        "revision_changes_event_time",
+        "upsert_after_retract",
+        "stale_revision_after_expiry"
+      ],
+      "discovery": {
+        "trials": 10,
+        "found_in_trials": 10,
+        "archives_until_first_exposure": [
+          47,
+          56,
+          44,
+          207,
+          106,
+          80,
+          106,
+          98,
+          48,
+          78
+        ],
+        "median": 79.0,
+        "worst": 207
+      },
+      "minimal_counterexample": {
+        "policy": "pipeline_as_known",
+        "features": [
+          {
+            "name": "lactate_last_3600",
+            "event_type": "lab.lactate",
+            "aggregation": "last",
+            "window_seconds": 3600,
+            "scope": "entity"
+          }
+        ],
+        "events": [
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v1",
+            "source_revision": 1,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v2",
+            "source_revision": 2,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_availability_provenance": "unknown"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v4",
+            "source_revision": 4,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:00:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T01:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          },
+          {
+            "entity_id": "p0",
+            "logical_event_id": "e0",
+            "version_id": "v3",
+            "source_revision": 3,
+            "operation": "upsert",
+            "event_type": "lab.lactate",
+            "event_time": "2025-03-01T00:30:00Z",
+            "value": 0.0,
+            "source": "generated",
+            "schema_version": "1",
+            "source_availability_provenance": "unknown",
+            "pipeline_available_time": "2025-03-01T01:00:00Z",
+            "pipeline_availability_provenance": "observed"
+          }
+        ],
+        "spine": [
+          {
+            "prediction_id": "q0",
+            "entity_id": "p0",
+            "prediction_time": "2025-03-01T01:00:00Z"
+          }
+        ]
+      }
+    }
+  },
+  "sql_mutations": {
+    "availability_ignored": {
+      "replaced": "AND a.valid_from_us <= c.cutoff_us AND c.cutoff_us < a.valid_to_us",
+      "with": "AND c.cutoff_us < a.valid_to_us",
+      "fixtures_that_expose_it": [
+        "delayed_result",
+        "correction_keeps_earlier_version",
+        "future_append_invariance",
+        "utc_equivalence",
+        "window_and_tie_boundaries",
+        "revision_changes_event_time",
+        "source_vs_pipeline",
+        "late_event_affects_future_only",
+        "upsert_after_retract",
+        "two_types_two_windows"
+      ]
+    },
+    "availability_strictly_before_cutoff": {
+      "replaced": "a.valid_from_us <= c.cutoff_us",
+      "with": "a.valid_from_us < c.cutoff_us",
+      "fixtures_that_expose_it": [
+        "delayed_result",
+        "correction_keeps_earlier_version",
+        "utc_equivalence",
+        "window_and_tie_boundaries",
+        "source_vs_pipeline"
+      ]
+    },
+    "inner_join_drops_empty_predictions": {
+      "replaced": "LEFT JOIN active a",
+      "with": "JOIN active a",
+      "fixtures_that_expose_it": [
+        "delayed_result",
+        "missing_features_preserve_spine",
+        "utc_equivalence",
+        "source_vs_pipeline",
+        "late_event_affects_future_only",
+        "upsert_after_retract",
+        "stale_revision_after_expiry"
+      ]
+    },
+    "join_ignores_entity": {
+      "replaced": "ON a.entity_id = c.entity_id",
+      "with": "ON TRUE",
+      "fixtures_that_expose_it": [
+        "missing_features_preserve_spine",
+        "entity_isolation"
+      ]
+    },
+    "late_lower_revision_takes_over": {
+      "replaced": "WHERE best_earlier_revision IS NULL OR source_revision > best_earlier_revision",
+      "with": "WHERE TRUE",
+      "fixtures_that_expose_it": [
+        "late_older_revision",
+        "stale_revision_after_expiry"
+      ]
+    },
+    "measurement_after_cutoff_allowed": {
+      "replaced": "AND a.event_us <= c.cutoff_us AND",
+      "with": "AND",
+      "fixtures_that_expose_it": [
+        "window_and_tie_boundaries"
+      ]
+    },
+    "retraction_rows_read": {
+      "replaced": "FROM takeovers\n    WHERE operation = 'upsert'",
+      "with": "FROM takeovers\n    WHERE TRUE",
+      "fixtures_that_expose_it": [
+        "retraction_with_payload"
+      ]
+    },
+    "superseded_version_survives_takeover_instant": {
+      "replaced": "c.cutoff_us < a.valid_to_us",
+      "with": "c.cutoff_us <= a.valid_to_us",
+      "fixtures_that_expose_it": [
+        "correction_keeps_earlier_version",
+        "retraction_known_later"
+      ]
+    },
+    "window_start_inclusive": {
+      "replaced": "a.event_us > c.cutoff_us - ",
+      "with": "a.event_us >= c.cutoff_us - ",
+      "fixtures_that_expose_it": [
+        "window_and_tie_boundaries",
+        "two_types_two_windows"
+      ]
+    }
+  }
+}
