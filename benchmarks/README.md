@@ -9,7 +9,7 @@ uv run python benchmarks/run_benchmarks.py --profile standard
 ```
 
 `smoke` takes under a minute and exists to check that the harness runs.
-`standard` took about 12 minutes on the development laptop and writes
+`standard` took about 11 minutes on the development laptop and writes
 `results/benchmarks/standard.json`, which `scripts/render_results.py` turns
 into the tables and charts in `docs/results.md`.
 

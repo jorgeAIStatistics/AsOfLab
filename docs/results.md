@@ -210,6 +210,8 @@ Source: `results/experiments/summary.json` and the run directories beside it. Ru
 
 Machine: Apple M3 Pro, 11 physical cores, 18 GiB memory, macOS-14.5-arm64-arm-64bit. Python 3.12.15, DuckDB 1.5.6, PyArrow 26.0.0.
 
+The laptop was in normal use, not isolated: its one-minute load average was 2.54 when the run started and 4.14 when it ended, on a machine with more cores than that.
+
 Method: each run in a fresh process; one unmeasured run of each configuration before the measured repetitions; 3 measured repetitions; operating-system file cache warm: inputs are written and then read by the warm-up run; timeout 900 s; policy `pipeline_as_known`; memory: resident set size summed over the worker's process tree, sampled every 20 ms; short peaks between samples can be missed.
 
 ### Workloads
@@ -218,10 +220,10 @@ Method: each run in a fresh process; one unmeasured run of each configuration be
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `uniform-10000` | 10,047 | 45 | 2.6% | 1,833 | 8 | 0.4 MB | 0.04 s | 0.01 s |
 | `uniform-100000` | 100,033 | 458 | 0.3% | 18,335 | 8 | 3.5 MB | 0.10 s | 0.05 s |
-| `uniform-1000000` | 1,000,408 | 4,583 | 0.0% | 183,351 | 8 | 29.6 MB | 0.96 s | 0.34 s |
+| `uniform-1000000` | 1,000,408 | 4,583 | 0.0% | 183,351 | 8 | 29.6 MB | 1.06 s | 0.36 s |
 | `zipf-10000` | 10,047 | 45 | 26.8% | 1,833 | 8 | 0.4 MB | 0.01 s | 0.01 s |
 | `zipf-100000` | 100,033 | 458 | 19.4% | 18,335 | 8 | 3.5 MB | 0.10 s | 0.05 s |
-| `zipf-1000000` | 1,000,408 | 4,583 | 15.9% | 183,351 | 8 | 29.2 MB | 1.03 s | 0.35 s |
+| `zipf-1000000` | 1,000,408 | 4,583 | 15.9% | 183,351 | 8 | 29.2 MB | 1.01 s | 0.35 s |
 
 ### Runs
 
@@ -229,53 +231,53 @@ Times are seconds. "End to end" is the median over repetitions with the range in
 
 | Workload | Engine | End to end | Prepare | Compute | Export | Peak memory | Equivalent output | Note |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `uniform-10000` | batch | 0.05 (0.05 to 0.06) | 0.00 | 0.03 | 0.00 | 174 MiB | yes |  |
-| `uniform-10000` | batch, no time buckets | 0.06 (0.06 to 0.06) | 0.00 | 0.03 | 0.00 | 170 MiB | yes |  |
-| `uniform-10000` | replay, 1 partition, 1 worker | 0.12 (0.12 to 0.12) | 0.03 | 0.03 | 0.01 | 134 MiB | yes |  |
-| `uniform-10000` | replay, 8 partitions, 1 worker | 0.14 (0.14 to 0.15) | 0.04 | 0.04 | 0.01 | 136 MiB | yes |  |
-| `uniform-10000` | replay, 8 partitions, 2 workers | 0.62 (0.62 to 0.71) | 0.04 | 0.52 | 0.01 | 369 MiB | yes | 0.23x vs 1 worker |
-| `uniform-10000` | replay, 8 partitions, 4 workers | 0.63 (0.63 to 0.64) | 0.04 | 0.53 | 0.01 | 585 MiB | yes | 0.22x vs 1 worker |
-| `uniform-10000` | replay, 8 partitions, 8 workers | 0.81 (0.81 to 0.81) | 0.04 | 0.71 | 0.01 | 977 MiB | yes | 0.18x vs 1 worker |
-| `uniform-10000` | oracle | 0.44 (0.44 to 0.45) | 0.12 | 0.32 | 0.00 | 122 MiB | yes |  |
-| `uniform-100000` | batch | 0.15 (0.15 to 0.15) | 0.00 | 0.12 | 0.01 | 247 MiB | yes |  |
-| `uniform-100000` | batch, no time buckets | 0.18 (0.18 to 0.18) | 0.00 | 0.15 | 0.01 | 236 MiB | yes |  |
-| `uniform-100000` | replay, 1 partition, 1 worker | 0.69 (0.68 to 0.69) | 0.11 | 0.47 | 0.06 | 235 MiB | yes |  |
-| `uniform-100000` | replay, 8 partitions, 1 worker | 0.57 (0.56 to 0.57) | 0.14 | 0.33 | 0.05 | 202 MiB | yes |  |
-| `uniform-100000` | replay, 8 partitions, 2 workers | 0.91 (0.91 to 0.91) | 0.14 | 0.67 | 0.06 | 442 MiB | yes | 0.62x vs 1 worker |
-| `uniform-100000` | replay, 8 partitions, 4 workers | 0.86 (0.85 to 0.86) | 0.14 | 0.62 | 0.06 | 678 MiB | yes | 0.66x vs 1 worker |
-| `uniform-100000` | replay, 8 partitions, 8 workers | 1.02 (1.02 to 1.03) | 0.13 | 0.78 | 0.06 | 1,117 MiB | yes | 0.56x vs 1 worker |
-| `uniform-100000` | oracle | 5.52 (5.45 to 5.64) | 1.12 | 4.38 | 0.01 | 383 MiB | yes |  |
-| `uniform-1000000` | batch | 1.18 (1.14 to 1.23) | 0.00 | 1.10 | 0.06 | 647 MiB | yes |  |
-| `uniform-1000000` | batch, no time buckets | 1.78 (1.76 to 1.80) | 0.00 | 1.70 | 0.06 | 615 MiB | yes |  |
-| `uniform-1000000` | replay, 1 partition, 1 worker | 11.21 (11.18 to 11.28) | 0.40 | 10.20 | 0.56 | 911 MiB | yes |  |
-| `uniform-1000000` | replay, 8 partitions, 1 worker | 6.23 (6.21 to 6.26) | 0.68 | 4.95 | 0.55 | 581 MiB | yes |  |
-| `uniform-1000000` | replay, 8 partitions, 2 workers | 4.37 (4.35 to 4.37) | 0.68 | 3.07 | 0.55 | 858 MiB | yes | 1.42x vs 1 worker |
-| `uniform-1000000` | replay, 8 partitions, 4 workers | 3.44 (3.41 to 3.44) | 0.70 | 2.13 | 0.56 | 1,182 MiB | yes | 1.81x vs 1 worker |
-| `uniform-1000000` | replay, 8 partitions, 8 workers | 3.42 (3.42 to 3.43) | 0.69 | 2.11 | 0.56 | 1,829 MiB | yes | 1.82x vs 1 worker |
+| `uniform-10000` | batch | 0.05 (0.05 to 0.05) | 0.00 | 0.03 | 0.00 | 171 MiB | yes |  |
+| `uniform-10000` | batch, no time buckets | 0.06 (0.06 to 0.06) | 0.00 | 0.03 | 0.00 | 174 MiB | yes |  |
+| `uniform-10000` | replay, 1 partition, 1 worker | 0.10 (0.10 to 0.11) | 0.03 | 0.03 | 0.01 | 125 MiB | yes |  |
+| `uniform-10000` | replay, 8 partitions, 1 worker | 0.12 (0.12 to 0.13) | 0.04 | 0.04 | 0.01 | 125 MiB | yes |  |
+| `uniform-10000` | replay, 8 partitions, 2 workers | 0.31 (0.31 to 0.31) | 0.04 | 0.23 | 0.01 | 317 MiB | yes | 0.40x vs 1 worker |
+| `uniform-10000` | replay, 8 partitions, 4 workers | 0.31 (0.31 to 0.33) | 0.04 | 0.23 | 0.01 | 498 MiB | yes | 0.40x vs 1 worker |
+| `uniform-10000` | replay, 8 partitions, 8 workers | 0.40 (0.39 to 0.40) | 0.04 | 0.31 | 0.01 | 871 MiB | yes | 0.31x vs 1 worker |
+| `uniform-10000` | oracle | 0.44 (0.43 to 0.44) | 0.12 | 0.32 | 0.00 | 104 MiB | yes |  |
+| `uniform-100000` | batch | 0.15 (0.15 to 0.15) | 0.00 | 0.12 | 0.01 | 241 MiB | yes |  |
+| `uniform-100000` | batch, no time buckets | 0.18 (0.18 to 0.18) | 0.00 | 0.15 | 0.01 | 248 MiB | yes |  |
+| `uniform-100000` | replay, 1 partition, 1 worker | 0.67 (0.67 to 0.67) | 0.11 | 0.47 | 0.06 | 229 MiB | yes |  |
+| `uniform-100000` | replay, 8 partitions, 1 worker | 0.55 (0.54 to 0.55) | 0.13 | 0.32 | 0.05 | 193 MiB | yes |  |
+| `uniform-100000` | replay, 8 partitions, 2 workers | 0.60 (0.60 to 0.61) | 0.13 | 0.37 | 0.06 | 402 MiB | yes | 0.91x vs 1 worker |
+| `uniform-100000` | replay, 8 partitions, 4 workers | 0.55 (0.54 to 0.56) | 0.14 | 0.31 | 0.06 | 600 MiB | yes | 1.00x vs 1 worker |
+| `uniform-100000` | replay, 8 partitions, 8 workers | 0.62 (0.61 to 0.62) | 0.14 | 0.38 | 0.06 | 989 MiB | yes | 0.89x vs 1 worker |
+| `uniform-100000` | oracle | 5.39 (5.38 to 5.48) | 1.12 | 4.27 | 0.01 | 365 MiB | yes |  |
+| `uniform-1000000` | batch | 1.17 (1.16 to 1.21) | 0.00 | 1.09 | 0.06 | 671 MiB | yes |  |
+| `uniform-1000000` | batch, no time buckets | 1.78 (1.77 to 1.80) | 0.00 | 1.70 | 0.06 | 654 MiB | yes |  |
+| `uniform-1000000` | replay, 1 partition, 1 worker | 11.06 (11.03 to 11.13) | 0.40 | 10.07 | 0.55 | 907 MiB | yes |  |
+| `uniform-1000000` | replay, 8 partitions, 1 worker | 6.24 (6.23 to 6.29) | 0.69 | 4.97 | 0.56 | 583 MiB | yes |  |
+| `uniform-1000000` | replay, 8 partitions, 2 workers | 4.11 (4.10 to 4.16) | 0.69 | 2.82 | 0.56 | 830 MiB | yes | 1.52x vs 1 worker |
+| `uniform-1000000` | replay, 8 partitions, 4 workers | 3.10 (3.09 to 3.13) | 0.68 | 1.82 | 0.56 | 1,161 MiB | yes | 2.01x vs 1 worker |
+| `uniform-1000000` | replay, 8 partitions, 8 workers | 3.00 (3.00 to 3.02) | 0.69 | 1.71 | 0.56 | 1,725 MiB | yes | 2.08x vs 1 worker |
 | `uniform-1000000` | oracle | **skipped** |  |  |  |  |  | The oracle compares every prediction with every version of its entity. It is a correctness reference and was not attempted at this size. |
-| `zipf-10000` | batch | 0.06 (0.06 to 0.06) | 0.00 | 0.03 | 0.00 | 177 MiB | yes |  |
-| `zipf-10000` | batch, no time buckets | 0.07 (0.06 to 0.07) | 0.00 | 0.04 | 0.00 | 171 MiB | yes |  |
-| `zipf-10000` | replay, 1 partition, 1 worker | 0.12 (0.12 to 0.13) | 0.03 | 0.03 | 0.01 | 138 MiB | yes |  |
-| `zipf-10000` | replay, 8 partitions, 1 worker | 0.14 (0.14 to 0.15) | 0.04 | 0.05 | 0.01 | 133 MiB | yes |  |
-| `zipf-10000` | replay, 8 partitions, 2 workers | 0.62 (0.62 to 0.63) | 0.04 | 0.52 | 0.01 | 370 MiB | yes | 0.23x vs 1 worker |
-| `zipf-10000` | replay, 8 partitions, 4 workers | 0.62 (0.62 to 0.63) | 0.04 | 0.52 | 0.01 | 587 MiB | yes | 0.23x vs 1 worker |
-| `zipf-10000` | replay, 8 partitions, 8 workers | 0.80 (0.79 to 0.81) | 0.04 | 0.70 | 0.01 | 1,001 MiB | yes | 0.18x vs 1 worker |
-| `zipf-10000` | oracle | 1.67 (1.66 to 1.70) | 0.12 | 1.55 | 0.00 | 122 MiB | yes |  |
-| `zipf-100000` | batch | 0.40 (0.39 to 0.40) | 0.00 | 0.37 | 0.01 | 730 MiB | yes |  |
-| `zipf-100000` | batch, no time buckets | 0.92 (0.87 to 0.92) | 0.00 | 0.89 | 0.01 | 727 MiB | yes |  |
-| `zipf-100000` | replay, 1 partition, 1 worker | 0.73 (0.73 to 0.73) | 0.11 | 0.51 | 0.06 | 244 MiB | yes |  |
-| `zipf-100000` | replay, 8 partitions, 1 worker | 0.60 (0.60 to 0.61) | 0.14 | 0.36 | 0.06 | 202 MiB | yes |  |
-| `zipf-100000` | replay, 8 partitions, 2 workers | 0.93 (0.92 to 0.93) | 0.14 | 0.68 | 0.06 | 449 MiB | yes | 0.65x vs 1 worker |
-| `zipf-100000` | replay, 8 partitions, 4 workers | 0.86 (0.86 to 0.87) | 0.14 | 0.61 | 0.06 | 681 MiB | yes | 0.70x vs 1 worker |
-| `zipf-100000` | replay, 8 partitions, 8 workers | 1.04 (1.04 to 1.05) | 0.14 | 0.79 | 0.06 | 1,128 MiB | yes | 0.58x vs 1 worker |
+| `zipf-10000` | batch | 0.06 (0.06 to 0.06) | 0.00 | 0.03 | 0.00 | 174 MiB | yes |  |
+| `zipf-10000` | batch, no time buckets | 0.07 (0.07 to 0.07) | 0.00 | 0.04 | 0.00 | 174 MiB | yes |  |
+| `zipf-10000` | replay, 1 partition, 1 worker | 0.11 (0.11 to 0.11) | 0.03 | 0.04 | 0.01 | 125 MiB | yes |  |
+| `zipf-10000` | replay, 8 partitions, 1 worker | 0.13 (0.13 to 0.13) | 0.04 | 0.05 | 0.01 | 126 MiB | yes |  |
+| `zipf-10000` | replay, 8 partitions, 2 workers | 0.31 (0.31 to 0.31) | 0.04 | 0.23 | 0.01 | 319 MiB | yes | 0.43x vs 1 worker |
+| `zipf-10000` | replay, 8 partitions, 4 workers | 0.31 (0.31 to 0.32) | 0.04 | 0.23 | 0.01 | 497 MiB | yes | 0.42x vs 1 worker |
+| `zipf-10000` | replay, 8 partitions, 8 workers | 0.40 (0.40 to 0.40) | 0.04 | 0.32 | 0.01 | 848 MiB | yes | 0.33x vs 1 worker |
+| `zipf-10000` | oracle | 1.68 (1.67 to 1.69) | 0.12 | 1.56 | 0.00 | 103 MiB | yes |  |
+| `zipf-100000` | batch | 0.40 (0.40 to 0.40) | 0.00 | 0.37 | 0.01 | 735 MiB | yes |  |
+| `zipf-100000` | batch, no time buckets | 0.92 (0.88 to 0.92) | 0.00 | 0.89 | 0.01 | 727 MiB | yes |  |
+| `zipf-100000` | replay, 1 partition, 1 worker | 0.71 (0.70 to 0.71) | 0.11 | 0.51 | 0.06 | 235 MiB | yes |  |
+| `zipf-100000` | replay, 8 partitions, 1 worker | 0.59 (0.58 to 0.59) | 0.14 | 0.36 | 0.06 | 197 MiB | yes |  |
+| `zipf-100000` | replay, 8 partitions, 2 workers | 0.63 (0.63 to 0.63) | 0.14 | 0.39 | 0.07 | 408 MiB | yes | 0.94x vs 1 worker |
+| `zipf-100000` | replay, 8 partitions, 4 workers | 0.56 (0.56 to 0.56) | 0.13 | 0.32 | 0.07 | 602 MiB | yes | 1.06x vs 1 worker |
+| `zipf-100000` | replay, 8 partitions, 8 workers | 0.63 (0.63 to 0.64) | 0.13 | 0.40 | 0.07 | 989 MiB | yes | 0.93x vs 1 worker |
 | `zipf-100000` | oracle | **skipped** |  |  |  |  |  | The oracle compares every prediction with every version of its entity. It is a correctness reference and was not attempted at this size. |
-| `zipf-1000000` | batch | 17.84 (17.74 to 18.25) | 0.00 | 17.75 | 0.07 | 5,421 MiB | yes |  |
-| `zipf-1000000` | batch, no time buckets | 51.75 (51.72 to 51.83) | 0.00 | 51.65 | 0.07 | 5,662 MiB | yes |  |
-| `zipf-1000000` | replay, 1 partition, 1 worker | 12.45 (12.33 to 12.48) | 0.40 | 11.34 | 0.65 | 903 MiB | yes |  |
-| `zipf-1000000` | replay, 8 partitions, 1 worker | 7.80 (7.79 to 7.81) | 0.68 | 6.43 | 0.64 | 607 MiB | yes |  |
-| `zipf-1000000` | replay, 8 partitions, 2 workers | 5.20 (5.16 to 5.31) | 0.68 | 3.83 | 0.64 | 865 MiB | yes | 1.50x vs 1 worker |
-| `zipf-1000000` | replay, 8 partitions, 4 workers | 4.10 (4.10 to 4.21) | 0.68 | 2.74 | 0.64 | 1,207 MiB | yes | 1.90x vs 1 worker |
-| `zipf-1000000` | replay, 8 partitions, 8 workers | 4.44 (4.43 to 4.47) | 0.69 | 3.06 | 0.64 | 1,789 MiB | yes | 1.76x vs 1 worker |
+| `zipf-1000000` | batch | 17.59 (17.57 to 17.65) | 0.00 | 17.49 | 0.07 | 5,922 MiB | yes |  |
+| `zipf-1000000` | batch, no time buckets | 51.52 (49.75 to 51.62) | 0.00 | 51.43 | 0.07 | 5,908 MiB | yes |  |
+| `zipf-1000000` | replay, 1 partition, 1 worker | 12.43 (12.43 to 12.55) | 0.40 | 11.35 | 0.64 | 893 MiB | yes |  |
+| `zipf-1000000` | replay, 8 partitions, 1 worker | 7.69 (7.69 to 7.72) | 0.67 | 6.36 | 0.64 | 594 MiB | yes |  |
+| `zipf-1000000` | replay, 8 partitions, 2 workers | 4.90 (4.89 to 4.91) | 0.68 | 3.55 | 0.64 | 833 MiB | yes | 1.57x vs 1 worker |
+| `zipf-1000000` | replay, 8 partitions, 4 workers | 3.76 (3.75 to 3.77) | 0.68 | 2.42 | 0.64 | 1,156 MiB | yes | 2.04x vs 1 worker |
+| `zipf-1000000` | replay, 8 partitions, 8 workers | 4.01 (3.99 to 4.04) | 0.67 | 2.65 | 0.64 | 1,666 MiB | yes | 1.92x vs 1 worker |
 | `zipf-1000000` | oracle | **skipped** |  |  |  |  |  | The oracle compares every prediction with every version of its entity. It is a correctness reference and was not attempted at this size. |
 
 ![End-to-end seconds by workload size, uniform activity. Synthetic workload, one machine.](img/bench_runtime_uniform.svg)
@@ -289,12 +291,13 @@ Times are seconds. "End to end" is the median over repetitions with the range in
 Notes from the harness:
 
 - Single machine, synthetic data, local files. Not a measurement of any distributed system.
+- The machine was a laptop with other desktop applications running. settings records the system load average at the start and end of the run.
 - The oracle is a correctness reference written for clarity, not speed. Its times are shown for scale only.
 - end_to_end excludes interpreter start-up; wall_seconds_with_startup includes it.
 - Speedups are reported only where the outputs were equivalent to the batch backend's.
 - Replay prepare (sorting and compaction) is paid once per prepared log. amortised_seconds_per_replay states the number of replays it is spread over.
 
-Source: `results/benchmarks/standard.json`. Generated 2026-10-13T05:56:31+00:00 at commit `84718bf24888` by `uv run python benchmarks/run_benchmarks.py --profile standard`.
+Source: `results/benchmarks/standard.json`. Generated 2026-10-13T06:33:13+00:00 at commit `1624483283b9` by `uv run python benchmarks/run_benchmarks.py --profile standard`.
 
 ## 4. Demonstration run
 

@@ -14,21 +14,23 @@ Rules this ledger follows:
   3.12.15. Each result file records its own environment.
 - All data are synthetic. No row here is a statement about real patients, a
   real hospital, a production system, or a distributed system.
-- Commits `d9f7497`, `20b67ce` and `84718bf` differ only in files that do not
-  affect any computation (a results-rendering script and a benchmark profile
-  setting). Each result file records the commit it was produced at and that the
-  code was unmodified.
+- Result files were produced at commits `d9f7497`, `20b67ce` and `1624483`. The
+  changes between them do not alter what any engine or analysis computes: a
+  results-rendering script, a benchmark profile setting, the inspection UI, three
+  tidied tests, one import moved in the replay runner, and the load average
+  being recorded with benchmark results. Each result file records the commit it
+  was produced at and that the code was unmodified.
 
 ## Validation
 
 | Id | Claim | Evidence | Command | Commit | Scope |
 | --- | --- | --- | --- | --- | --- |
 | V1 | 22 handwritten fixtures | Files in `src/asoflab/fixtures/cases/` | `uv run asoflab fixtures list` | any | 20 with hand-calculated answers, 2 that must be refused |
-| V2 | All three engines match every fixture | Test output | `uv run asoflab fixtures check` | `84718bf` | Local |
-| V3 | 382 tests pass | Test output | `uv run pytest -q` | `84718bf` | Local run. Remote CI is reported separately in `progress.md` |
+| V2 | All three engines match every fixture (153 checks) | Test output | `uv run asoflab fixtures check` | `1624483` | Local |
+| V3 | 382 tests pass | Test output | `uv run pytest -q` | `e0a0e17` | Local run. Remote CI is reported separately in `progress.md` |
 | V4 | 15 seeded wrong implementations, each contradicted by a fixture | `results/validation/seeded_bugs.json`, `python_bugs.*.fixtures_that_expose_it` | `uv run python scripts/seeded_bug_report.py --trials 10` | `20b67ce` | The mistakes that were thought of |
 | V5 | 11 one-line SQL mutations, each exposed by a fixture | same file, `sql_mutations` | same | `20b67ce` | Batch backend, as-known policies |
-| V6 | 3 seeded replay-state bugs are exposed | `tests/unit/test_seeded_replay_bugs.py` | `uv run pytest -q tests/unit/test_seeded_replay_bugs.py` | `84718bf` | Test only; no result file |
+| V6 | 3 seeded replay-state bugs are exposed | `tests/unit/test_seeded_replay_bugs.py` | `uv run pytest -q tests/unit/test_seeded_replay_bugs.py` | `e0a0e17` | Test only; no result file |
 | V7 | Every seeded bug found in 10 of 10 random trials; slowest needed 673 archives | same file, `python_bugs.*.discovery` | as V4 | `20b67ce` | Generator in `tests/strategies.py`, budget 4,000 archives per trial, seeds 0 to 9 |
 | V8 | 9 of 9 crash cases recovered | `results/validation/recovery.json`, `cases`, `all_recovered` | `uv run python scripts/recovery_report.py` | `20b67ce` | Process killed with `os._exit`; one local SQLite file per partition; not power loss |
 
@@ -51,12 +53,12 @@ Rules this ledger follows:
 
 | Id | Claim | Evidence | Command | Commit | Scope |
 | --- | --- | --- | --- | --- | --- |
-| P1 | One million event versions, even activity: batch 1.18 s, replay with one worker 11.21 s, replay with 8 partitions and 4 workers 3.44 s | `results/benchmarks/standard.json`, `runs[*].median_end_to_end_seconds` for `uniform-1000000` | `uv run python benchmarks/run_benchmarks.py --profile standard` | `84718bf` | One laptop; median of 3 runs after a warm-up; fresh process each; warm file cache; excludes interpreter start-up |
-| P2 | Same size, skewed (largest entity 15.9% of versions): 17.84 s, 12.45 s, 4.10 s | same file, `zipf-1000000` | as P1 | `84718bf` | as P1 |
-| P3 | Without the time-bucket join key the skewed case took 51.75 s | same file, `variant: no_time_buckets` | as P1 | `84718bf` | as P1 |
-| P4 | Peak memory on the skewed case: batch 5.3 GiB, single-worker replay 0.9 GiB | same file, `median_peak_rss_bytes` | as P1 | `84718bf` | Process-tree resident memory sampled every 20 ms |
-| P5 | At 100,000 events, four workers took 0.86 s against 0.57 s for one | same file, `uniform-100000`, replay with 8 partitions | as P1 | `84718bf` | as P1 |
-| P6 | All 45 measured configurations gave output equivalent to the batch backend's; 3 oracle runs were skipped | same file, `runs[*].equivalent_to_reference`, `status` | as P1 | `84718bf` | Equivalence as defined in the temporal contract, section 7 |
+| P1 | One million event versions, even activity: batch 1.17 s, replay with one worker 11.06 s, replay with 8 partitions and 4 workers 3.10 s | `results/benchmarks/standard.json`, `runs[*].median_end_to_end_seconds` for `uniform-1000000` | `uv run python benchmarks/run_benchmarks.py --profile standard` | `1624483` | One laptop in normal use (load average recorded in the file); median of 3 runs after a warm-up; fresh process each; warm file cache; excludes interpreter start-up |
+| P2 | Same size, skewed (largest entity 15.9% of versions): 17.59 s, 12.43 s, 3.76 s | same file, `zipf-1000000` | as P1 | `1624483` | as P1 |
+| P3 | Without the time-bucket join key the skewed case took 51.52 s | same file, `variant: no_time_buckets` | as P1 | `1624483` | as P1 |
+| P4 | Peak memory on the skewed case: batch 5.8 GiB, single-worker replay 0.9 GiB | same file, `median_peak_rss_bytes` | as P1 | `1624483` | Process-tree resident memory sampled every 20 ms |
+| P5 | At 100,000 events four workers took 0.55 s, the same as one; at 10,000 events 0.31 s against 0.12 s | same file, `uniform-100000` and `uniform-10000`, replay with 8 partitions | as P1 | `1624483` | as P1 |
+| P6 | All 45 measured configurations gave output equivalent to the batch backend's; 3 oracle runs were skipped | same file, `runs[*].equivalent_to_reference`, `status` | as P1 | `1624483` | Equivalence as defined in the temporal contract, section 7 |
 
 ## Feast comparison
 

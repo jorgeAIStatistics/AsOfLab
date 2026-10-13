@@ -139,23 +139,24 @@ parameters. A real system could show more, less, or the opposite.
 
 ## Measured trade-offs
 
-On one laptop, with a million synthetic event versions and 183,351 predictions:
+On one laptop in normal use, with a million synthetic event versions and
+183,351 predictions:
 
 | Activity per entity | Batch | Replay, 1 worker | Replay, 8 partitions, 4 workers |
 | --- | --- | --- | --- |
-| Even | 1.18 s | 11.21 s | 3.44 s |
-| One entity holds 16% | 17.84 s | 12.45 s | 4.10 s |
+| Even | 1.17 s | 11.06 s | 3.10 s |
+| One entity holds 16% | 17.59 s | 12.43 s | 3.76 s |
 
 All runs gave equivalent output; speed is only compared between runs that do.
 Batch wins when activity is even. Under heavy skew it must aggregate every
 in-window observation for each prediction of the large entity, and it peaked at
-5.3 GiB of memory against 0.9 GiB for single-worker replay. Replay answers
+5.8 GiB of memory against 0.9 GiB for single-worker replay. Replay answers
 counts and last values with a binary search and is faster there.
 
 The batch join was first keyed on entity alone, which is quadratic within an
-entity. Adding a time-bucket key cut the skewed case from 51.75 s to 17.84 s.
+entity. Adding a time-bucket key cut the skewed case from 51.52 s to 17.59 s.
 Parallel replay did not help below a million events: at a hundred thousand,
-four workers took 0.86 s against 0.57 s for one.
+four workers took 0.55 s, the same as one, and at ten thousand they were slower.
 
 ## Limits
 

@@ -155,22 +155,23 @@ until a new one was written.
 
 ## Measured performance
 
-One Apple M3 Pro laptop, synthetic workloads, median of three runs each in a
-fresh process. Every measured configuration gave output equivalent to the batch
+One Apple M3 Pro laptop in normal use, synthetic workloads, median of three runs
+each in a fresh process. Every measured configuration gave output equivalent to the batch
 backend's. Method, all 48 rows (45 measured, 3 skipped) and the charts:
 [docs/results.md](docs/results.md#3-performance).
 
 | One million event versions, 183,351 predictions | Batch | Replay, 1 worker | Replay, 8 partitions, 4 workers |
 | --- | --- | --- | --- |
-| Even activity per entity | 1.18 s | 11.21 s | 3.44 s |
-| Skewed: one entity holds 16% of the events | 17.84 s | 12.45 s | 4.10 s |
+| Even activity per entity | 1.17 s | 11.06 s | 3.10 s |
+| Skewed: one entity holds 16% of the events | 17.59 s | 12.43 s | 3.76 s |
 
 Neither engine wins everywhere. Batch is fastest when activity is spread
 evenly. When one entity has a very large share, batch has to aggregate every
 in-window observation for each of that entity's predictions, and the replay
 engine, which answers counts and last values with a binary search, is faster.
-At ten thousand and at a hundred thousand events, parallel replay was slower
-than a single worker, because starting processes cost more than it saved.
+Parallelism only pays at scale: at a hundred thousand events four workers were
+no faster than one (0.55 s each), and at ten thousand they were slower (0.31 s
+against 0.12 s), because starting worker processes has a fixed cost.
 
 These are measurements of a single-machine simulator. They say nothing about
 any distributed system.

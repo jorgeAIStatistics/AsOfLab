@@ -24,20 +24,30 @@ All local, on the development machine.
 
 | Command | Result | Code commit |
 | --- | --- | --- |
-| `uv run pytest -q` | 382 passed in about 4 minutes | `84718bf` |
-| `uv run ruff check src tests benchmarks scripts`, `ruff format --check`, `uv run mypy` | Clean | `84718bf` |
-| `uv run asoflab fixtures check` | 153 of 153 checks match the hand calculations | `84718bf` |
+| `uv run pytest -q` | 382 passed in about 4 minutes | `e0a0e17` |
+| `uv run ruff check src tests benchmarks scripts`, `ruff format --check`, `uv run mypy` | Clean | `1624483` |
+| `uv run asoflab fixtures check` | 153 of 153 checks match the hand calculations | `1624483` |
+| `cd web && npm ci && npm run build && npm test` | Build clean, 49 tests passed | `e0a0e17` |
 | `uv run python scripts/seeded_bug_report.py --trials 10` | Every seeded bug found in 10 of 10 trials | `20b67ce` |
 | `uv run python scripts/recovery_report.py` | 9 of 9 crash cases recovered | `20b67ce` |
 | `uv run asoflab experiment matrix --out results/experiments --workers 4` | 35 runs in 613 s | `d9f7497`, `20b67ce` |
 | `uv run asoflab demo --out results/demo` | Reference demo run written | `20b67ce` |
-| `uv run python benchmarks/run_benchmarks.py --profile standard` | 45 measured runs, all equivalent; 3 skipped | `84718bf` |
+| `uv run python benchmarks/run_benchmarks.py --profile standard` | 45 measured runs, all equivalent; 3 skipped. Run twice; the second is reported (see below) | `1624483` |
 | `uv run python integrations/feast/run_comparison.py` | Agreement inside shared semantics with the DuckDB store | `20b67ce` |
 | `uv run python scripts/render_results.py` | `docs/results.md` and 9 charts | working tree |
 
 Every result file records the commit it was produced at and that the code
-paths were unmodified. The three commits above differ only in a
-results-rendering script and one benchmark profile setting.
+paths were unmodified. Nothing that changed between those commits alters what
+an engine or analysis computes; `claims-ledger.md` lists the changes.
+
+**The benchmark was run twice.** The first run (commit `84718bf`) overlapped
+with the UI being built and tested on the same machine. It was repeated at
+commit `1624483` with no other project work running. Single-process timings
+moved by about 2%. Multi-worker replay timings were up to 51% lower in the
+second run, because starting worker processes had been slowed by the other
+work. Only the second run is in `results/`. The laptop still had other desktop
+applications open; the result file records the system load average at the
+start and end of the run.
 
 ## Remote CI
 
@@ -116,8 +126,41 @@ Gate: every displayed claim traces to a saved output
   `requirements.lock` on a clean ubuntu runner and ran `asoflab demo`
   successfully (run 38351486559).
 - The UI was built by a delegated agent to a written brief and then reviewed.
-  See the handoff notes at the end of this file for what was and was not
-  verified by hand.
+  "Inspection UI: what was verified" below says who checked what.
+
+### Inspection UI: what was verified
+
+Checked directly, in a browser against the real demo run:
+
+- All four views load and show numbers that come from the run's files.
+- Switching the time policy re-queries the oracle and changes the statuses.
+- The prediction cutoff moves with the arrow keys, and a cutoff between
+  prediction times is handled.
+- The engineering view renders the real benchmark, recovery and seeded-bug
+  files.
+- No console errors; no horizontal page scroll at 1024 px; light and dark.
+- From the lock file, in a clean copy: `npm ci`, `npm run build`
+  (`tsc --noEmit` and `vite build`), and `npm test` (49 tests).
+
+Reported by the agent that built it, and not repeated by hand:
+
+- Dragging the cutoff sends no request while moving and one after a pause.
+- Touch dragging at 375 px; no horizontal scroll at 375, 768, 1280 and 1680 px.
+- The states for no runs, a run without patient data, an unknown run or
+  patient, and an unreachable API.
+
+Not verified by anyone:
+
+- Safari, Firefox, or a screen reader. The CSS uses `:has()` and `color-mix()`.
+- The "not estimable" display on real data: every interval in the saved runs is
+  estimable, so only the formatter's unit tests cover it.
+- Failed and timed-out benchmark rows, except with a hand-made file.
+
+Choices the API shape forced, worth knowing when reading the timeline:
+
+- The naive policy consults no clock, so its markers show pipeline
+  availability, labelled as such.
+- A retraction has no event time of its own and is drawn at its observation's.
 
 ## Milestone 5: optional interoperability
 
