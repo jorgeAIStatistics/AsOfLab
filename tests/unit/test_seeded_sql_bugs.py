@@ -47,14 +47,24 @@ SQL_MUTATIONS: dict[str, tuple[str, str, str]] = {
         "retraction_with_payload",
     ),
     "inner_join_drops_empty_predictions": (
-        "LEFT JOIN active a",
-        "JOIN active a",
+        "LEFT JOIN bucketed a",
+        "JOIN bucketed a",
         "missing_features_preserve_spine",
     ),
     "join_ignores_entity": (
         "ON a.entity_id = c.entity_id",
         "ON TRUE",
         "entity_isolation",
+    ),
+    "previous_time_bucket_not_searched": (
+        "CROSS JOIN (VALUES (0), (1)) AS back(steps)",
+        "CROSS JOIN (VALUES (0)) AS back(steps)",
+        "late_event_affects_future_only",
+    ),
+    "join_ignores_event_type": (
+        "AND a.event_type = c.event_type\n AND a.bucket = c.bucket",
+        "AND a.bucket = c.bucket",
+        "two_types_same_window",
     ),
     "availability_ignored": (
         "AND a.valid_from_us <= c.cutoff_us AND c.cutoff_us < a.valid_to_us",

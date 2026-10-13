@@ -52,13 +52,19 @@ def compute_features(
     *,
     threads: int | None = None,
     memory_limit: str | None = None,
+    time_buckets: bool = True,
 ) -> pa.Table:
-    """Features for every spine row, as a wide table sorted by prediction_id."""
+    """Features for every spine row, as a wide table sorted by prediction_id.
+
+    `time_buckets=False` runs the same query without the time-bucket join key. It
+    gives the same answer more slowly and exists so the effect of that
+    optimisation can be measured.
+    """
     return run_query(
         events,
         spine,
         config,
-        build_query(config, policy),
+        build_query(config, policy, time_buckets=time_buckets),
         threads=threads,
         memory_limit=memory_limit,
     )
@@ -81,13 +87,34 @@ def run_query(
     return result.cast(feature_schema(config))
 
 
-def build_query(config: FeatureConfig, policy: TimePolicy) -> str:
-    """The complete SQL for one feature set under one policy."""
+def build_query(config: FeatureConfig, policy: TimePolicy, *, time_buckets: bool = True) -> str:
+    """The complete SQL for one feature set under one policy.
+
+    The join between predictions and in-force versions is on (entity, event
+    type, time bucket). A bucket is as wide as the longest lookback window for
+    that event type, so an observation inside the window (T - W, T] can only be
+    in the cutoff's own bucket or the one before it. Each prediction is therefore
+    paired with two buckets per event type instead of with the entity's whole
+    history, which would make the join quadratic in the size of an entity.
+    Measurements with and without the buckets are in results/benchmarks/.
+
+    What remains is the aggregation: every in-force observation inside a window
+    is visited once per prediction that reads it.
+    """
     types = ", ".join(_literal(event_type) for event_type in config.event_types())
-    longest_us = (
-        max(feature.window_seconds for feature in config.features) * MICROSECONDS_PER_SECOND
+    windows = ", ".join(
+        f"({_literal(event_type)}, {seconds * MICROSECONDS_PER_SECOND})"
+        for event_type, seconds in sorted(config.max_window_seconds().items())
     )
     columns = ",\n       ".join(_feature_sql(feature) for feature in config.features)
+    # Without buckets every version and every cutoff is in bucket 0, so the key no longer narrows.
+    event_bucket = _floor_div("a.event_us", "w.window_us") if time_buckets else "0"
+    cutoff_bucket = (
+        _floor_div("epoch_us(s.prediction_time)", "w.window_us") + " - back.steps"
+        if time_buckets
+        else "0"
+    )
+    steps = "(VALUES (0), (1))" if time_buckets else "(VALUES (0))"
     return f"""
 WITH versions AS (
     SELECT entity_id, logical_event_id, source_revision, operation, event_type,
@@ -97,21 +124,38 @@ WITH versions AS (
     WHERE event_type IN ({types})
 ),
 {_active_sql(policy)},
+longest(event_type, window_us) AS (VALUES {windows}),
+bucketed AS (
+    SELECT a.*, {event_bucket} AS bucket
+    FROM active a
+    JOIN longest w USING (event_type)
+),
 cutoffs AS (
-    SELECT prediction_id, entity_id, encounter_id, prediction_time,
-           epoch_us(prediction_time) AS cutoff_us
-    FROM spine
+    -- One row per prediction, event type, and candidate bucket (its own and the one before).
+    SELECT s.prediction_id, s.entity_id, s.encounter_id, s.prediction_time,
+           epoch_us(s.prediction_time) AS cutoff_us, w.event_type, w.window_us,
+           {cutoff_bucket} AS bucket
+    FROM spine s
+    CROSS JOIN longest w
+    CROSS JOIN {steps} AS back(steps)
 )
 SELECT c.prediction_id, c.entity_id, c.encounter_id, c.prediction_time,
        {columns}
 FROM cutoffs c
-LEFT JOIN active a
+LEFT JOIN bucketed a
   ON a.entity_id = c.entity_id
+ AND a.event_type = c.event_type
+ AND a.bucket = c.bucket
  AND a.valid_from_us <= c.cutoff_us AND c.cutoff_us < a.valid_to_us
- AND a.event_us <= c.cutoff_us AND a.event_us > c.cutoff_us - {longest_us}
+ AND a.event_us <= c.cutoff_us AND a.event_us > c.cutoff_us - c.window_us
 GROUP BY c.prediction_id, c.entity_id, c.encounter_id, c.prediction_time, c.cutoff_us
 ORDER BY c.prediction_id
 """
+
+
+def _floor_div(dividend: str, divisor: str) -> str:
+    """Integer floor division in SQL for a positive divisor, correct for negative dividends too."""
+    return f"(({dividend}) - ((({dividend}) % ({divisor})) + ({divisor})) % ({divisor})) // ({divisor})"
 
 
 def contributions_query(config: FeatureConfig, policy: TimePolicy) -> str:

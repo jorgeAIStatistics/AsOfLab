@@ -1,0 +1,9 @@
+AsOfLab
+Copyright 2026 Jorge Rodriguez
+
+Licensed under the Apache License, Version 2.0.
+
+This project was inspired by Stefan Vercillo's article "Parallelizing High-Lag
+Backfills with Flink" (https://stefanvercillo.com/blog/archive-replay). No code
+from that article is used here, and nothing in this project is endorsed by, or
+written in collaboration with, its author.

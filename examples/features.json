@@ -1,0 +1,8 @@
+{
+  "feature_set_version": "example-1",
+  "features": [
+    {"name": "lactate_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"},
+    {"name": "lactate_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lactate_hours_since_last", "event_type": "lab.lactate", "aggregation": "time_since_last", "window": "6h"}
+  ]
+}

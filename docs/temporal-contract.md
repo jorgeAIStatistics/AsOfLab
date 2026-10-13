@@ -254,9 +254,12 @@ cutoff, for a completed study):
 | Status | Condition | Label |
 | --- | --- | --- |
 | `positive` | An event in `(T, T + H]` with `ascertainment_time ≤ C` | 1 |
-| `negative` | No such event, follow-up covers the horizon (`follow_up_end ≥ T + H`), and `C ≥ T + H + L` | 0 |
-| `pending_ascertainment` | No known event, follow-up covers the horizon, but `C < T + H + L` | unknown |
-| `unknown_follow_up` | No known event and follow-up ends before `T + H`, or there is no follow-up record | unknown |
+| `pending_horizon` | No such event known, and `C < T + H`: the horizon has not elapsed | unknown |
+| `unknown_follow_up` | No such event known, and follow-up ends before `T + H` or there is no follow-up record | unknown |
+| `pending_ascertainment` | Horizon elapsed and follow-up covers it, but `C < T + H + L` | unknown |
+| `negative` | None of the above | 0 |
+
+The conditions are tested in that order.
 
 `L` is the declared maximum outcome ascertainment lag. It is an assumption that
 the analyst states. In the synthetic data it holds by construction.

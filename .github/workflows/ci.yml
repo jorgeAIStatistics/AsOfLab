@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python ${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.12", "3.13", "3.14"]
+        include:
+          - os: macos-latest
+            python: "3.12"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+      - name: Install the locked environment
+        run: uv sync --all-extras --frozen --python ${{ matrix.python }}
+      - name: Lint and format check
+        run: |
+          uv run ruff check src tests benchmarks scripts
+          uv run ruff format --check src tests benchmarks scripts
+      - name: Type check
+        run: uv run mypy
+      - name: Tests
+        run: uv run pytest -q
+      - name: Small demo reproduces the committed reference
+        run: uv run asoflab demo --out runs/demo --reference results/demo
+      - name: Benchmark harness runs (smoke profile, timings not asserted)
+        run: uv run python benchmarks/run_benchmarks.py --profile smoke --out /tmp/bench-smoke.json
+
+  pip-fallback:
+    name: Install without uv (pip and requirements.lock)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: make setup
+      - run: .venv/bin/python -m pytest -q tests/unit
+      - run: .venv/bin/asoflab demo --out runs/demo --reference results/demo
+
+  web:
+    name: Inspection UI
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm test --if-present

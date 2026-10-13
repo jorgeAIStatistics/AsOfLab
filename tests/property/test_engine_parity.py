@@ -67,3 +67,17 @@ def test_oracle_batch_and_replay_agree(archive: Archive, policy: TimePolicy) -> 
 @given(archive=archives(max_logical_events=12, max_predictions=12), policy=policies)
 def test_engines_agree_on_larger_archives(archive: Archive, policy: TimePolicy) -> None:
     assert_engines_agree(archive, policy, "engines_agree_larger")
+
+
+@given(archive=archives(max_logical_events=10, max_predictions=10), policy=policies)
+def test_time_bucket_join_gives_the_same_answer_as_the_plain_join(
+    archive: Archive, policy: TimePolicy
+) -> None:
+    """The bucketed join is an optimisation. It must be invisible in the output."""
+    from asoflab.batch import compute_features
+    from asoflab.schema.tables import events_to_table, spine_to_table
+
+    events, spine = events_to_table(archive.events), spine_to_table(archive.spine)
+    bucketed = compute_features(events, spine, archive.config, policy)
+    plain = compute_features(events, spine, archive.config, policy, time_buckets=False)
+    assert bucketed.equals(plain)

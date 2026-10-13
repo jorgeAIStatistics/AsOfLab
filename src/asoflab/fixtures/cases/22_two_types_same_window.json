@@ -1,0 +1,34 @@
+{
+  "name": "two_types_same_window",
+  "title": "Two event types with the same window stay separate",
+  "invariant": "Each feature reads only its own event type and its own window.",
+  "narrative": "Heart rate and lactate both use a 6 h window. Two heart rates (80 and 90) and one lactate (2.0) are known by 09:00. The heart-rate count is 2 and its mean 85; the lactate count is 1. An implementation that matches observations to predictions by time alone, without the event type, pairs each observation with both features' windows and counts it twice. This case was added after a one-line mutation of the batch SQL survived every other fixture.",
+  "day": "2025-03-01",
+  "defaults": {
+    "entity_id": "p1", "operation": "upsert", "source_revision": 1, "version_id": "v1",
+    "source": "ehr", "schema_version": "1",
+    "source_availability_provenance": "observed", "pipeline_availability_provenance": "observed"
+  },
+  "features": [
+    {"name": "hr_count_6h", "event_type": "vital.heart_rate", "aggregation": "count", "window": "6h"},
+    {"name": "hr_mean_6h", "event_type": "vital.heart_rate", "aggregation": "mean", "window": "6h"},
+    {"name": "lac_count_6h", "event_type": "lab.lactate", "aggregation": "count", "window": "6h"},
+    {"name": "lac_last_6h", "event_type": "lab.lactate", "aggregation": "last", "window": "6h"}
+  ],
+  "events": [
+    {"logical_event_id": "hr1", "event_type": "vital.heart_rate", "unit": "bpm", "event_time": "08:00", "value": 80.0, "available": "08:01"},
+    {"logical_event_id": "hr2", "event_type": "vital.heart_rate", "unit": "bpm", "event_time": "08:30", "value": 90.0, "available": "08:31"},
+    {"logical_event_id": "lac1", "event_type": "lab.lactate", "unit": "mmol/L", "event_time": "08:15", "value": 2.0, "available": "08:45"}
+  ],
+  "spine": [
+    {"prediction_id": "A", "entity_id": "p1", "prediction_time": "09:00"}
+  ],
+  "expected": {
+    "pipeline_as_known": {
+      "A": {"hr_count_6h": 2, "hr_mean_6h": 85.0, "lac_count_6h": 1, "lac_last_6h": 2.0}
+    },
+    "naive_event_time": {
+      "A": {"hr_count_6h": 2, "hr_mean_6h": 85.0, "lac_count_6h": 1, "lac_last_6h": 2.0}
+    }
+  }
+}

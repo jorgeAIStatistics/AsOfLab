@@ -26,6 +26,10 @@ app = typer.Typer(
 )
 fixtures_app = typer.Typer(no_args_is_help=True, help="The handwritten fixture corpus.")
 app.add_typer(fixtures_app, name="fixtures")
+experiment_app = typer.Typer(
+    no_args_is_help=True, help="The statistical demonstration on simulated cohorts."
+)
+app.add_typer(experiment_app, name="experiment")
 replay_app = typer.Typer(
     no_args_is_help=True, help="Incremental replay: a local, single-machine stream simulator."
 )
@@ -303,6 +307,258 @@ def fixtures_check(
     typer.echo(f"{len(results) - len(failures)} of {len(results)} checks passed.")
     if failures:
         raise typer.Exit(code=1)
+
+
+@app.command()
+def simulate(
+    out: Annotated[Path, typer.Option("--out", help="Directory for the simulated tables.")],
+    scenario: Annotated[
+        str, typer.Option("--scenario", help="Scenario name. See 'experiment scenarios'.")
+    ] = "combined",
+    seed: Annotated[int, typer.Option("--seed")] = 20261,
+    patients: Annotated[int, typer.Option("--patients")] = 600,
+) -> None:
+    """Generate one synthetic cohort (events, spine, outcomes, follow-up) as Parquet files."""
+    from asoflab.evaluation.protocol import simulation_config
+    from asoflab.simulation.clinical import simulate as run_simulation
+
+    if out.exists() and any(out.iterdir()):
+        typer.secho(
+            f"{out} is not empty. Runs are never overwritten.", fg=typer.colors.RED, err=True
+        )
+        raise typer.Exit(code=2)
+    cohort = run_simulation(simulation_config(scenario, seed, patients))
+    cohort.write(out)
+    typer.secho("SYNTHETIC DATA", fg=typer.colors.YELLOW, bold=True)
+    typer.echo(
+        format_table(
+            ["table", "rows", "content hash"],
+            [
+                [name, getattr(cohort, name).num_rows, digest[:16]]
+                for name, digest in cohort.hashes().items()
+            ],
+        )
+    )
+
+
+@experiment_app.command("scenarios")
+def experiment_scenarios() -> None:
+    """List the prespecified scenarios and seeds."""
+    from asoflab.evaluation.protocol import FULL_PATIENTS, PRESPECIFIED_SEEDS
+    from asoflab.simulation.clinical import SCENARIOS
+
+    typer.echo(
+        format_table(
+            ["scenario", "what is switched on"],
+            [[s.name, s.description] for s in SCENARIOS.values()],
+        )
+    )
+    typer.echo(
+        f"\nPrespecified seeds: {', '.join(map(str, PRESPECIFIED_SEEDS))}. Full runs use {FULL_PATIENTS} patients."
+    )
+
+
+@experiment_app.command("run")
+def experiment_run(
+    out: Annotated[
+        Path, typer.Option("--out", help="Root directory. The run gets its own subdirectory.")
+    ],
+    scenario: Annotated[str, typer.Option("--scenario")] = "combined",
+    seed: Annotated[int, typer.Option("--seed")] = 20261,
+    patients: Annotated[int, typer.Option("--patients")] = 3000,
+    replicates: Annotated[
+        int, typer.Option("--replicates", help="Bootstrap resamples of patients.")
+    ] = 2000,
+) -> None:
+    """Simulate one cohort, compute features under every policy, evaluate, audit, and write a report."""
+    from asoflab.audit.report import write_run_report
+    from asoflab.evaluation.bootstrap import BootstrapSettings
+    from asoflab.evaluation.experiment import AnalysisSettings, run_experiment
+    from asoflab.evaluation.protocol import simulation_config
+
+    settings = AnalysisSettings(bootstrap=BootstrapSettings(replicates=replicates))
+    try:
+        directory = run_experiment(simulation_config(scenario, seed, patients), settings, out)
+    except FileExistsError as error:
+        typer.secho(str(error), fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=2) from error
+    report = write_run_report(directory)
+    typer.secho("SYNTHETIC DATA", fg=typer.colors.YELLOW, bold=True)
+    typer.echo(f"Run written to {directory}")
+    typer.echo(f"Report: {report}")
+
+
+@experiment_app.command("matrix")
+def experiment_matrix(
+    out: Annotated[Path, typer.Option("--out", help="Root directory for all runs.")],
+    patients: Annotated[int, typer.Option("--patients")] = 3000,
+    workers: Annotated[int, typer.Option("--workers", help="Runs to execute at once.")] = 1,
+) -> None:
+    """Run every prespecified scenario with every prespecified seed, then summarise across seeds."""
+    from asoflab.audit.manifest import write_json
+    from asoflab.evaluation.protocol import run_matrix
+    from asoflab.evaluation.summary import summarise
+
+    for name, outcome in run_matrix(out, n_patients=patients, workers=workers):
+        typer.echo(f"{name}: {outcome}")
+    target = write_json(out / "summary.json", summarise(out))
+    typer.echo(f"Cross-seed summary: {target}")
+
+
+@experiment_app.command("summarise")
+def experiment_summarise(
+    root: Annotated[Path, typer.Argument(help="Directory holding the runs.")],
+) -> None:
+    """Rebuild the cross-seed summary from the runs found under a directory."""
+    from asoflab.audit.manifest import write_json
+    from asoflab.evaluation.summary import summarise
+
+    typer.echo(f"Wrote {write_json(root / 'summary.json', summarise(root))}")
+
+
+@app.command()
+def report(
+    run: Annotated[Path, typer.Argument(help="A run directory containing manifest.json.")],
+) -> None:
+    """Rebuild the self-contained HTML report of a run from its saved outputs."""
+    from asoflab.audit.report import write_run_report
+
+    typer.echo(f"Wrote {write_run_report(run)}")
+
+
+@app.command()
+def demo(
+    out: Annotated[Path, typer.Option("--out", help="Root directory for the demo run.")] = Path(
+        "runs/demo"
+    ),
+    reference: Annotated[
+        Path, typer.Option("--reference", help="Committed reference results to compare with.")
+    ] = Path("results/demo"),
+    strict: Annotated[
+        bool,
+        typer.Option(
+            "--strict", help="Exit with an error if the output differs from the reference."
+        ),
+    ] = False,
+) -> None:
+    """The small end-to-end demonstration: fixtures, one simulated cohort, statistics, audit, report."""
+    from asoflab.audit.fixture_check import check_fixtures
+    from asoflab.audit.report import write_run_report
+    from asoflab.evaluation.experiment import run_experiment
+    from asoflab.evaluation.protocol import (
+        DEMO_PATIENTS,
+        DEMO_SCENARIO,
+        DEMO_SEED,
+        DEMO_SETTINGS,
+        simulation_config,
+    )
+
+    typer.secho("1. Handwritten fixtures through all three engines", bold=True)
+    results = check_fixtures(["oracle", "batch", "replay"])
+    failed = [result for result in results if not result.passed]
+    typer.echo(
+        f"   {len(results) - len(failed)} of {len(results)} checks match the hand-calculated answers."
+    )
+    if failed:
+        for result in failed[:5]:
+            typer.echo(f"   FAIL {result.fixture} {result.policy} {result.engine}: {result.detail}")
+        raise typer.Exit(code=1)
+
+    typer.secho(
+        f"2. Simulated cohort: scenario {DEMO_SCENARIO}, seed {DEMO_SEED}, {DEMO_PATIENTS} patients",
+        bold=True,
+    )
+    typer.secho(
+        "   SYNTHETIC DATA. Not a physiological model and not a clinical risk tool.",
+        fg=typer.colors.YELLOW,
+    )
+    config = simulation_config(DEMO_SCENARIO, DEMO_SEED, DEMO_PATIENTS)
+    try:
+        directory = run_experiment(config, DEMO_SETTINGS, out)
+        write_run_report(directory)
+    except FileExistsError:
+        existing = sorted(path.parent for path in out.glob("*/manifest.json"))
+        directory = existing[-1]
+        typer.echo(f"   A completed demo run already exists and was left untouched: {directory}")
+    statistics = json.loads((directory / "statistics.json").read_text())
+    audit = json.loads((directory / "audit.json").read_text())
+    manifest = json.loads((directory / "manifest.json").read_text())
+
+    typer.secho("3. Results", bold=True)
+    differential = audit["differential"]
+    gap = statistics["experiment_a"]["prediction_weighted"]["differences"][
+        "naive_event_time_minus_pipeline_as_known"
+    ]["auroc"]
+    sample = statistics["experiment_a"]["sample"]
+    typer.echo(
+        f"   Naive policy read something unavailable in {differential['predictions_with_findings']:,} of "
+        f"{differential['predictions']:,} predictions."
+    )
+    typer.echo(
+        f"   Same model, naive minus as-known AUROC: {gap['point']:+.4f} "
+        f"(95% patient-bootstrap interval {gap['lower']:+.4f} to {gap['upper']:+.4f}; "
+        f"{sample['patients']} test patients, {sample['events']} events)."
+    )
+    parity = [item["equivalent"] for group in audit["parity"].values() for item in group.values()]
+    typer.echo(
+        f"   Engine agreement on this cohort: {sum(parity)} of {len(parity)} comparisons agree."
+    )
+
+    typer.secho("4. Reproducibility", bold=True)
+    reference_manifest = sorted(reference.glob("*/manifest.json"))
+    if not reference_manifest:
+        typer.echo(f"   No reference results under {reference}; nothing to compare with.")
+    else:
+        expected = json.loads(reference_manifest[-1].read_text())
+        same_data = expected["data_hashes"] == manifest["data_hashes"]
+        same_features = expected["time_policies"] == manifest["time_policies"]
+        typer.echo(
+            f"   Simulated data identical to the committed reference: {'yes' if same_data else 'NO'}"
+        )
+        typer.echo(
+            f"   Feature tables identical to the committed reference: {'yes' if same_features else 'NO'}"
+        )
+        if not (same_data and same_features):
+            typer.echo(
+                "   A difference can come from another platform or library version. See docs/reproducibility.md."
+            )
+            if strict:
+                raise typer.Exit(code=3)
+    typer.echo(f"\nReport: {directory / 'report.html'}")
+    typer.echo(f"Inspect it interactively with: asoflab serve --runs {out}")
+
+
+@app.command()
+def serve(
+    runs: Annotated[Path, typer.Option("--runs", help="Directory holding run directories.")] = Path(
+        "runs/demo"
+    ),
+    results: Annotated[
+        Path, typer.Option("--results", help="Saved validation and benchmark results.")
+    ] = Path("results"),
+    web: Annotated[Path, typer.Option("--web", help="Built UI (web/dist).")] = Path("web/dist"),
+    host: Annotated[str, typer.Option("--host")] = "127.0.0.1",
+    port: Annotated[int, typer.Option("--port")] = 8000,
+) -> None:
+    """Serve the inspection UI and its read-only API on this machine."""
+    try:
+        import uvicorn
+
+        from asoflab.api.app import create_app
+    except ImportError as error:
+        typer.secho(
+            "The UI server needs the 'serve' extra: uv sync --extra serve",
+            fg=typer.colors.RED,
+            err=True,
+        )
+        raise typer.Exit(code=2) from error
+    if not runs.exists():
+        typer.secho(
+            f"{runs} does not exist. Run 'asoflab demo' first.", fg=typer.colors.RED, err=True
+        )
+        raise typer.Exit(code=2)
+    typer.echo(f"Serving runs from {runs} at http://{host}:{port}")
+    uvicorn.run(create_app(runs, results, web), host=host, port=port, log_level="warning")
 
 
 @replay_app.command("prepare")

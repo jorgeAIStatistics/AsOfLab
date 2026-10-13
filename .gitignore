@@ -23,6 +23,7 @@ web/dist/
 /results/**/features/
 /results/**/replay/
 /results/**/prepared/
+/results/**/*.parquet
 *.sqlite
 *.sqlite-journal
 *.sqlite-wal
@@ -34,3 +35,6 @@ web/dist/
 .DS_Store
 .idea/
 .vscode/
+
+# Local tool configuration
+.claude/

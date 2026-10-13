@@ -96,7 +96,7 @@ class AnalysisSettings:
     data_cut_day: int = 150
     replay_parity: bool = True
     oracle_sample_patients: int = 25
-    max_audit_examples: int = 200
+    max_audit_examples: int = 25
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
