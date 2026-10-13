@@ -1,5 +1,6 @@
 """Command-line interface. Run `asoflab --help`."""
 
+import contextlib
 import json
 from pathlib import Path
 from typing import Annotated, Any
@@ -7,6 +8,7 @@ from typing import Annotated, Any
 import typer
 
 from asoflab import CONTRACT_VERSION, __version__
+from asoflab.api.listen import PortUnavailable, local_url, open_listener
 from asoflab.engines import run_engine
 from asoflab.errors import ContractViolation
 from asoflab.schema.models import FeatureConfig, TimePolicy
@@ -538,7 +540,15 @@ def serve(
     ] = Path("results"),
     web: Annotated[Path, typer.Option("--web", help="Built UI (web/dist).")] = Path("web/dist"),
     host: Annotated[str, typer.Option("--host")] = "127.0.0.1",
-    port: Annotated[int, typer.Option("--port")] = 8000,
+    port: Annotated[
+        int,
+        typer.Option(
+            "--port",
+            min=0,
+            max=65535,
+            help="Port to listen on. 0 lets the operating system pick a free one.",
+        ),
+    ] = 8000,
 ) -> None:
     """Serve the inspection UI and its read-only API on this machine."""
     try:
@@ -557,8 +567,51 @@ def serve(
             f"{runs} does not exist. Run 'asoflab demo' first.", fg=typer.colors.RED, err=True
         )
         raise typer.Exit(code=2)
-    typer.echo(f"Serving runs from {runs} at http://{host}:{port}")
-    uvicorn.run(create_app(runs, results, web), host=host, port=port, log_level="warning")
+    application = create_app(runs, results, web)
+    # The port is opened before the address is printed, so the printed address is one
+    # this process holds. uvicorn is handed the open socket and binds nothing itself.
+    try:
+        listener = open_listener(host, port)
+    except PortUnavailable as unavailable:
+        headline, *advice = _explain_unavailable_port(unavailable)
+        typer.secho(headline, fg=typer.colors.RED, err=True)
+        for line in advice:
+            typer.echo(line, err=True)
+        raise typer.Exit(code=2) from unavailable
+    bound_port = listener.getsockname()[1]
+    typer.echo(f"Serving runs from {runs} at {local_url(host, bound_port)}")
+    server = uvicorn.Server(
+        uvicorn.Config(application, host=host, port=bound_port, log_level="warning")
+    )
+    # Ctrl+C ends the server cleanly and is not an error, as with uvicorn.run.
+    with contextlib.suppress(KeyboardInterrupt):
+        server.run(sockets=[listener])
+    if not server.started:
+        # The status uvicorn.run itself exits with when the server could not start.
+        raise typer.Exit(code=3)
+
+
+def _explain_unavailable_port(unavailable: PortUnavailable) -> list[str]:
+    if not unavailable.in_use:
+        return [
+            f"Cannot listen on {unavailable.host}, port {unavailable.port}: "
+            f"{unavailable.reason}. Nothing was started."
+        ]
+    lines = [
+        f"Port {unavailable.port} on {unavailable.host} is already in use by another program, "
+        "so nothing was started."
+    ]
+    if unavailable.free_port is not None:
+        lines.append(
+            f"Port {unavailable.free_port} is free: run the same command with "
+            f"--port {unavailable.free_port}."
+        )
+    else:
+        lines.append(
+            "Run the same command with another --port, or with --port 0 to let the "
+            "operating system pick a free one."
+        )
+    return lines
 
 
 @replay_app.command("prepare")

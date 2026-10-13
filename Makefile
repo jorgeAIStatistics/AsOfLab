@@ -6,6 +6,8 @@
 PYTHON ?= python3
 VENV := .venv
 BIN := $(VENV)/bin
+# Port for `make serve`. When 8000 is taken on your machine: make serve PORT=8020
+PORT ?= 8000
 
 .PHONY: setup test test-fast lint demo ui serve bench experiments validation results clean
 
@@ -39,7 +41,7 @@ ui:
 	cd web && npm ci && npm run build
 
 serve:
-	$(BIN)/asoflab serve --runs runs/demo
+	$(BIN)/asoflab serve --runs runs/demo --port $(PORT)
 
 bench:
 	$(BIN)/python benchmarks/run_benchmarks.py --profile standard
