@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+web/dist/
+
+# Generated local outputs. Only small, reviewed synthetic summaries under
+# results/ are committed; bulk data and scratch runs stay local.
+/runs/
+/results/**/data/
+/results/**/features/
+/results/**/replay/
+/results/**/prepared/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+/benchmarks/workloads/
+/tests/counterexamples/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
