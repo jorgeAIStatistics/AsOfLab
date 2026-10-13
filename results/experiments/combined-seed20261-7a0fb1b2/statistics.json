@@ -1,0 +1,2146 @@
+{
+  "run_id": "combined-seed20261-7a0fb1b2",
+  "synthetic_data": true,
+  "scenario": {
+    "name": "combined",
+    "description": "Everything on: delays, revisions, delayed outcomes, several encounters, site differences.",
+    "delayed_labs": true,
+    "corrections": true,
+    "delayed_outcomes": true,
+    "multiple_encounters": true,
+    "site_variation": true
+  },
+  "seed": 20261,
+  "target": {
+    "definition": "A simulated deterioration event with event time in (T, T + 12 h], in the same encounter as the prediction at time T.",
+    "horizon_hours": 12,
+    "prediction_schedule": "Every 4 h from hour 4 of an encounter until it ends.",
+    "eligible_population": "Predictions made while the patient is at risk: no earlier event in the encounter. Follow-up covers the full horizon for every prediction.",
+    "unit_of_analysis": "prediction",
+    "estimand": "Discrimination, average precision and Brier score of a fixed model's predictions for the eligible predictions of held-out patients, under a stated feature-time policy.",
+    "average_precision_convention": "Step-function average precision: sum over thresholds of (recall_k - recall_{k-1}) * precision_k. Not the trapezoidal area under the PR curve."
+  },
+  "cohort": {
+    "patients": 3000,
+    "encounters": 4566,
+    "event_versions": 342560,
+    "predictions": 67476,
+    "outcome_events": 1185
+  },
+  "label_coverage": {
+    "predictions": 67476,
+    "labelled": 67476,
+    "unknown": 0,
+    "coverage": 1.0,
+    "by_status": {
+      "positive": 2866,
+      "negative": 64610,
+      "pending_horizon": 0,
+      "pending_ascertainment": 0,
+      "unknown_follow_up": 0
+    }
+  },
+  "splits": {
+    "patient_holdout": {
+      "seed": 1,
+      "hash": "65ce7d1fd7ece30d1f1a085e028c5438af97ee54709c6f0f289190b5364c367c",
+      "counts": {
+        "test": {
+          "predictions": 13440,
+          "patients": 592
+        },
+        "train": {
+          "predictions": 40356,
+          "patients": 1775
+        },
+        "validation": {
+          "predictions": 13680,
+          "patients": 592
+        }
+      }
+    }
+  },
+  "missing_feature_rates": {
+    "pipeline_as_known": {
+      "hr_last_4h": 0.07722745865196515,
+      "hr_mean_8h": 0.016450293437666727,
+      "rr_last_4h": 0.30554567549943684,
+      "rr_mean_8h": 0.12139130950263798,
+      "lac_last_24h": 0.20509514494042327,
+      "lac_mean_24h": 0.20509514494042327,
+      "lac_count_24h": 0.0,
+      "lac_since_24h": 0.20509514494042327,
+      "cre_last_48h": 0.268391724464995,
+      "cre_count_48h": 0.0
+    },
+    "source_as_known": {
+      "hr_last_4h": 0.07722745865196515,
+      "hr_mean_8h": 0.016450293437666727,
+      "rr_last_4h": 0.30554567549943684,
+      "rr_mean_8h": 0.12139130950263798,
+      "lac_last_24h": 0.20069357993953404,
+      "lac_mean_24h": 0.20069357993953404,
+      "lac_count_24h": 0.0,
+      "lac_since_24h": 0.20069357993953404,
+      "cre_last_48h": 0.2653239670401328,
+      "cre_count_48h": 0.0
+    },
+    "latest_revised": {
+      "hr_last_4h": 0.07722745865196515,
+      "hr_mean_8h": 0.016450293437666727,
+      "rr_last_4h": 0.30554567549943684,
+      "rr_mean_8h": 0.12139130950263798,
+      "lac_last_24h": 0.2070365759677515,
+      "lac_mean_24h": 0.2070365759677515,
+      "lac_count_24h": 0.0,
+      "lac_since_24h": 0.2070365759677515,
+      "cre_last_48h": 0.27000711364040547,
+      "cre_count_48h": 0.0
+    },
+    "naive_event_time": {
+      "hr_last_4h": 0.07722745865196515,
+      "hr_mean_8h": 0.016450293437666727,
+      "rr_last_4h": 0.30554567549943684,
+      "rr_mean_8h": 0.12139130950263798,
+      "lac_last_24h": 0.17216491789673366,
+      "lac_mean_24h": 0.17216491789673366,
+      "lac_count_24h": 0.0,
+      "lac_since_24h": 0.17216491789673366,
+      "cre_last_48h": 0.21905566423617287,
+      "cre_count_48h": 0.0
+    }
+  },
+  "weighting": "Metrics weight predictions equally unless marked patient-weighted.",
+  "bootstrap": {
+    "unit_resampled": "patient",
+    "paired_across_conditions": true,
+    "replicates_requested": 2000,
+    "seed": 20261013,
+    "level": 0.95,
+    "interval_method": "percentile",
+    "min_completed_fraction": 0.95,
+    "conditional_on_fitted_models": true
+  },
+  "experiment_a": {
+    "question": "With the model, prediction rows, labels and test patients held fixed, how much does the measured performance change when only the feature-time policy changes?",
+    "interpretation": "Pipeline sensitivity of the evaluation. Not a comparison between independently trained models.",
+    "model_trained_under": "pipeline_as_known",
+    "model": {
+      "model": "logistic regression, L2 penalty",
+      "preprocessing": "median imputation with missing-value indicators, then standardisation",
+      "regularisation_grid_C": [
+        0.001,
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "selected_C": 0.001,
+      "selection_rule": "lowest log loss on the validation patients",
+      "validation_log_loss_by_C": {
+        "0.001": 0.16328199726675421,
+        "0.01": 0.16380298117798725,
+        "0.1": 0.16391553696946445,
+        "1.0": 0.16392849968999568,
+        "10.0": 0.1639298194251943
+      },
+      "intercept": -3.266087118158478,
+      "standardised_coefficients": {
+        "hr_last_4h": 0.17723920603685445,
+        "hr_mean_8h": 0.2135046747033314,
+        "rr_last_4h": 0.10063107655180745,
+        "rr_mean_8h": 0.12507395252988968,
+        "lac_last_24h": 0.03585727573134788,
+        "lac_mean_24h": 0.06853564981358162,
+        "lac_count_24h": 0.052647766045145226,
+        "lac_since_24h": -0.007554562567436812,
+        "cre_last_48h": 0.1119031974828892,
+        "cre_count_48h": -0.05302188251642727,
+        "hr_last_4h__missing": -0.029831617663786714,
+        "hr_mean_8h__missing": -0.01802715876125413,
+        "rr_last_4h__missing": -0.013963000195345915,
+        "rr_mean_8h__missing": 0.009204286293866893,
+        "lac_last_24h__missing": 0.0033482681699543606,
+        "lac_mean_24h__missing": 0.0033482681699543606,
+        "lac_since_24h__missing": 0.0033482681699543606,
+        "cre_last_48h__missing": 0.06383346594189153
+      }
+    },
+    "evaluated_on": "held-out test patients",
+    "sample": {
+      "predictions": 13440,
+      "patients": 592,
+      "events": 503,
+      "non_events": 12937,
+      "prevalence": 0.03742559523809524,
+      "patients_with_an_event": 171
+    },
+    "instability_flags": [],
+    "features_identical_to_reference": {
+      "pipeline_as_known": true,
+      "source_as_known": false,
+      "latest_revised": false,
+      "naive_event_time": false
+    },
+    "prediction_weighted": {
+      "conditions": {
+        "pipeline_as_known": {
+          "auroc": {
+            "point": 0.6887574606469554,
+            "lower": 0.6479782647482861,
+            "upper": 0.7292253391369882,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.12229897615951281,
+            "lower": 0.08861437795284705,
+            "upper": 0.16929792832904159,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034878281117215214,
+            "lower": 0.030200454209872878,
+            "upper": 0.04025396471881302,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.1579309945839251,
+            "lower": -0.3162096298083208,
+            "upper": -0.00297128756652247,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.129412002424787,
+            "lower": 0.9061613521471789,
+            "upper": 1.3672808540648391,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "source_as_known": {
+          "auroc": {
+            "point": 0.6895490318504832,
+            "lower": 0.6487325887108003,
+            "upper": 0.7297607449224844,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.1229266871539027,
+            "lower": 0.08908922014421357,
+            "upper": 0.1701934592814381,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034869775762165045,
+            "lower": 0.030199705427112252,
+            "upper": 0.04023974295518101,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.15840289514486514,
+            "lower": -0.3160740311902557,
+            "upper": -0.0032574061161292603,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.1326770227931722,
+            "lower": 0.9074039663202282,
+            "upper": 1.3703508063500045,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "latest_revised": {
+          "auroc": {
+            "point": 0.6919507919630704,
+            "lower": 0.6512503624439768,
+            "upper": 0.7319000248740978,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.11630082378138665,
+            "lower": 0.08554192524491977,
+            "upper": 0.16175279660723457,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.03490540886037385,
+            "lower": 0.030205802094456915,
+            "upper": 0.040290939584455836,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.15070531986952404,
+            "lower": -0.30667447696100814,
+            "upper": 0.004421591828641658,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.1455998671655152,
+            "lower": 0.9207609950279019,
+            "upper": 1.3864964721089426,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_event_time": {
+          "auroc": {
+            "point": 0.6936122309199606,
+            "lower": 0.6535601937532036,
+            "upper": 0.7335648919223657,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.11961424780629061,
+            "lower": 0.08828604053136994,
+            "upper": 0.1655312133877794,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034848922413138896,
+            "lower": 0.03017039562467141,
+            "upper": 0.04023320145242718,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.15205510927421403,
+            "lower": -0.30804493348813844,
+            "upper": 0.0033108110889257043,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.1412106723052136,
+            "lower": 0.9219430802823181,
+            "upper": 1.370895339973885,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      },
+      "differences": {
+        "source_as_known_minus_pipeline_as_known": {
+          "minuend": "source_as_known",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.0007915712035277966,
+            "lower": 7.647372674527428e-05,
+            "upper": 0.0016945017081377131,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.0006277109943898934,
+            "lower": -0.00012320951394332165,
+            "upper": 0.0012446081576887444,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -8.50535505016875e-06,
+            "lower": -1.9649729282410036e-05,
+            "upper": 9.555984072434263e-07,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "latest_revised_minus_pipeline_as_known": {
+          "minuend": "latest_revised",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.003193331316114989,
+            "lower": 0.00017658934768623457,
+            "upper": 0.006057956541512095,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.005998152378126162,
+            "lower": -0.015481595808529343,
+            "upper": 0.0013450564832257306,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 2.7127743158633644e-05,
+            "lower": -3.946768795122112e-05,
+            "upper": 0.00011031963340035678,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_event_time_minus_pipeline_as_known": {
+          "minuend": "naive_event_time",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.004854770273005182,
+            "lower": -0.0001625715213409498,
+            "upper": 0.009588393424659777,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.002684728353222199,
+            "lower": -0.01436061655404082,
+            "upper": 0.006201957882901754,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -2.9358704076318243e-05,
+            "lower": -0.00011968576624852514,
+            "upper": 6.808923048271289e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "revision_effect": {
+          "minuend": "latest_revised",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.003193331316114989,
+            "lower": 0.00017658934768623457,
+            "upper": 0.006057956541512095,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.005998152378126162,
+            "lower": -0.015481595808529343,
+            "upper": 0.0013450564832257306,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 2.7127743158633644e-05,
+            "lower": -3.946768795122112e-05,
+            "upper": 0.00011031963340035678,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "availability_effect": {
+          "minuend": "naive_event_time",
+          "subtrahend": "latest_revised",
+          "auroc": {
+            "point": 0.0016614389568901933,
+            "lower": -0.0016099004501366554,
+            "upper": 0.0048468263270945765,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.003313424024903963,
+            "lower": -0.001887011162980696,
+            "upper": 0.008298857468850904,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -5.6486447234951886e-05,
+            "lower": -0.00011898431337481839,
+            "upper": -5.081070837925128e-06,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      }
+    },
+    "patient_weighted": {
+      "conditions": {
+        "pipeline_as_known": {
+          "auroc": {
+            "point": 0.7125599918631637,
+            "lower": 0.6586140428118824,
+            "upper": 0.7618274996592406,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.2462844062685701,
+            "lower": 0.17799370324473657,
+            "upper": 0.32893162139551574,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.0748758193395798,
+            "lower": 0.061467082098782905,
+            "upper": 0.08955365497422535,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "source_as_known": {
+          "auroc": {
+            "point": 0.7128543502288892,
+            "lower": 0.6592954949343652,
+            "upper": 0.7619400398550229,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.24660106902089976,
+            "lower": 0.178534772730571,
+            "upper": 0.32885311748128426,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.0748593904569242,
+            "lower": 0.06144180347838114,
+            "upper": 0.08954687778492504,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "latest_revised": {
+          "auroc": {
+            "point": 0.7144773893975153,
+            "lower": 0.6607997597489745,
+            "upper": 0.7636332149852414,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.24251112443964812,
+            "lower": 0.17493773265844426,
+            "upper": 0.32813420751593786,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.07498149186129859,
+            "lower": 0.061504023759355736,
+            "upper": 0.0897104726103004,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_event_time": {
+          "auroc": {
+            "point": 0.71545735683538,
+            "lower": 0.6613024106962057,
+            "upper": 0.764155813107638,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.2516653673985815,
+            "lower": 0.18068858899303022,
+            "upper": 0.33795695130417025,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.07471573957416505,
+            "lower": 0.06131931841803373,
+            "upper": 0.0893702527765421,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      },
+      "differences": {
+        "source_as_known_minus_pipeline_as_known": {
+          "minuend": "source_as_known",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.0002943583657255555,
+            "lower": -0.00012379792678079412,
+            "upper": 0.0007757384448957877,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.0003166627523296661,
+            "lower": -0.0008748323869209006,
+            "upper": 0.0017267931782206643,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -1.6428882655600274e-05,
+            "lower": -4.74123505440488e-05,
+            "upper": 2.9785988118546094e-06,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "latest_revised_minus_pipeline_as_known": {
+          "minuend": "latest_revised",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.0019173975343516059,
+            "lower": -0.0004532480687125999,
+            "upper": 0.0041044783541848,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.003773281828921976,
+            "lower": -0.01499864337814191,
+            "upper": 0.005331017277927579,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.00010567252171878039,
+            "lower": -6.181292467536575e-05,
+            "upper": 0.0003430143807099546,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_event_time_minus_pipeline_as_known": {
+          "minuend": "naive_event_time",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.0028973649722163763,
+            "lower": -0.002005907070647242,
+            "upper": 0.007186029819620345,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.00538096113001138,
+            "lower": -0.006468263295288087,
+            "upper": 0.016094541248873835,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -0.00016007976541475288,
+            "lower": -0.0004350924890105964,
+            "upper": 0.00012445531404682466,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "revision_effect": {
+          "minuend": "latest_revised",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.0019173975343516059,
+            "lower": -0.0004532480687125999,
+            "upper": 0.0041044783541848,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.003773281828921976,
+            "lower": -0.01499864337814191,
+            "upper": 0.005331017277927579,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.00010567252171878039,
+            "lower": -6.181292467536575e-05,
+            "upper": 0.0003430143807099546,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "availability_effect": {
+          "minuend": "naive_event_time",
+          "subtrahend": "latest_revised",
+          "auroc": {
+            "point": 0.0009799674378647705,
+            "lower": -0.002670942280635077,
+            "upper": 0.004410902095917878,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.009154242958933356,
+            "lower": 0.0014576367518961389,
+            "upper": 0.01685598648599757,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -0.00026575228713353327,
+            "lower": -0.0004868067668391699,
+            "upper": -9.411254406404953e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      }
+    },
+    "decomposition_note": "revision_effect = latest_revised - pipeline_as_known (only the revision read changes). availability_effect = naive_event_time - latest_revised (only whether availability is respected changes). Their sum is the naive-minus-as-known gap. The split depends on the order in which the two changes are applied.",
+    "calibration_curves": {
+      "pipeline_as_known": [
+        {
+          "mean_predicted": 0.01252031095223143,
+          "observed_rate": 0.008928571428571428,
+          "predictions": 1344,
+          "events": 12
+        },
+        {
+          "mean_predicted": 0.018715827309153648,
+          "observed_rate": 0.01711309523809524,
+          "predictions": 1344,
+          "events": 23
+        },
+        {
+          "mean_predicted": 0.023357798447287425,
+          "observed_rate": 0.021577380952380952,
+          "predictions": 1344,
+          "events": 29
+        },
+        {
+          "mean_predicted": 0.027721147751903374,
+          "observed_rate": 0.021577380952380952,
+          "predictions": 1344,
+          "events": 29
+        },
+        {
+          "mean_predicted": 0.03241245702883401,
+          "observed_rate": 0.03125,
+          "predictions": 1344,
+          "events": 42
+        },
+        {
+          "mean_predicted": 0.03766522461217818,
+          "observed_rate": 0.031994047619047616,
+          "predictions": 1344,
+          "events": 43
+        },
+        {
+          "mean_predicted": 0.0442780577861693,
+          "observed_rate": 0.04389880952380952,
+          "predictions": 1344,
+          "events": 59
+        },
+        {
+          "mean_predicted": 0.05396885841764088,
+          "observed_rate": 0.031994047619047616,
+          "predictions": 1344,
+          "events": 43
+        },
+        {
+          "mean_predicted": 0.06860308349150433,
+          "observed_rate": 0.05282738095238095,
+          "predictions": 1344,
+          "events": 71
+        },
+        {
+          "mean_predicted": 0.11480992309779307,
+          "observed_rate": 0.1130952380952381,
+          "predictions": 1344,
+          "events": 152
+        }
+      ],
+      "source_as_known": [
+        {
+          "mean_predicted": 0.01251202477628911,
+          "observed_rate": 0.008928571428571428,
+          "predictions": 1344,
+          "events": 12
+        },
+        {
+          "mean_predicted": 0.018697731101357,
+          "observed_rate": 0.01711309523809524,
+          "predictions": 1344,
+          "events": 23
+        },
+        {
+          "mean_predicted": 0.0233483688562093,
+          "observed_rate": 0.021577380952380952,
+          "predictions": 1344,
+          "events": 29
+        },
+        {
+          "mean_predicted": 0.027688529006515035,
+          "observed_rate": 0.021577380952380952,
+          "predictions": 1344,
+          "events": 29
+        },
+        {
+          "mean_predicted": 0.03239813633767453,
+          "observed_rate": 0.03050595238095238,
+          "predictions": 1344,
+          "events": 41
+        },
+        {
+          "mean_predicted": 0.037659880588607794,
+          "observed_rate": 0.031994047619047616,
+          "predictions": 1344,
+          "events": 43
+        },
+        {
+          "mean_predicted": 0.04429229949077248,
+          "observed_rate": 0.04389880952380952,
+          "predictions": 1344,
+          "events": 59
+        },
+        {
+          "mean_predicted": 0.054006280301117975,
+          "observed_rate": 0.03273809523809524,
+          "predictions": 1344,
+          "events": 44
+        },
+        {
+          "mean_predicted": 0.06870641720809434,
+          "observed_rate": 0.052083333333333336,
+          "predictions": 1344,
+          "events": 70
+        },
+        {
+          "mean_predicted": 0.11493160133779658,
+          "observed_rate": 0.11383928571428571,
+          "predictions": 1344,
+          "events": 153
+        }
+      ],
+      "latest_revised": [
+        {
+          "mean_predicted": 0.012545754405075871,
+          "observed_rate": 0.009672619047619048,
+          "predictions": 1344,
+          "events": 13
+        },
+        {
+          "mean_predicted": 0.018742804188857105,
+          "observed_rate": 0.015625,
+          "predictions": 1344,
+          "events": 21
+        },
+        {
+          "mean_predicted": 0.023386686632938303,
+          "observed_rate": 0.021577380952380952,
+          "predictions": 1344,
+          "events": 29
+        },
+        {
+          "mean_predicted": 0.027661298588158616,
+          "observed_rate": 0.020833333333333332,
+          "predictions": 1344,
+          "events": 28
+        },
+        {
+          "mean_predicted": 0.03231969926057602,
+          "observed_rate": 0.03050595238095238,
+          "predictions": 1344,
+          "events": 41
+        },
+        {
+          "mean_predicted": 0.03753309731641741,
+          "observed_rate": 0.03125,
+          "predictions": 1344,
+          "events": 42
+        },
+        {
+          "mean_predicted": 0.044118184361211656,
+          "observed_rate": 0.043154761904761904,
+          "predictions": 1344,
+          "events": 58
+        },
+        {
+          "mean_predicted": 0.05361066751982924,
+          "observed_rate": 0.03125,
+          "predictions": 1344,
+          "events": 42
+        },
+        {
+          "mean_predicted": 0.06805179606565567,
+          "observed_rate": 0.05803571428571429,
+          "predictions": 1344,
+          "events": 78
+        },
+        {
+          "mean_predicted": 0.11319272023215413,
+          "observed_rate": 0.11235119047619048,
+          "predictions": 1344,
+          "events": 151
+        }
+      ],
+      "naive_event_time": [
+        {
+          "mean_predicted": 0.012321782393201544,
+          "observed_rate": 0.00818452380952381,
+          "predictions": 1344,
+          "events": 11
+        },
+        {
+          "mean_predicted": 0.018484647233808948,
+          "observed_rate": 0.015625,
+          "predictions": 1344,
+          "events": 21
+        },
+        {
+          "mean_predicted": 0.02302432671170312,
+          "observed_rate": 0.023065476190476192,
+          "predictions": 1344,
+          "events": 31
+        },
+        {
+          "mean_predicted": 0.0273543531425041,
+          "observed_rate": 0.021577380952380952,
+          "predictions": 1344,
+          "events": 29
+        },
+        {
+          "mean_predicted": 0.031941234232420485,
+          "observed_rate": 0.027529761904761904,
+          "predictions": 1344,
+          "events": 37
+        },
+        {
+          "mean_predicted": 0.037210581139080684,
+          "observed_rate": 0.03794642857142857,
+          "predictions": 1344,
+          "events": 51
+        },
+        {
+          "mean_predicted": 0.04402729068240309,
+          "observed_rate": 0.03943452380952381,
+          "predictions": 1344,
+          "events": 53
+        },
+        {
+          "mean_predicted": 0.05365799026670262,
+          "observed_rate": 0.03050595238095238,
+          "predictions": 1344,
+          "events": 41
+        },
+        {
+          "mean_predicted": 0.0685068784528486,
+          "observed_rate": 0.05580357142857143,
+          "predictions": 1344,
+          "events": 75
+        },
+        {
+          "mean_predicted": 0.11511420329660126,
+          "observed_rate": 0.11458333333333333,
+          "predictions": 1344,
+          "events": 154
+        }
+      ]
+    }
+  },
+  "experiment_b": {
+    "question": "If the whole pipeline is built naively, how far is the number it reports from what the same model would achieve on features it could really have had, and does training on as-known features help at deployment?",
+    "design": "Two models, same patients, same labels, same split, same model family and selection rule. Only the policy that prepared the training and validation features differs.",
+    "deployment_faithful_cell": "any cell evaluated on as-known features",
+    "models": {
+      "naive_trained": {
+        "model": "logistic regression, L2 penalty",
+        "preprocessing": "median imputation with missing-value indicators, then standardisation",
+        "regularisation_grid_C": [
+          0.001,
+          0.01,
+          0.1,
+          1.0,
+          10.0
+        ],
+        "selected_C": 0.001,
+        "selection_rule": "lowest log loss on the validation patients",
+        "validation_log_loss_by_C": {
+          "0.001": 0.16290756100928042,
+          "0.01": 0.1632360841529975,
+          "0.1": 0.163324848824673,
+          "1.0": 0.1633335984324078,
+          "10.0": 0.1633344873722054
+        },
+        "intercept": -3.275080081187997,
+        "standardised_coefficients": {
+          "hr_last_4h": 0.1872216738165394,
+          "hr_mean_8h": 0.19796346735152334,
+          "rr_last_4h": 0.09775932904409773,
+          "rr_mean_8h": 0.11587765513979435,
+          "lac_last_24h": 0.05731455560632098,
+          "lac_mean_24h": 0.07932871749183476,
+          "lac_count_24h": 0.04342170816789944,
+          "lac_since_24h": 0.00572751279773005,
+          "cre_last_48h": 0.1022940044389138,
+          "cre_count_48h": -0.04451095211136251,
+          "hr_last_4h__missing": -0.028435724676171035,
+          "hr_mean_8h__missing": -0.017224116901936655,
+          "rr_last_4h__missing": -0.01181640546808739,
+          "rr_mean_8h__missing": 0.011820003025184244,
+          "lac_last_24h__missing": -0.004200501659557141,
+          "lac_mean_24h__missing": -0.004200501659557141,
+          "lac_since_24h__missing": -0.004200501659557141,
+          "cre_last_48h__missing": 0.07767943154839282
+        }
+      },
+      "as_known_trained": {
+        "model": "logistic regression, L2 penalty",
+        "preprocessing": "median imputation with missing-value indicators, then standardisation",
+        "regularisation_grid_C": [
+          0.001,
+          0.01,
+          0.1,
+          1.0,
+          10.0
+        ],
+        "selected_C": 0.001,
+        "selection_rule": "lowest log loss on the validation patients",
+        "validation_log_loss_by_C": {
+          "0.001": 0.16328199726675421,
+          "0.01": 0.16380298117798725,
+          "0.1": 0.16391553696946445,
+          "1.0": 0.16392849968999568,
+          "10.0": 0.1639298194251943
+        },
+        "intercept": -3.266087118158478,
+        "standardised_coefficients": {
+          "hr_last_4h": 0.17723920603685445,
+          "hr_mean_8h": 0.2135046747033314,
+          "rr_last_4h": 0.10063107655180745,
+          "rr_mean_8h": 0.12507395252988968,
+          "lac_last_24h": 0.03585727573134788,
+          "lac_mean_24h": 0.06853564981358162,
+          "lac_count_24h": 0.052647766045145226,
+          "lac_since_24h": -0.007554562567436812,
+          "cre_last_48h": 0.1119031974828892,
+          "cre_count_48h": -0.05302188251642727,
+          "hr_last_4h__missing": -0.029831617663786714,
+          "hr_mean_8h__missing": -0.01802715876125413,
+          "rr_last_4h__missing": -0.013963000195345915,
+          "rr_mean_8h__missing": 0.009204286293866893,
+          "lac_last_24h__missing": 0.0033482681699543606,
+          "lac_mean_24h__missing": 0.0033482681699543606,
+          "lac_since_24h__missing": 0.0033482681699543606,
+          "cre_last_48h__missing": 0.06383346594189153
+        }
+      }
+    },
+    "sample": {
+      "predictions": 13440,
+      "patients": 592,
+      "events": 503,
+      "non_events": 12937,
+      "prevalence": 0.03742559523809524,
+      "patients_with_an_event": 171
+    },
+    "prediction_weighted": {
+      "conditions": {
+        "naive_trained__naive_evaluated": {
+          "auroc": {
+            "point": 0.6932411098839444,
+            "lower": 0.6525947235457599,
+            "upper": 0.733534721377156,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.12047402835254789,
+            "lower": 0.08942014033180375,
+            "upper": 0.16484082403229056,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034841901408484706,
+            "lower": 0.03017820475782821,
+            "upper": 0.040216225693897746,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.15785011230179283,
+            "lower": -0.3142060896229343,
+            "upper": -0.003476408213636272,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.1182689789039446,
+            "lower": 0.9061277165731682,
+            "upper": 1.3438791271718755,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_trained__as_known_evaluated": {
+          "auroc": {
+            "point": 0.6881779586068654,
+            "lower": 0.6472725820868778,
+            "upper": 0.7291384952717999,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.12185796091258055,
+            "lower": 0.08817907590688821,
+            "upper": 0.16719154832004102,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034885198259272186,
+            "lower": 0.030216804355247068,
+            "upper": 0.040269472996470004,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.1675829441401825,
+            "lower": -0.3254044082604049,
+            "upper": -0.012790096096175048,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.1019035393091006,
+            "lower": 0.8847746949808859,
+            "upper": 1.3347682621988992,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "as_known_trained__as_known_evaluated": {
+          "auroc": {
+            "point": 0.6887574606469554,
+            "lower": 0.6479782647482861,
+            "upper": 0.7292253391369882,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.12229897615951281,
+            "lower": 0.08861437795284705,
+            "upper": 0.16929792832904159,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034878281117215214,
+            "lower": 0.030200454209872878,
+            "upper": 0.04025396471881302,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.1579309945839251,
+            "lower": -0.3162096298083208,
+            "upper": -0.00297128756652247,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.129412002424787,
+            "lower": 0.9061613521471789,
+            "upper": 1.3672808540648391,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "as_known_trained__naive_evaluated": {
+          "auroc": {
+            "point": 0.6936122309199606,
+            "lower": 0.6535601937532036,
+            "upper": 0.7335648919223657,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.11961424780629061,
+            "lower": 0.08828604053136994,
+            "upper": 0.1655312133877794,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.034848922413138896,
+            "lower": 0.03017039562467141,
+            "upper": 0.04023320145242718,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_intercept": {
+            "point": -0.15205510927421403,
+            "lower": -0.30804493348813844,
+            "upper": 0.0033108110889257043,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "calibration_slope": {
+            "point": 1.1412106723052136,
+            "lower": 0.9219430802823181,
+            "upper": 1.370895339973885,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      },
+      "differences": {
+        "optimism_of_the_naive_pipeline": {
+          "minuend": "naive_trained__naive_evaluated",
+          "subtrahend": "naive_trained__as_known_evaluated",
+          "auroc": {
+            "point": 0.005063151277079014,
+            "lower": -5.908717657574407e-05,
+            "upper": 0.009846322868487467,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.0013839325600326635,
+            "lower": -0.012590542707420998,
+            "upper": 0.00924881582468991,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -4.3296850787480357e-05,
+            "lower": -0.00014548799439935924,
+            "upper": 6.421473740595479e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "as_known_training_minus_naive_training_at_deployment": {
+          "minuend": "as_known_trained__as_known_evaluated",
+          "subtrahend": "naive_trained__as_known_evaluated",
+          "auroc": {
+            "point": 0.0005795020400900519,
+            "lower": -0.0013200979367423693,
+            "upper": 0.002419708733120728,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.00044101524693225536,
+            "lower": -0.002861339016769072,
+            "upper": 0.005232153152177139,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -6.9171420569724695e-06,
+            "lower": -4.412920322860239e-05,
+            "upper": 3.6219525870279966e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "reported_naive_minus_reported_as_known": {
+          "minuend": "naive_trained__naive_evaluated",
+          "subtrahend": "as_known_trained__as_known_evaluated",
+          "auroc": {
+            "point": 0.0044836492369889624,
+            "lower": -0.0010312650934893907,
+            "upper": 0.009899085397203817,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.0018249478069649189,
+            "lower": -0.015226772335591072,
+            "upper": 0.008387269588584982,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -3.637970873050789e-05,
+            "lower": -0.00014582359641740204,
+            "upper": 7.505462226859274e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      }
+    },
+    "can_attribute": "The contrasts isolate the effect of the feature-time policy on this cohort for these two fitted models.",
+    "cannot_attribute": "Intervals are conditional on the two fitted models. They do not show that one training pipeline is better in general; that needs the variation across simulated cohorts reported in the cross-seed summary, and would need real data to say anything about a real system."
+  },
+  "chronological": {
+    "question": "How would a model built from what was known at the cutoff date have performed on the patients who arrived afterwards?",
+    "differs_from_patient_holdout": "The patient holdout asks about new patients from the same period. This asks about later patients. The simulation has no drift over calendar time, so no systematic difference between the two is expected here; the design is shown because real data would need it.",
+    "split": {
+      "cutoff": "2025-05-01T00:00:00+00:00",
+      "hash": "179a57e1d6b675a6d3eaf3f741978f9bb838da69522bad48371178db05d8b64a",
+      "counts": {
+        "excluded_label_not_mature_at_cutoff": {
+          "predictions": 1457,
+          "patients": 159
+        },
+        "excluded_patient_seen_before_cutoff": {
+          "predictions": 4487,
+          "patients": 255
+        },
+        "test": {
+          "predictions": 17079,
+          "patients": 827
+        },
+        "train": {
+          "predictions": 33288,
+          "patients": 1551
+        },
+        "validation": {
+          "predictions": 11165,
+          "patients": 517
+        }
+      },
+      "rules": [
+        "A prediction is used for fitting only if its label was mature at the cutoff: prediction time + horizon + maximum ascertainment lag <= cutoff.",
+        "Fitting labels are computed from outcomes ascertained by the cutoff.",
+        "Test predictions are those after the cutoff from patients first seen after the cutoff.",
+        "A patient seen before the cutoff who returns afterwards is excluded from the test set."
+      ],
+      "fitting_labels_that_differ_from_final_labels": 0
+    },
+    "estimable": true,
+    "model": {
+      "model": "logistic regression, L2 penalty",
+      "preprocessing": "median imputation with missing-value indicators, then standardisation",
+      "regularisation_grid_C": [
+        0.001,
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "selected_C": 0.01,
+      "selection_rule": "lowest log loss on the validation patients",
+      "validation_log_loss_by_C": {
+        "0.001": 0.16499113452903563,
+        "0.01": 0.16468226613866407,
+        "0.1": 0.16468939089399665,
+        "1.0": 0.16469276472795646,
+        "10.0": 0.1646931455711994
+      },
+      "intercept": -3.3409078718892204,
+      "standardised_coefficients": {
+        "hr_last_4h": 0.2007369263132302,
+        "hr_mean_8h": 0.3416742896436931,
+        "rr_last_4h": 0.10534399034546027,
+        "rr_mean_8h": 0.08090907654761964,
+        "lac_last_24h": 0.00857337754966858,
+        "lac_mean_24h": 0.06393733059917363,
+        "lac_count_24h": 0.07951133519238474,
+        "lac_since_24h": 0.02553976453870325,
+        "cre_last_48h": 0.09742238859109036,
+        "cre_count_48h": -0.014052269873078787,
+        "hr_last_4h__missing": -0.027855606766161,
+        "hr_mean_8h__missing": -0.05823165241612671,
+        "rr_last_4h__missing": -0.020008784993041064,
+        "rr_mean_8h__missing": 0.015339877159689838,
+        "lac_last_24h__missing": -0.001912855649375937,
+        "lac_mean_24h__missing": -0.001912855649375937,
+        "lac_since_24h__missing": -0.001912855649375937,
+        "cre_last_48h__missing": 0.04827661782805779
+      }
+    },
+    "sample": {
+      "predictions": 17079,
+      "patients": 827,
+      "events": 664,
+      "non_events": 16415,
+      "prevalence": 0.03887815445869196,
+      "patients_with_an_event": 234
+    },
+    "instability_flags": [],
+    "prediction_weighted": {
+      "conditions": {
+        "pipeline_as_known": {
+          "auroc": {
+            "point": 0.7016777741486813,
+            "lower": 0.6680897591097061,
+            "upper": 0.7340222119298893,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.10234983289919898,
+            "lower": 0.0812914412334161,
+            "upper": 0.13029195232537488,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.036348759190940515,
+            "lower": 0.032162063460844686,
+            "upper": 0.04083908058039093,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "source_as_known": {
+          "auroc": {
+            "point": 0.7018954893592035,
+            "lower": 0.668289814647485,
+            "upper": 0.7344773020394885,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.10194803074522708,
+            "lower": 0.08092270227091043,
+            "upper": 0.1299012002824268,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.03635750353257889,
+            "lower": 0.03216495551002754,
+            "upper": 0.04084974882666553,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "latest_revised": {
+          "auroc": {
+            "point": 0.7059611580650962,
+            "lower": 0.6723805619626068,
+            "upper": 0.7380689127308678,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.10353363829961551,
+            "lower": 0.08237042394035017,
+            "upper": 0.13420361410947967,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.0362959340218103,
+            "lower": 0.032139963747140614,
+            "upper": 0.04079539988499889,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_event_time": {
+          "auroc": {
+            "point": 0.7071803815933855,
+            "lower": 0.673492591494136,
+            "upper": 0.7390463962964692,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.10451662418061372,
+            "lower": 0.08288653732934499,
+            "upper": 0.13485984158916003,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 0.036276721937130836,
+            "lower": 0.03212147782089344,
+            "upper": 0.04074710508119005,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      },
+      "differences": {
+        "source_as_known_minus_pipeline_as_known": {
+          "minuend": "source_as_known",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.0002177152105222735,
+            "lower": -0.00031050501126345093,
+            "upper": 0.0007348856271873166,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": -0.00040180215397189745,
+            "lower": -0.0016289824774711604,
+            "upper": 0.00022822876356640083,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": 8.744341638375341e-06,
+            "lower": -4.234634422066275e-06,
+            "upper": 2.9016621990281255e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "latest_revised_minus_pipeline_as_known": {
+          "minuend": "latest_revised",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.004283383916414918,
+            "lower": 0.0008138764298152947,
+            "upper": 0.00840872494582926,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.0011838054004165294,
+            "lower": -0.0031562171086787906,
+            "upper": 0.007486947528724165,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -5.2825169130216176e-05,
+            "lower": -0.00013484500463333774,
+            "upper": 2.389412877220675e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        },
+        "naive_event_time_minus_pipeline_as_known": {
+          "minuend": "naive_event_time",
+          "subtrahend": "pipeline_as_known",
+          "auroc": {
+            "point": 0.005502607444704211,
+            "lower": 0.0015884247977501602,
+            "upper": 0.009682121797069693,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "average_precision": {
+            "point": 0.00216679128141474,
+            "lower": -0.0024180935451924494,
+            "upper": 0.008839669885400088,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          },
+          "brier": {
+            "point": -7.203725380967863e-05,
+            "lower": -0.0001573655859460203,
+            "upper": 1.1623101762008363e-05,
+            "estimable": true,
+            "bootstrap_requested": 2000,
+            "bootstrap_completed": 2000,
+            "reason": null
+          }
+        }
+      }
+    }
+  },
+  "subgroups": {
+    "prespecified": [
+      "site",
+      "age_band"
+    ],
+    "purpose": "Descriptive only. No claim of fairness, clinical safety, or causal benefit.",
+    "policy": "pipeline_as_known",
+    "bootstrap_replicates": 500,
+    "groups": {
+      "site": {
+        "site_a": {
+          "sample": {
+            "predictions": 6767,
+            "patients": 295,
+            "events": 247,
+            "non_events": 6520,
+            "prevalence": 0.03650066499187232,
+            "patients_with_an_event": 86
+          },
+          "unstable": false,
+          "instability_flags": [],
+          "metrics": {
+            "auroc": {
+              "point": 0.6676579071558083,
+              "lower": 0.6082781775186633,
+              "upper": 0.7305321421118621,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.09218830400847504,
+              "lower": 0.058538537872792826,
+              "upper": 0.14883353550556455,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.0344318440378696,
+              "lower": 0.027526268343108812,
+              "upper": 0.0410758328839261,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            }
+          }
+        },
+        "site_b": {
+          "sample": {
+            "predictions": 3854,
+            "patients": 176,
+            "events": 176,
+            "non_events": 3678,
+            "prevalence": 0.04566683964711987,
+            "patients_with_an_event": 60
+          },
+          "unstable": false,
+          "instability_flags": [],
+          "metrics": {
+            "auroc": {
+              "point": 0.7126371792970488,
+              "lower": 0.6494551490138232,
+              "upper": 0.7762023464783958,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.20040678056753658,
+              "lower": 0.12420394807179665,
+              "upper": 0.2917643082341133,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.041413628123560475,
+              "lower": 0.031822549767570096,
+              "upper": 0.052170445156840946,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            }
+          }
+        },
+        "site_c": {
+          "sample": {
+            "predictions": 2819,
+            "patients": 121,
+            "events": 80,
+            "non_events": 2739,
+            "prevalence": 0.028378857750975522,
+            "patients_with_an_event": 25
+          },
+          "unstable": false,
+          "instability_flags": [],
+          "metrics": {
+            "auroc": {
+              "point": 0.704237404162103,
+              "lower": 0.6183910113267854,
+              "upper": 0.7998622779125248,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.10161281468970962,
+              "lower": 0.03861785988060965,
+              "upper": 0.20911871365545143,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.027015142540938925,
+              "lower": 0.017171955436118356,
+              "upper": 0.0368256346222571,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            }
+          }
+        }
+      },
+      "age_band": {
+        "50_to_69": {
+          "sample": {
+            "predictions": 5774,
+            "patients": 239,
+            "events": 211,
+            "non_events": 5563,
+            "prevalence": 0.03654312435053689,
+            "patients_with_an_event": 74
+          },
+          "unstable": false,
+          "instability_flags": [],
+          "metrics": {
+            "auroc": {
+              "point": 0.6879313473500013,
+              "lower": 0.6237788014571203,
+              "upper": 0.7469295162639674,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.09639358115873516,
+              "lower": 0.06278031998568415,
+              "upper": 0.1621551559217652,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.03445219844787336,
+              "lower": 0.02771078966310323,
+              "upper": 0.04261221538851091,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            }
+          }
+        },
+        "70_plus": {
+          "sample": {
+            "predictions": 3768,
+            "patients": 172,
+            "events": 178,
+            "non_events": 3590,
+            "prevalence": 0.04723991507430998,
+            "patients_with_an_event": 56
+          },
+          "unstable": false,
+          "instability_flags": [],
+          "metrics": {
+            "auroc": {
+              "point": 0.6718029169666051,
+              "lower": 0.5897463639711984,
+              "upper": 0.741155321750957,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.1824564134634735,
+              "lower": 0.1033437684955949,
+              "upper": 0.2679343195622302,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.043067184967987344,
+              "lower": 0.03335088603614246,
+              "upper": 0.052755593662830766,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            }
+          }
+        },
+        "under_50": {
+          "sample": {
+            "predictions": 3898,
+            "patients": 181,
+            "events": 114,
+            "non_events": 3784,
+            "prevalence": 0.029245767060030785,
+            "patients_with_an_event": 41
+          },
+          "unstable": false,
+          "instability_flags": [],
+          "metrics": {
+            "auroc": {
+              "point": 0.6925211416490487,
+              "lower": 0.6065424024649134,
+              "upper": 0.7709828108250457,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.1113245170128106,
+              "lower": 0.04582462865776708,
+              "upper": 0.21856694945380672,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.02759362529963454,
+              "lower": 0.019706509545120696,
+              "upper": 0.03639895642175067,
+              "estimable": true,
+              "bootstrap_requested": 500,
+              "bootstrap_completed": 500,
+              "reason": null
+            }
+          }
+        }
+      }
+    }
+  },
+  "label_maturity": {
+    "purpose": "Shows pending and unknown labels, and what is lost by labelling too early. The main analysis uses the completed study with mature labels.",
+    "data_cut": "2025-05-31T00:00:00+00:00",
+    "horizon_hours": 12.0,
+    "max_ascertainment_lag_hours": 72.0,
+    "coverage_at_data_cut": {
+      "predictions": 67476,
+      "labelled": 57070,
+      "unknown": 10406,
+      "coverage": 0.8457822040429189,
+      "by_status": {
+        "positive": 2487,
+        "negative": 54583,
+        "pending_horizon": 9344,
+        "pending_ascertainment": 1062,
+        "unknown_follow_up": 0
+      }
+    },
+    "unknown_labels_set_to_zero": 0,
+    "premature_negatives_if_labelled_at_the_horizon": 1836,
+    "premature_negatives_meaning": "Predictions whose event happened inside the horizon but had not been ascertained when the horizon ended. A pipeline that labels as soon as the horizon elapses records each of them as a negative.",
+    "evaluation_against_impatient_labels": {
+      "design": "Frozen as-known model, as-known features, held-out test patients. Only the labels differ: mature labels of record versus labels recorded at T + H.",
+      "test_predictions": 13440,
+      "positives_with_mature_labels": 503,
+      "positives_with_labels_recorded_at_horizon": 170,
+      "prevalence_with_mature_labels": 0.03742559523809524,
+      "prevalence_with_labels_recorded_at_horizon": 0.012648809523809524,
+      "prediction_weighted": {
+        "conditions": {
+          "mature_labels": {
+            "auroc": {
+              "point": 0.6887574606469554,
+              "lower": 0.6479782647482861,
+              "upper": 0.7292253391369882,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.12229897615951281,
+              "lower": 0.08861437795284705,
+              "upper": 0.16929792832904159,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.034878281117215214,
+              "lower": 0.030200454209872878,
+              "upper": 0.04025396471881302,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            }
+          },
+          "labels_recorded_at_horizon": {
+            "auroc": {
+              "point": 0.6679402899064675,
+              "lower": 0.61161702596043,
+              "upper": 0.7236775027531699,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            },
+            "average_precision": {
+              "point": 0.026795880467642048,
+              "lower": 0.01871862138190196,
+              "upper": 0.04140613670375114,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            },
+            "brier": {
+              "point": 0.013901409770722968,
+              "lower": 0.011628961028352114,
+              "upper": 0.016285266663900906,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            }
+          }
+        },
+        "differences": {
+          "recorded_at_horizon_minus_mature": {
+            "minuend": "labels_recorded_at_horizon",
+            "subtrahend": "mature_labels",
+            "auroc": {
+              "point": -0.020817170740487945,
+              "lower": -0.0587401438310812,
+              "upper": 0.018420927929957937,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            },
+            "average_precision": {
+              "point": -0.09550309569187077,
+              "lower": -0.13827800523847988,
+              "upper": -0.06281846722738453,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            },
+            "brier": {
+              "point": -0.020976871346492246,
+              "lower": -0.02480907494816736,
+              "upper": -0.01757931930605881,
+              "estimable": true,
+              "bootstrap_requested": 2000,
+              "bootstrap_completed": 2000,
+              "reason": null
+            }
+          }
+        }
+      }
+    }
+  },
+  "limits": [
+    "All data are simulated. Nothing here is evidence about any real patient, hospital, or model.",
+    "The size and direction of every difference depend on the simulation's settings, which were fixed in advance and are not estimates of any real system.",
+    "Bootstrap intervals describe sampling variability in the test patients for models held fixed. They exclude the variability of model fitting and of the simulation itself.",
+    "A lower score under the as-known policy does not mean a worse engine. It means the naive number was measuring something the deployed pipeline could not have had.",
+    "Timestamp rules cannot establish clinical appropriateness, causality, or data validity.",
+    "Subgroup results are descriptive. They support no claim about fairness, safety, or benefit."
+  ]
+}

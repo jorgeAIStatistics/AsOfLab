@@ -184,9 +184,15 @@ def line_chart(
         )
         parts.append(_text(left - 8, sy(tick) + 4, format_tick(tick, y_step), anchor="end"))
     x_step = (x_ticks[1] - x_ticks[0]) if len(x_ticks) > 1 else 1.0
-    for tick in x_ticks:
+    for position, tick in enumerate(x_ticks):
         label = f"{10**tick:,.0f}" if log_x else format_tick(tick, x_step)
-        parts.append(_text(sx(tick), height - bottom + 16, label, anchor="middle"))
+        # Long labels at the two ends are anchored inwards so they are not clipped.
+        anchor = "middle"
+        if log_x and position == 0:
+            anchor = "start"
+        elif log_x and position == len(x_ticks) - 1:
+            anchor = "end"
+        parts.append(_text(sx(tick), height - bottom + 16, label, anchor=anchor))
     parts.append(
         f'<line x1="{left}" y1="{height - bottom}" x2="{width - right}" y2="{height - bottom}" stroke="var(--text-muted)" stroke-width="1"/>'
     )
@@ -272,7 +278,11 @@ def bar_chart(
     baseline = sy(0.0)
     for position, category in enumerate(categories):
         centre = left + band * (position + 0.5)
-        parts.append(_text(centre, height - bottom + 16, category, anchor="middle"))
+        # A category may be given on two lines, separated by a newline.
+        for line_number, line in enumerate(category.split("\n")):
+            parts.append(
+                _text(centre, height - bottom + 16 + 14 * line_number, line, anchor="middle")
+            )
         total = len(groups) * (bar + 2) - 2
         for index, (name, series) in enumerate(groups):
             value = series[position]

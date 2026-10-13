@@ -1,0 +1,298 @@
+{
+  "what": "Each entity has two feature rows with the same event timestamp. The documentation says the row with the highest created timestamp wins. Counts of which row Feast returned.",
+  "feast_version": "0.66.0",
+  "pandas_version": "2.3.3",
+  "dask_version": "2026.8.0",
+  "command": "integrations/feast/.venv/bin/python integrations/feast/repro_created_tiebreak.py",
+  "reported_upstream": false,
+  "cases": [
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 3,
+      "earlier_created_value_returned": 47
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 3,
+      "earlier_created_value_returned": 47
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 3,
+      "earlier_created_value_returned": 497
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 3,
+      "earlier_created_value_returned": 497
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 3,
+      "earlier_created_value_returned": 4997
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 3,
+      "earlier_created_value_returned": 4997
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 22,
+      "earlier_created_value_returned": 28
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 22,
+      "earlier_created_value_returned": 28
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 253,
+      "earlier_created_value_returned": 247
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 253,
+      "earlier_created_value_returned": 247
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 2548,
+      "earlier_created_value_returned": 2452
+    },
+    {
+      "offline_store": "dask",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 2548,
+      "earlier_created_value_returned": 2452
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 50,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 50,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 500,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 500,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": false,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 5000,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "identical for all entities",
+      "filter_by_created_timestamp": true,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 5000,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 5,
+      "rows_returned": 5,
+      "later_created_value_returned": 5,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 50,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 50,
+      "rows_returned": 50,
+      "later_created_value_returned": 50,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 500,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 500,
+      "rows_returned": 500,
+      "later_created_value_returned": 500,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": false,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 5000,
+      "earlier_created_value_returned": 0
+    },
+    {
+      "offline_store": "duckdb",
+      "event_times": "one per entity",
+      "filter_by_created_timestamp": true,
+      "entities": 5000,
+      "rows_returned": 5000,
+      "later_created_value_returned": 5000,
+      "earlier_created_value_returned": 0
+    }
+  ]
+}

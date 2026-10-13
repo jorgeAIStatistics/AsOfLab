@@ -1,0 +1,2746 @@
+{
+  "schema_version": 1,
+  "kind": "benchmark",
+  "generated_at": "2026-10-13T05:56:31+00:00",
+  "command": "uv run python benchmarks/run_benchmarks.py --profile standard",
+  "profile": "standard",
+  "synthetic_data": true,
+  "environment": {
+    "asoflab_version": "0.1.0",
+    "contract_version": "1.0.0",
+    "python": "3.12.15",
+    "implementation": "CPython",
+    "platform": "macOS-14.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "Apple M3 Pro",
+    "logical_cpus": 11,
+    "physical_cpus": 11,
+    "memory_bytes": 19327352832,
+    "libraries": {
+      "duckdb": "1.5.6",
+      "pyarrow": "26.0.0",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "pydantic": "2.14.1",
+      "hypothesis": "6.169.0"
+    },
+    "code_commit": "84718bf24888bd29ebb758039dba8406acf7d52a",
+    "code_dirty": false
+  },
+  "settings": {
+    "policy": "pipeline_as_known",
+    "seed": 20261,
+    "repetitions": 3,
+    "warmup": "one unmeasured run of each configuration before the measured repetitions",
+    "cache": "operating-system file cache warm: inputs are written and then read by the warm-up run",
+    "isolation": "each run in a fresh process",
+    "timeout_seconds": 900,
+    "duckdb_memory_limit": "DuckDB default (not set)",
+    "duckdb_threads": "DuckDB default (all logical CPUs)",
+    "replay_chunk_size": 50000,
+    "peak_memory_method": "resident set size summed over the worker's process tree, sampled every 20 ms; short peaks between samples can be missed"
+  },
+  "workloads": [
+    {
+      "workload_id": "uniform-10000",
+      "skew": "uniform",
+      "target_events": 10000,
+      "spec": {
+        "generator_version": "1",
+        "n_events": 10000,
+        "seed": 20261,
+        "skew": "uniform",
+        "events_per_entity": 200,
+        "events_per_prediction": 5,
+        "span_days": 30,
+        "correction_rate": 0.06,
+        "retraction_rate": 0.02,
+        "event_time_change_rate": 0.1,
+        "late_rate": 0.03,
+        "out_of_order_rate": 0.2,
+        "unknown_availability_rate": 0.002,
+        "duplicate_rate": 0.01,
+        "zipf_exponent": 1.1
+      },
+      "event_versions": 10047,
+      "logical_events": 9168,
+      "entities": 45,
+      "largest_entity_share_of_versions": 0.025878371653229818,
+      "predictions": 1833,
+      "features": 8,
+      "input_bytes": {
+        "events_parquet": 337921,
+        "spine_parquet": 18348
+      },
+      "generation_seconds": 0.03617570805363357,
+      "write_seconds": 0.006435499992221594
+    },
+    {
+      "workload_id": "uniform-100000",
+      "skew": "uniform",
+      "target_events": 100000,
+      "spec": {
+        "generator_version": "1",
+        "n_events": 100000,
+        "seed": 20261,
+        "skew": "uniform",
+        "events_per_entity": 200,
+        "events_per_prediction": 5,
+        "span_days": 30,
+        "correction_rate": 0.06,
+        "retraction_rate": 0.02,
+        "event_time_change_rate": 0.1,
+        "late_rate": 0.03,
+        "out_of_order_rate": 0.2,
+        "unknown_availability_rate": 0.002,
+        "duplicate_rate": 0.01,
+        "zipf_exponent": 1.1
+      },
+      "event_versions": 100033,
+      "logical_events": 91676,
+      "entities": 458,
+      "largest_entity_share_of_versions": 0.0028190697069966912,
+      "predictions": 18335,
+      "features": 8,
+      "input_bytes": {
+        "events_parquet": 3360183,
+        "spine_parquet": 183444
+      },
+      "generation_seconds": 0.09500583307817578,
+      "write_seconds": 0.0460568331182003
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "skew": "uniform",
+      "target_events": 1000000,
+      "spec": {
+        "generator_version": "1",
+        "n_events": 1000000,
+        "seed": 20261,
+        "skew": "uniform",
+        "events_per_entity": 200,
+        "events_per_prediction": 5,
+        "span_days": 30,
+        "correction_rate": 0.06,
+        "retraction_rate": 0.02,
+        "event_time_change_rate": 0.1,
+        "late_rate": 0.03,
+        "out_of_order_rate": 0.2,
+        "unknown_availability_rate": 0.002,
+        "duplicate_rate": 0.01,
+        "zipf_exponent": 1.1
+      },
+      "event_versions": 1000408,
+      "logical_events": 916758,
+      "entities": 4583,
+      "largest_entity_share_of_versions": 0.0002768870300917226,
+      "predictions": 183351,
+      "features": 8,
+      "input_bytes": {
+        "events_parquet": 28495452,
+        "spine_parquet": 1126863
+      },
+      "generation_seconds": 0.9612217079848051,
+      "write_seconds": 0.3364413338713348
+    },
+    {
+      "workload_id": "zipf-10000",
+      "skew": "zipf",
+      "target_events": 10000,
+      "spec": {
+        "generator_version": "1",
+        "n_events": 10000,
+        "seed": 20261,
+        "skew": "zipf",
+        "events_per_entity": 200,
+        "events_per_prediction": 5,
+        "span_days": 30,
+        "correction_rate": 0.06,
+        "retraction_rate": 0.02,
+        "event_time_change_rate": 0.1,
+        "late_rate": 0.03,
+        "out_of_order_rate": 0.2,
+        "unknown_availability_rate": 0.002,
+        "duplicate_rate": 0.01,
+        "zipf_exponent": 1.1
+      },
+      "event_versions": 10047,
+      "logical_events": 9168,
+      "entities": 45,
+      "largest_entity_share_of_versions": 0.26843833980292625,
+      "predictions": 1833,
+      "features": 8,
+      "input_bytes": {
+        "events_parquet": 336831,
+        "spine_parquet": 18185
+      },
+      "generation_seconds": 0.010916416998952627,
+      "write_seconds": 0.006635209079831839
+    },
+    {
+      "workload_id": "zipf-100000",
+      "skew": "zipf",
+      "target_events": 100000,
+      "spec": {
+        "generator_version": "1",
+        "n_events": 100000,
+        "seed": 20261,
+        "skew": "zipf",
+        "events_per_entity": 200,
+        "events_per_prediction": 5,
+        "span_days": 30,
+        "correction_rate": 0.06,
+        "retraction_rate": 0.02,
+        "event_time_change_rate": 0.1,
+        "late_rate": 0.03,
+        "out_of_order_rate": 0.2,
+        "unknown_availability_rate": 0.002,
+        "duplicate_rate": 0.01,
+        "zipf_exponent": 1.1
+      },
+      "event_versions": 100033,
+      "logical_events": 91676,
+      "entities": 458,
+      "largest_entity_share_of_versions": 0.19415592854358063,
+      "predictions": 18335,
+      "features": 8,
+      "input_bytes": {
+        "events_parquet": 3343561,
+        "spine_parquet": 181072
+      },
+      "generation_seconds": 0.09906808310188353,
+      "write_seconds": 0.04904170800000429
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "skew": "zipf",
+      "target_events": 1000000,
+      "spec": {
+        "generator_version": "1",
+        "n_events": 1000000,
+        "seed": 20261,
+        "skew": "zipf",
+        "events_per_entity": 200,
+        "events_per_prediction": 5,
+        "span_days": 30,
+        "correction_rate": 0.06,
+        "retraction_rate": 0.02,
+        "event_time_change_rate": 0.1,
+        "late_rate": 0.03,
+        "out_of_order_rate": 0.2,
+        "unknown_availability_rate": 0.002,
+        "duplicate_rate": 0.01,
+        "zipf_exponent": 1.1
+      },
+      "event_versions": 1000408,
+      "logical_events": 916758,
+      "entities": 4583,
+      "largest_entity_share_of_versions": 0.15898913243396695,
+      "predictions": 183351,
+      "features": 8,
+      "input_bytes": {
+        "events_parquet": 28175915,
+        "spine_parquet": 1064009
+      },
+      "generation_seconds": 1.0323878328781575,
+      "write_seconds": 0.3515714998356998
+    }
+  ],
+  "runs": [
+    {
+      "workload_id": "uniform-10000",
+      "engine": "batch",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 183562.44701168148,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.03117991704493761,
+          0.02876158314757049,
+          0.027623082976788282
+        ],
+        "export": [
+          0.0018510001245886087,
+          0.0017942909616976976,
+          0.0020546671003103256
+        ]
+      },
+      "end_to_end_seconds": [
+        0.05686174985021353,
+        0.05473341722972691,
+        0.05255979089997709
+      ],
+      "wall_seconds_with_startup": [
+        0.5075481669045985,
+        0.4960825829766691,
+        0.4785638749599457
+      ],
+      "peak_rss_bytes": [
+        175095808,
+        185483264,
+        182157312
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.05473341722972691,
+      "min_end_to_end_seconds": 0.05255979089997709,
+      "max_end_to_end_seconds": 0.05686174985021353,
+      "median_peak_rss_bytes": 182157312
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "batch",
+      "variant": "no_time_buckets",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 181504.49809299613,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.029496458126232028,
+          0.029210290871560574,
+          0.030518457992002368
+        ],
+        "export": [
+          0.001932458020746708,
+          0.00205037510022521,
+          0.0019324170425534248
+        ]
+      },
+      "end_to_end_seconds": [
+        0.05535400006920099,
+        0.05516462493687868,
+        0.05642695911228657
+      ],
+      "wall_seconds_with_startup": [
+        0.5030778748914599,
+        0.5112464588601142,
+        0.5022289170883596
+      ],
+      "peak_rss_bytes": [
+        183435264,
+        177881088,
+        176947200
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.05535400006920099,
+      "min_end_to_end_seconds": 0.05516462493687868,
+      "max_end_to_end_seconds": 0.05642695911228657,
+      "median_peak_rss_bytes": 177881088
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 1,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 81827.84390938985,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.032136416994035244,
+          0.03219449985772371,
+          0.03134779119864106
+        ],
+        "compute": [
+          0.03324904106557369,
+          0.03471404197625816,
+          0.03552758297882974
+        ],
+        "export": [
+          0.005987625103443861,
+          0.006008541211485863,
+          0.005939458031207323
+        ]
+      },
+      "end_to_end_seconds": [
+        0.12114925007335842,
+        0.12278216704726219,
+        0.12331679090857506
+      ],
+      "wall_seconds_with_startup": [
+        0.5855105419177562,
+        0.5733447500970215,
+        0.5716818750370294
+      ],
+      "peak_rss_bytes": [
+        141754368,
+        137854976,
+        140558336
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.12278216704726219,
+      "min_end_to_end_seconds": 0.12114925007335842,
+      "max_end_to_end_seconds": 0.12331679090857506,
+      "median_peak_rss_bytes": 140558336,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.12278216704726219,
+        "5_replays_of_one_prepared_log": 0.097073033452034,
+        "20_replays_of_one_prepared_log": 0.09225257090292871
+      }
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 70844.90407437834,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.0399165409617126,
+          0.04148345813155174,
+          0.040432958863675594
+        ],
+        "compute": [
+          0.04392249998636544,
+          0.04508929210714996,
+          0.044115166179835796
+        ],
+        "export": [
+          0.007601333083584905,
+          0.007718916051089764,
+          0.007861417019739747
+        ]
+      },
+      "end_to_end_seconds": [
+        0.14111145795322955,
+        0.1484829590190202,
+        0.14181683398783207
+      ],
+      "wall_seconds_with_startup": [
+        0.6109140831977129,
+        0.6032417500391603,
+        0.6064453748986125
+      ],
+      "peak_rss_bytes": [
+        144605184,
+        142180352,
+        141410304
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.14181683398783207,
+      "min_end_to_end_seconds": 0.14111145795322955,
+      "max_end_to_end_seconds": 0.1484829590190202,
+      "median_peak_rss_bytes": 142180352,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.14181683398783207,
+        "5_replays_of_one_prepared_log": 0.10947046689689159,
+        "20_replays_of_one_prepared_log": 0.10340552306734026
+      }
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 2,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 16239.211694175552,
+      "speedup_vs_single_worker": 0.2292220154201409,
+      "phases_seconds": {
+        "prepare": [
+          0.0401747499126941,
+          0.0399555410258472,
+          0.04052366688847542
+        ],
+        "compute": [
+          0.518557416042313,
+          0.6105039168614894,
+          0.5155199579894543
+        ],
+        "export": [
+          0.010306208161637187,
+          0.009591458132490516,
+          0.010339458007365465
+        ]
+      },
+      "end_to_end_seconds": [
+        0.6186876671854407,
+        0.7097243329044431,
+        0.6164382500573993
+      ],
+      "wall_seconds_with_startup": [
+        1.0911451249849051,
+        1.1763341249898076,
+        1.0776115420740098
+      ],
+      "peak_rss_bytes": [
+        386777088,
+        396361728,
+        383008768
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.6186876671854407,
+      "min_end_to_end_seconds": 0.6164382500573993,
+      "max_end_to_end_seconds": 0.7097243329044431,
+      "median_peak_rss_bytes": 386777088,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.6186876671854407,
+        "5_replays_of_one_prepared_log": 0.5865478672552854,
+        "20_replays_of_one_prepared_log": 0.5805216547683812
+      }
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 4,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 15867.210497951022,
+      "speedup_vs_single_worker": 0.22397109157339568,
+      "phases_seconds": {
+        "prepare": [
+          0.03983154194429517,
+          0.040367667097598314,
+          0.039970000041648746
+        ],
+        "compute": [
+          0.5326710001099855,
+          0.5268300839234143,
+          0.5362060409970582
+        ],
+        "export": [
+          0.010556084103882313,
+          0.010094208875671029,
+          0.010459834011271596
+        ]
+      },
+      "end_to_end_seconds": [
+        0.6331925829872489,
+        0.6276700419839472,
+        0.636542416876182
+      ],
+      "wall_seconds_with_startup": [
+        1.088549334090203,
+        1.0846834999974817,
+        1.0900410830508918
+      ],
+      "peak_rss_bytes": [
+        612909056,
+        616185856,
+        608649216
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.6331925829872489,
+      "min_end_to_end_seconds": 0.6276700419839472,
+      "max_end_to_end_seconds": 0.636542416876182,
+      "median_peak_rss_bytes": 612909056,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.6331925829872489,
+        "5_replays_of_one_prepared_log": 0.6012165829539299,
+        "20_replays_of_one_prepared_log": 0.5952210829476826
+      }
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 8,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 12425.57950403475,
+      "speedup_vs_single_worker": 0.17539129548385635,
+      "phases_seconds": {
+        "prepare": [
+          0.04076462495140731,
+          0.04069579089991748,
+          0.041188209084793925
+        ],
+        "compute": [
+          0.7047848750371486,
+          0.7132434588856995,
+          0.7067165421321988
+        ],
+        "export": [
+          0.01046220795251429,
+          0.010671375086531043,
+          0.010563666233792901
+        ]
+      },
+      "end_to_end_seconds": [
+        0.805821584071964,
+        0.8142810841090977,
+        0.8085739579983056
+      ],
+      "wall_seconds_with_startup": [
+        1.275129958987236,
+        1.2822695830836892,
+        1.2568809168878943
+      ],
+      "peak_rss_bytes": [
+        1007681536,
+        1047838720,
+        1024393216
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.8085739579983056,
+      "min_end_to_end_seconds": 0.805821584071964,
+      "max_end_to_end_seconds": 0.8142810841090977,
+      "median_peak_rss_bytes": 1024393216,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.8085739579983056,
+        "5_replays_of_one_prepared_log": 0.7759622580371797,
+        "20_replays_of_one_prepared_log": 0.7698475642944687
+      }
+    },
+    {
+      "workload_id": "uniform-10000",
+      "engine": "oracle",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 22591.349425205597,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.11823879205621779,
+          0.11931274994276464,
+          0.12033995799720287
+        ],
+        "compute": [
+          0.3172152088955045,
+          0.3227345838677138,
+          0.32339300005696714
+        ],
+        "export": [
+          0.001887042075395584,
+          0.001847999868914485,
+          0.0016999579966068268
+        ]
+      },
+      "end_to_end_seconds": [
+        0.438130582915619,
+        0.4447277500294149,
+        0.4462527499999851
+      ],
+      "wall_seconds_with_startup": [
+        0.9017968340776861,
+        0.9047125841025263,
+        0.899404208175838
+      ],
+      "peak_rss_bytes": [
+        128024576,
+        131334144,
+        124977152
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.4447277500294149,
+      "min_end_to_end_seconds": 0.438130582915619,
+      "max_end_to_end_seconds": 0.4462527499999851,
+      "median_peak_rss_bytes": 128024576
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "batch",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 660446.5775763433,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.11934054200537503,
+          0.12150870892219245,
+          0.11900908313691616
+        ],
+        "export": [
+          0.00730312499217689,
+          0.008133209077641368,
+          0.00832412508316338
+        ]
+      },
+      "end_to_end_seconds": [
+        0.15041054203175008,
+        0.15381695912219584,
+        0.15146266692318022
+      ],
+      "wall_seconds_with_startup": [
+        0.6071670828387141,
+        0.600091541884467,
+        0.6008384581655264
+      ],
+      "peak_rss_bytes": [
+        251707392,
+        258981888,
+        261226496
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.15146266692318022,
+      "min_end_to_end_seconds": 0.15041054203175008,
+      "max_end_to_end_seconds": 0.15381695912219584,
+      "median_peak_rss_bytes": 258981888
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "batch",
+      "variant": "no_time_buckets",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 554033.5678058459,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.1505067921243608,
+          0.14882483310066164,
+          0.14852212509140372
+        ],
+        "export": [
+          0.00795229198411107,
+          0.0077570839785039425,
+          0.008157290983945131
+        ]
+      },
+      "end_to_end_seconds": [
+        0.18272299994714558,
+        0.18044816609472036,
+        0.18055404187180102
+      ],
+      "wall_seconds_with_startup": [
+        0.6562524158507586,
+        0.6490543750114739,
+        0.6511775408871472
+      ],
+      "peak_rss_bytes": [
+        256360448,
+        247070720,
+        246857728
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.18055404187180102,
+      "min_end_to_end_seconds": 0.18044816609472036,
+      "max_end_to_end_seconds": 0.18272299994714558,
+      "median_peak_rss_bytes": 247070720
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 1,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 145352.30403418903,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.11083762510679662,
+          0.11257808282971382,
+          0.11095991590991616
+        ],
+        "compute": [
+          0.47036141715943813,
+          0.47240787488408387,
+          0.46456549991853535
+        ],
+        "export": [
+          0.05734000005759299,
+          0.057614624965935946,
+          0.057399542070925236
+        ]
+      },
+      "end_to_end_seconds": [
+        0.6882106249686331,
+        0.692478584125638,
+        0.6828490421175957
+      ],
+      "wall_seconds_with_startup": [
+        1.1517635830678046,
+        1.1440587909892201,
+        1.1473405838478357
+      ],
+      "peak_rss_bytes": [
+        246251520,
+        253820928,
+        245481472
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.6882106249686331,
+      "min_end_to_end_seconds": 0.6828490421175957,
+      "max_end_to_end_seconds": 0.692478584125638,
+      "median_peak_rss_bytes": 246251520,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.6882106249686331,
+        "5_replays_of_one_prepared_log": 0.5994426922407001,
+        "20_replays_of_one_prepared_log": 0.5827987048542127
+      }
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 176103.9078947363,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.13889475003816187,
+          0.13750787498429418,
+          0.13610945898108184
+        ],
+        "compute": [
+          0.32511104200966656,
+          0.3267604159191251,
+          0.32455141586251557
+        ],
+        "export": [
+          0.05454445909708738,
+          0.05356195685453713,
+          0.05352466693148017
+        ]
+      },
+      "end_to_end_seconds": [
+        0.5683902911841869,
+        0.5680339590180665,
+        0.5647888339590281
+      ],
+      "wall_seconds_with_startup": [
+        1.0105827501975,
+        1.0188093748874962,
+        1.0142622091807425
+      ],
+      "peak_rss_bytes": [
+        212287488,
+        214827008,
+        205504512
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.5680339590180665,
+      "min_end_to_end_seconds": 0.5647888339590281,
+      "max_end_to_end_seconds": 0.5683902911841869,
+      "median_peak_rss_bytes": 212287488,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.5680339590180665,
+        "5_replays_of_one_prepared_log": 0.4580276590306312,
+        "20_replays_of_one_prepared_log": 0.43740147778298705
+      }
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 2,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 109687.73747396618,
+      "speedup_vs_single_worker": 0.6228580545727045,
+      "phases_seconds": {
+        "prepare": [
+          0.13870366686023772,
+          0.13788454211317003,
+          0.13734670798294246
+        ],
+        "compute": [
+          0.6651316669303924,
+          0.6611815830692649,
+          0.6690760420169681
+        ],
+        "export": [
+          0.057766541838645935,
+          0.058000748977065086,
+          0.058314207941293716
+        ]
+      },
+      "end_to_end_seconds": [
+        0.9119797919411212,
+        0.9073222919832915,
+        0.9148858750704676
+      ],
+      "wall_seconds_with_startup": [
+        1.3663826249539852,
+        1.365026791812852,
+        1.3887344158720225
+      ],
+      "peak_rss_bytes": [
+        465289216,
+        456785920,
+        463699968
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.9119797919411212,
+      "min_end_to_end_seconds": 0.9073222919832915,
+      "max_end_to_end_seconds": 0.9148858750704676,
+      "median_peak_rss_bytes": 463699968,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.9119797919411212,
+        "5_replays_of_one_prepared_log": 0.8016721582505852,
+        "20_replays_of_one_prepared_log": 0.7809894769336096
+      }
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 4,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 116381.98756719753,
+      "speedup_vs_single_worker": 0.6608711240909161,
+      "phases_seconds": {
+        "prepare": [
+          0.13767641712911427,
+          0.13599495822563767,
+          0.1351195420138538
+        ],
+        "compute": [
+          0.6170283327810466,
+          0.6203251669649035,
+          0.6112212501466274
+        ],
+        "export": [
+          0.05756299989297986,
+          0.053330374881625175,
+          0.0577376252040267
+        ]
+      },
+      "end_to_end_seconds": [
+        0.8634022909682244,
+        0.8595230421051383,
+        0.8534859591163695
+      ],
+      "wall_seconds_with_startup": [
+        1.3304018748458475,
+        1.3221670410130173,
+        1.2946365419775248
+      ],
+      "peak_rss_bytes": [
+        705118208,
+        718045184,
+        710737920
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.8595230421051383,
+      "min_end_to_end_seconds": 0.8534859591163695,
+      "max_end_to_end_seconds": 0.8634022909682244,
+      "median_peak_rss_bytes": 710737920,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.8595230421051383,
+        "5_replays_of_one_prepared_log": 0.7507270755246281,
+        "20_replays_of_one_prepared_log": 0.7303278317907825
+      }
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 8,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 97949.76761271103,
+      "speedup_vs_single_worker": 0.5562043953690066,
+      "phases_seconds": {
+        "prepare": [
+          0.13460820796899498,
+          0.13498754194006324,
+          0.1366620420012623
+        ],
+        "compute": [
+          0.7789352498948574,
+          0.7794554580468684,
+          0.7882158751599491
+        ],
+        "export": [
+          0.05719287530519068,
+          0.05815474921837449,
+          0.0556397910695523
+        ]
+      },
+      "end_to_end_seconds": [
+        1.0206057920586318,
+        1.021268374985084,
+        1.0302007088903338
+      ],
+      "wall_seconds_with_startup": [
+        1.4806664159987122,
+        1.4835605421103537,
+        1.5005671251565218
+      ],
+      "peak_rss_bytes": [
+        1151926272,
+        1196556288,
+        1171079168
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 1.021268374985084,
+      "min_end_to_end_seconds": 1.0206057920586318,
+      "max_end_to_end_seconds": 1.0302007088903338,
+      "median_peak_rss_bytes": 1171079168,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 1.021268374985084,
+        "5_replays_of_one_prepared_log": 0.9132783414330333,
+        "20_replays_of_one_prepared_log": 0.8930302101420239
+      }
+    },
+    {
+      "workload_id": "uniform-100000",
+      "engine": "oracle",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 18122.398517790738,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          1.129921416984871,
+          1.1134224999696016,
+          1.1243657919112593
+        ],
+        "compute": [
+          4.381397875025868,
+          4.332067292183638,
+          4.505337125156075
+        ],
+        "export": [
+          0.0077175418846309185,
+          0.007991333026438951,
+          0.007158583030104637
+        ]
+      },
+      "end_to_end_seconds": [
+        5.519854333950207,
+        5.454259917140007,
+        5.637643000110984
+      ],
+      "wall_seconds_with_startup": [
+        6.000533041078597,
+        5.938875166932121,
+        6.107720833038911
+      ],
+      "peak_rss_bytes": [
+        411828224,
+        402112512,
+        400244736
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 5.519854333950207,
+      "min_end_to_end_seconds": 5.454259917140007,
+      "max_end_to_end_seconds": 5.637643000110984,
+      "median_peak_rss_bytes": 402112512
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "batch",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 847436.6164634426,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          1.1017599580809474,
+          1.0648495419882238,
+          1.141053375089541
+        ],
+        "export": [
+          0.057291584089398384,
+          0.05572308413684368,
+          0.056370042031630874
+        ]
+      },
+      "end_to_end_seconds": [
+        1.1805107078980654,
+        1.1440676250495017,
+        1.226635416969657
+      ],
+      "wall_seconds_with_startup": [
+        1.630775208119303,
+        1.5964485830627382,
+        1.6845191661268473
+      ],
+      "peak_rss_bytes": [
+        678674432,
+        706478080,
+        629489664
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 1.1805107078980654,
+      "min_end_to_end_seconds": 1.1440676250495017,
+      "max_end_to_end_seconds": 1.226635416969657,
+      "median_peak_rss_bytes": 678674432
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "batch",
+      "variant": "no_time_buckets",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 562517.8525852914,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          1.6830039999913424,
+          1.7185215840581805,
+          1.7002458749338984
+        ],
+        "export": [
+          0.054569250205531716,
+          0.05630658403970301,
+          0.055102874990552664
+        ]
+      },
+      "end_to_end_seconds": [
+        1.761065874947235,
+        1.798737833974883,
+        1.7784466668963432
+      ],
+      "wall_seconds_with_startup": [
+        2.2095709999557585,
+        2.2762196669355035,
+        2.2195534168276936
+      ],
+      "peak_rss_bytes": [
+        645136384,
+        641351680,
+        758775808
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 1.7784466668963432,
+      "min_end_to_end_seconds": 1.761065874947235,
+      "max_end_to_end_seconds": 1.798737833974883,
+      "median_peak_rss_bytes": 645136384
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 1,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 89225.38377673602,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.3969509999733418,
+          0.3982030840124935,
+          0.405564249958843
+        ],
+        "compute": [
+          10.282275624806061,
+          10.176183499861509,
+          10.200236957985908
+        ],
+        "export": [
+          0.5555980410426855,
+          0.5561157919000834,
+          0.5560678748879582
+        ]
+      },
+      "end_to_end_seconds": [
+        11.2845837501809,
+        11.180859208106995,
+        11.212145665893331
+      ],
+      "wall_seconds_with_startup": [
+        11.742757499916479,
+        11.641470375005156,
+        11.688176959054545
+      ],
+      "peak_rss_bytes": [
+        956547072,
+        935723008,
+        954810368
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 11.212145665893331,
+      "min_end_to_end_seconds": 11.180859208106995,
+      "max_end_to_end_seconds": 11.2845837501809,
+      "median_peak_rss_bytes": 954810368,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 11.212145665893331,
+        "5_replays_of_one_prepared_log": 10.893583198683336,
+        "20_replays_of_one_prepared_log": 10.833852736081463
+      }
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 160663.79012526388,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.6794074999634176,
+          0.6755865421146154,
+          0.6765436660498381
+        ],
+        "compute": [
+          4.9288134158123285,
+          4.94661816698499,
+          4.9735427079722285
+        ],
+        "export": [
+          0.5519559998065233,
+          0.5547683339100331,
+          0.5637918750289828
+        ]
+      },
+      "end_to_end_seconds": [
+        6.209806208033115,
+        6.226717290934175,
+        6.263437875080854
+      ],
+      "wall_seconds_with_startup": [
+        6.660226665902883,
+        6.693479583133012,
+        6.736104917014018
+      ],
+      "peak_rss_bytes": [
+        633831424,
+        595705856,
+        609140736
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 6.226717290934175,
+      "min_end_to_end_seconds": 6.209806208033115,
+      "max_end_to_end_seconds": 6.263437875080854,
+      "median_peak_rss_bytes": 609140736,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 6.226717290934175,
+        "5_replays_of_one_prepared_log": 5.685482358094305,
+        "20_replays_of_one_prepared_log": 5.584000808186829
+      }
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 2,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 228912.77918782685,
+      "speedup_vs_single_worker": 1.4247938443961246,
+      "phases_seconds": {
+        "prepare": [
+          0.694594708038494,
+          0.6834742091596127,
+          0.6838792499620467
+        ],
+        "compute": [
+          3.0753283749800175,
+          3.0736827079672366,
+          3.068884833017364
+        ],
+        "export": [
+          0.5532052088528872,
+          0.5629735828842968,
+          0.5479457499459386
+        ]
+      },
+      "end_to_end_seconds": [
+        4.373064834158868,
+        4.370258416980505,
+        4.350179666886106
+      ],
+      "wall_seconds_with_startup": [
+        4.844403250142932,
+        4.8515759580768645,
+        4.812473666854203
+      ],
+      "peak_rss_bytes": [
+        899252224,
+        903528448,
+        895729664
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 4.370258416980505,
+      "min_end_to_end_seconds": 4.350179666886106,
+      "max_end_to_end_seconds": 4.373064834158868,
+      "median_peak_rss_bytes": 899252224,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 4.370258416980505,
+        "5_replays_of_one_prepared_log": 3.8231550170108677,
+        "20_replays_of_one_prepared_log": 3.7205731295165605
+      }
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 4,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 291053.6908887026,
+      "speedup_vs_single_worker": 1.8115699291158156,
+      "phases_seconds": {
+        "prepare": [
+          0.6950324580539018,
+          0.6950509999878705,
+          0.6781591249164194
+        ],
+        "compute": [
+          2.1296098339371383,
+          2.132658583810553,
+          2.13012733287178
+        ],
+        "export": [
+          0.5627342918887734,
+          0.5639538750983775,
+          0.5564305409789085
+        ]
+      },
+      "end_to_end_seconds": [
+        3.4371939999982715,
+        3.4416687909979373,
+        3.414552625035867
+      ],
+      "wall_seconds_with_startup": [
+        3.902256000088528,
+        3.9026975000742823,
+        3.887559917056933
+      ],
+      "peak_rss_bytes": [
+        1263648768,
+        1233027072,
+        1239171072
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 3.4371939999982715,
+      "min_end_to_end_seconds": 3.414552625035867,
+      "max_end_to_end_seconds": 3.4416687909979373,
+      "median_peak_rss_bytes": 1239171072,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 3.4371939999982715,
+        "5_replays_of_one_prepared_log": 2.88116803355515,
+        "20_replays_of_one_prepared_log": 2.776913164847065
+      }
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 8,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 292375.2133279275,
+      "speedup_vs_single_worker": 1.8197953197791046,
+      "phases_seconds": {
+        "prepare": [
+          0.6940211250912398,
+          0.6793740829452872,
+          0.6981182920280844
+        ],
+        "compute": [
+          2.1087222502101213,
+          2.1300136249046773,
+          2.109399874927476
+        ],
+        "export": [
+          0.564349208958447,
+          0.5615373339969665,
+          0.5669382910709828
+        ]
+      },
+      "end_to_end_seconds": [
+        3.4169021660927683,
+        3.421658042119816,
+        3.426911582937464
+      ],
+      "wall_seconds_with_startup": [
+        3.885013958904892,
+        3.8919936660677195,
+        3.903764249989763
+      ],
+      "peak_rss_bytes": [
+        1922138112,
+        1918009344,
+        1899167744
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 3.421658042119816,
+      "min_end_to_end_seconds": 3.4169021660927683,
+      "max_end_to_end_seconds": 3.426911582937464,
+      "median_peak_rss_bytes": 1918009344,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 3.421658042119816,
+        "5_replays_of_one_prepared_log": 2.866441142046824,
+        "20_replays_of_one_prepared_log": 2.762337973283138
+      }
+    },
+    {
+      "workload_id": "uniform-1000000",
+      "engine": "oracle",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": null,
+      "throughput_events_per_second": null,
+      "speedup_vs_single_worker": null,
+      "status": "skipped",
+      "reason": "The oracle compares every prediction with every version of its entity. It is a correctness reference and was not attempted at this size."
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "batch",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 179573.45271658307,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.02994508296251297,
+          0.030567875131964684,
+          0.030069416854530573
+        ],
+        "export": [
+          0.002009166870266199,
+          0.0019912919960916042,
+          0.002245540963485837
+        ]
+      },
+      "end_to_end_seconds": [
+        0.05561395804397762,
+        0.05624854192137718,
+        0.05594925000332296
+      ],
+      "wall_seconds_with_startup": [
+        0.5093128329608589,
+        0.5153220419306308,
+        0.5017396670300514
+      ],
+      "peak_rss_bytes": [
+        185532416,
+        190398464,
+        182042624
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.05594925000332296,
+      "min_end_to_end_seconds": 0.05561395804397762,
+      "max_end_to_end_seconds": 0.05624854192137718,
+      "median_peak_rss_bytes": 185532416
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "batch",
+      "variant": "no_time_buckets",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 154495.64796748717,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.0382895830553025,
+          0.039495292119681835,
+          0.03899350017309189
+        ],
+        "export": [
+          0.0020261669997125864,
+          0.002691833069548011,
+          0.0021658330224454403
+        ]
+      },
+      "end_to_end_seconds": [
+        0.06386187509633601,
+        0.06639524991624057,
+        0.06503095803782344
+      ],
+      "wall_seconds_with_startup": [
+        0.5008611669763923,
+        0.525495459092781,
+        0.5235153338871896
+      ],
+      "peak_rss_bytes": [
+        168837120,
+        179748864,
+        183009280
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.06503095803782344,
+      "min_end_to_end_seconds": 0.06386187509633601,
+      "max_end_to_end_seconds": 0.06639524991624057,
+      "median_peak_rss_bytes": 179748864
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 1,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 81502.19732283031,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.031718041049316525,
+          0.032722749980166554,
+          0.03231545793823898
+        ],
+        "compute": [
+          0.03456762502901256,
+          0.03608454088680446,
+          0.03471766714937985
+        ],
+        "export": [
+          0.006351792253553867,
+          0.0064393330831080675,
+          0.006309831980615854
+        ]
+      },
+      "end_to_end_seconds": [
+        0.12229475006461143,
+        0.12508858391083777,
+        0.12327275006100535
+      ],
+      "wall_seconds_with_startup": [
+        0.5776205000001937,
+        0.593705500010401,
+        0.5910807501059026
+      ],
+      "peak_rss_bytes": [
+        144195584,
+        145571840,
+        136445952
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.12327275006100535,
+      "min_end_to_end_seconds": 0.12229475006461143,
+      "max_end_to_end_seconds": 0.12508858391083777,
+      "median_peak_rss_bytes": 144195584,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.12327275006100535,
+        "5_replays_of_one_prepared_log": 0.09742038371041417,
+        "20_replays_of_one_prepared_log": 0.09257306501967832
+      }
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 69386.13780883019,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.0407332091126591,
+          0.04072433291003108,
+          0.040340375155210495
+        ],
+        "compute": [
+          0.04586962494067848,
+          0.04619725001975894,
+          0.04546145792119205
+        ],
+        "export": [
+          0.00780033296905458,
+          0.007677209097892046,
+          0.007881958037614822
+        ]
+      },
+      "end_to_end_seconds": [
+        0.14521470782347023,
+        0.14479837496764958,
+        0.14336799993179739
+      ],
+      "wall_seconds_with_startup": [
+        0.6171780419535935,
+        0.6090504170861095,
+        0.6067938329651952
+      ],
+      "peak_rss_bytes": [
+        142082048,
+        139214848,
+        137576448
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.14479837496764958,
+      "min_end_to_end_seconds": 0.14336799993179739,
+      "max_end_to_end_seconds": 0.14521470782347023,
+      "median_peak_rss_bytes": 139214848,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.14479837496764958,
+        "5_replays_of_one_prepared_log": 0.11221890863962472,
+        "20_replays_of_one_prepared_log": 0.10611025870312005
+      }
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 2,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 16171.453573997878,
+      "speedup_vs_single_worker": 0.2330646161421003,
+      "phases_seconds": {
+        "prepare": [
+          0.03985741687938571,
+          0.0402153329923749,
+          0.03954108292236924
+        ],
+        "compute": [
+          0.5266915829852223,
+          0.5208710839506239,
+          0.5207392498850822
+        ],
+        "export": [
+          0.010725874919444323,
+          0.010238917078822851,
+          0.0103452920448035
+        ]
+      },
+      "end_to_end_seconds": [
+        0.6269419998861849,
+        0.6212799581699073,
+        0.6197003331035376
+      ],
+      "wall_seconds_with_startup": [
+        1.082256541121751,
+        1.072960291057825,
+        1.0632769169751555
+      ],
+      "peak_rss_bytes": [
+        396050432,
+        382926848,
+        388218880
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.6212799581699073,
+      "min_end_to_end_seconds": 0.6197003331035376,
+      "max_end_to_end_seconds": 0.6269419998861849,
+      "median_peak_rss_bytes": 388218880,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.6212799581699073,
+        "5_replays_of_one_prepared_log": 0.5893940246663988,
+        "20_replays_of_one_prepared_log": 0.5834154121344909
+      }
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 4,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 16109.84477643216,
+      "speedup_vs_single_worker": 0.23217670395226983,
+      "phases_seconds": {
+        "prepare": [
+          0.040677708107978106,
+          0.04048033384606242,
+          0.039948999881744385
+        ],
+        "compute": [
+          0.5346664171665907,
+          0.5224898329470307,
+          0.5237965828273445
+        ],
+        "export": [
+          0.00989887397736311,
+          0.010344541864469647,
+          0.010418083053082228
+        ]
+      },
+      "end_to_end_seconds": [
+        0.6348080418538302,
+        0.623040416976437,
+        0.6236559159588069
+      ],
+      "wall_seconds_with_startup": [
+        1.080263749929145,
+        1.0776181251276284,
+        1.0986537081189454
+      ],
+      "peak_rss_bytes": [
+        615284736,
+        616562688,
+        611811328
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.6236559159588069,
+      "min_end_to_end_seconds": 0.623040416976437,
+      "max_end_to_end_seconds": 0.6348080418538302,
+      "median_peak_rss_bytes": 615284736,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.6236559159588069,
+        "5_replays_of_one_prepared_log": 0.5912716488819569,
+        "20_replays_of_one_prepared_log": 0.5851995988050476
+      }
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 8,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 12572.21929555062,
+      "speedup_vs_single_worker": 0.18119208955236965,
+      "phases_seconds": {
+        "prepare": [
+          0.040379750076681376,
+          0.039898083079606295,
+          0.03960250015370548
+        ],
+        "compute": [
+          0.7076027498114854,
+          0.6997564169578254,
+          0.6905948750209063
+        ],
+        "export": [
+          0.01022070785984397,
+          0.01042762491852045,
+          0.010402832878753543
+        ]
+      },
+      "end_to_end_seconds": [
+        0.8080118328798562,
+        0.7991429169196635,
+        0.7891426251735538
+      ],
+      "wall_seconds_with_startup": [
+        1.2658152082003653,
+        1.249870875151828,
+        1.232523291138932
+      ],
+      "peak_rss_bytes": [
+        1069678592,
+        1049886720,
+        1007271936
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 0.7991429169196635,
+      "min_end_to_end_seconds": 0.7891426251735538,
+      "max_end_to_end_seconds": 0.8080118328798562,
+      "median_peak_rss_bytes": 1049886720,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.7991429169196635,
+        "5_replays_of_one_prepared_log": 0.7672244504559785,
+        "20_replays_of_one_prepared_log": 0.7612397379940375
+      }
+    },
+    {
+      "workload_id": "zipf-10000",
+      "engine": "oracle",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 6014.479620645624,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.11934325005859137,
+          0.11837462498806417,
+          0.11877716705203056
+        ],
+        "compute": [
+          1.5388721250928938,
+          1.5746566250454634,
+          1.5489884170237929
+        ],
+        "export": [
+          0.001960625173524022,
+          0.0018123339395970106,
+          0.0019185419660061598
+        ]
+      },
+      "end_to_end_seconds": [
+        1.6610097920056432,
+        1.69560854206793,
+        1.6704687078017741
+      ],
+      "wall_seconds_with_startup": [
+        2.129158457973972,
+        2.1443719579838216,
+        2.1330014169216156
+      ],
+      "peak_rss_bytes": [
+        122322944,
+        127467520,
+        127467520
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 1833,
+      "median_end_to_end_seconds": 1.6704687078017741,
+      "min_end_to_end_seconds": 1.6610097920056432,
+      "max_end_to_end_seconds": 1.69560854206793,
+      "median_peak_rss_bytes": 127467520
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "batch",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 250036.84208084774,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.35493533313274384,
+          0.36910887504927814,
+          0.367464791983366
+        ],
+        "export": [
+          0.008996374905109406,
+          0.009126415941864252,
+          0.009119582828134298
+        ]
+      },
+      "end_to_end_seconds": [
+        0.38771341694518924,
+        0.40176620800048113,
+        0.40007304190658033
+      ],
+      "wall_seconds_with_startup": [
+        0.8521139589138329,
+        0.8452714581508189,
+        0.8508149581030011
+      ],
+      "peak_rss_bytes": [
+        764755968,
+        765165568,
+        775651328
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.40007304190658033,
+      "min_end_to_end_seconds": 0.38771341694518924,
+      "max_end_to_end_seconds": 0.40176620800048113,
+      "median_peak_rss_bytes": 765165568
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "batch",
+      "variant": "no_time_buckets",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 108863.57798740469,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          0.8860883330926299,
+          0.8376880830619484,
+          0.8859178330749273
+        ],
+        "export": [
+          0.00919966702349484,
+          0.009193707956001163,
+          0.009172374848276377
+        ]
+      },
+      "end_to_end_seconds": [
+        0.9195151659660041,
+        0.8704163329675794,
+        0.9188840000424534
+      ],
+      "wall_seconds_with_startup": [
+        1.3817148329690099,
+        1.3184050000272691,
+        1.383661000058055
+      ],
+      "peak_rss_bytes": [
+        761888768,
+        754712576,
+        766427136
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.9188840000424534,
+      "min_end_to_end_seconds": 0.8704163329675794,
+      "max_end_to_end_seconds": 0.9195151659660041,
+      "median_peak_rss_bytes": 761888768
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 1,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 136878.08919830085,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.1131814168766141,
+          0.1103376669343561,
+          0.11406729207374156
+        ],
+        "compute": [
+          0.5073776671197265,
+          0.5054334159940481,
+          0.5062734170351177
+        ],
+        "export": [
+          0.061117707984521985,
+          0.061900541884824634,
+          0.06146495905704796
+        ]
+      },
+      "end_to_end_seconds": [
+        0.7308182090055197,
+        0.7279556670691818,
+        0.731489083962515
+      ],
+      "wall_seconds_with_startup": [
+        1.1801992498803884,
+        1.1827317078132182,
+        1.1820914580021054
+      ],
+      "peak_rss_bytes": [
+        246841344,
+        265404416,
+        255688704
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.7308182090055197,
+      "min_end_to_end_seconds": 0.7279556670691818,
+      "max_end_to_end_seconds": 0.731489083962515,
+      "median_peak_rss_bytes": 255688704,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.7308182090055197,
+        "5_replays_of_one_prepared_log": 0.6402730755042285,
+        "20_replays_of_one_prepared_log": 0.6232958629727363
+      }
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 167165.5608802437,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.13574675004929304,
+          0.13821216602809727,
+          0.13331395806744695
+        ],
+        "compute": [
+          0.3536626249551773,
+          0.35991516592912376,
+          0.35604300000704825
+        ],
+        "export": [
+          0.0589343742467463,
+          0.05923479190096259,
+          0.059144790982827544
+        ]
+      },
+      "end_to_end_seconds": [
+        0.5984067500103265,
+        0.6080987500026822,
+        0.5979382498189807
+      ],
+      "wall_seconds_with_startup": [
+        1.0507923329714686,
+        1.0649045840837061,
+        1.045581583864987
+      ],
+      "peak_rss_bytes": [
+        211042304,
+        211779584,
+        211517440
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.5984067500103265,
+      "min_end_to_end_seconds": 0.5979382498189807,
+      "max_end_to_end_seconds": 0.6080987500026822,
+      "median_peak_rss_bytes": 211517440,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.5984067500103265,
+        "5_replays_of_one_prepared_log": 0.4898093499708921,
+        "20_replays_of_one_prepared_log": 0.4694473374634981
+      }
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 2,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 108071.7408249056,
+      "speedup_vs_single_worker": 0.64649524851789,
+      "phases_seconds": {
+        "prepare": [
+          0.135013708146289,
+          0.13627324998378754,
+          0.13683691597543657
+        ],
+        "compute": [
+          0.6725704160053283,
+          0.6776567080523819,
+          0.676571249961853
+        ],
+        "export": [
+          0.06206962396390736,
+          0.06212537479586899,
+          0.06219158391468227
+        ]
+      },
+      "end_to_end_seconds": [
+        0.9194804581347853,
+        0.9256166249979287,
+        0.9257707910146564
+      ],
+      "wall_seconds_with_startup": [
+        1.3951236659195274,
+        1.3972800830379128,
+        1.400506999809295
+      ],
+      "peak_rss_bytes": [
+        471072768,
+        470679552,
+        467091456
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.9256166249979287,
+      "min_end_to_end_seconds": 0.9194804581347853,
+      "max_end_to_end_seconds": 0.9257707910146564,
+      "median_peak_rss_bytes": 470679552,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.9256166249979287,
+        "5_replays_of_one_prepared_log": 0.8165980250108987,
+        "20_replays_of_one_prepared_log": 0.7961570375133306
+      }
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 4,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 116215.60119227495,
+      "speedup_vs_single_worker": 0.695212581947612,
+      "phases_seconds": {
+        "prepare": [
+          0.13773750001564622,
+          0.13553816615603864,
+          0.13741312501952052
+        ],
+        "compute": [
+          0.6148786661215127,
+          0.6106348331086338,
+          0.6112173330038786
+        ],
+        "export": [
+          0.06287683406844735,
+          0.06272049993276596,
+          0.062222792068496346
+        ]
+      },
+      "end_to_end_seconds": [
+        0.8654675830621272,
+        0.8587794580962509,
+        0.8607536249328405
+      ],
+      "wall_seconds_with_startup": [
+        1.3290031249634922,
+        1.3386855840217322,
+        1.318167791934684
+      ],
+      "peak_rss_bytes": [
+        714473472,
+        715554816,
+        701546496
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 0.8607536249328405,
+      "min_end_to_end_seconds": 0.8587794580962509,
+      "max_end_to_end_seconds": 0.8654675830621272,
+      "median_peak_rss_bytes": 714473472,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 0.8607536249328405,
+        "5_replays_of_one_prepared_log": 0.750823124917224,
+        "20_replays_of_one_prepared_log": 0.730211156164296
+      }
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 8,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 96555.45860583625,
+      "speedup_vs_single_worker": 0.5776037725558074,
+      "phases_seconds": {
+        "prepare": [
+          0.13504374981857836,
+          0.13506141700781882,
+          0.1356147089973092
+        ],
+        "compute": [
+          0.7886747089214623,
+          0.8023020417895168,
+          0.7872819579206407
+        ],
+        "export": [
+          0.06245541665703058,
+          0.062031582929193974,
+          0.06262708292342722
+        ]
+      },
+      "end_to_end_seconds": [
+        1.036015999969095,
+        1.048769624903798,
+        1.035263708094135
+      ],
+      "wall_seconds_with_startup": [
+        1.492227500071749,
+        1.524959583999589,
+        1.487746249884367
+      ],
+      "peak_rss_bytes": [
+        1182777344,
+        1188003840,
+        1181089792
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 18335,
+      "median_end_to_end_seconds": 1.036015999969095,
+      "min_end_to_end_seconds": 1.035263708094135,
+      "max_end_to_end_seconds": 1.048769624903798,
+      "median_peak_rss_bytes": 1182777344,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 1.036015999969095,
+        "5_replays_of_one_prepared_log": 0.92796686636284,
+        "20_replays_of_one_prepared_log": 0.9077076538116671
+      }
+    },
+    {
+      "workload_id": "zipf-100000",
+      "engine": "oracle",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": null,
+      "throughput_events_per_second": null,
+      "speedup_vs_single_worker": null,
+      "status": "skipped",
+      "reason": "The oracle compares every prediction with every version of its entity. It is a correctness reference and was not attempted at this size."
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "batch",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 56063.43110400901,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          18.165121084079146,
+          17.648921667132527,
+          17.7531364581082
+        ],
+        "export": [
+          0.06627887510694563,
+          0.06597537500783801,
+          0.06763183302246034
+        ]
+      },
+      "end_to_end_seconds": [
+        18.254719499964267,
+        17.738801333121955,
+        17.84421645803377
+      ],
+      "wall_seconds_with_startup": [
+        18.7365222920198,
+        18.302324375137687,
+        18.30811662506312
+      ],
+      "peak_rss_bytes": [
+        5514231808,
+        5684707328,
+        5839208448
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 17.84421645803377,
+      "min_end_to_end_seconds": 17.738801333121955,
+      "max_end_to_end_seconds": 18.254719499964267,
+      "median_peak_rss_bytes": 5684707328
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "batch",
+      "variant": "no_time_buckets",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 19333.31745591135,
+      "speedup_vs_single_worker": null,
+      "phases_seconds": {
+        "prepare": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "compute": [
+          51.736891499953344,
+          51.653020082972944,
+          51.62421058304608
+        ],
+        "export": [
+          0.06919529102742672,
+          0.06910945801064372,
+          0.07051325007341802
+        ]
+      },
+      "end_to_end_seconds": [
+        51.829779166029766,
+        51.74528387491591,
+        51.71791095798835
+      ],
+      "wall_seconds_with_startup": [
+        52.32157962513156,
+        52.23177162511274,
+        52.20444650016725
+      ],
+      "peak_rss_bytes": [
+        5937283072,
+        5939773440,
+        5699829760
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 51.74528387491591,
+      "min_end_to_end_seconds": 51.71791095798835,
+      "max_end_to_end_seconds": 51.829779166029766,
+      "median_peak_rss_bytes": 5937283072
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 1,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 80353.62218738568,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.39381158305332065,
+          0.40155733400024474,
+          0.4108301668893546
+        ],
+        "compute": [
+          11.242650457890704,
+          11.389294333057478,
+          11.339981791796163
+        ],
+        "export": [
+          0.6471291668713093,
+          0.641786792082712,
+          0.649445166811347
+        ]
+      },
+      "end_to_end_seconds": [
+        12.333252750104293,
+        12.482949916971847,
+        12.450067249825224
+      ],
+      "wall_seconds_with_startup": [
+        12.798154707998037,
+        12.95936083397828,
+        12.907439708011225
+      ],
+      "peak_rss_bytes": [
+        947060736,
+        946454528,
+        943947776
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 12.450067249825224,
+      "min_end_to_end_seconds": 12.333252750104293,
+      "max_end_to_end_seconds": 12.482949916971847,
+      "median_peak_rss_bytes": 946454528,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 12.450067249825224,
+        "5_replays_of_one_prepared_log": 12.128821382625029,
+        "20_replays_of_one_prepared_log": 12.068587782524991
+      }
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 1,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 128310.44209038603,
+      "speedup_vs_single_worker": 1.0,
+      "phases_seconds": {
+        "prepare": [
+          0.666675333166495,
+          0.6844969999510795,
+          0.6844022921286523
+        ],
+        "compute": [
+          6.458342999918386,
+          6.410467042122036,
+          6.4288692499976605
+        ],
+        "export": [
+          0.6391277918592095,
+          0.640673709101975,
+          0.6341373329050839
+        ]
+      },
+      "end_to_end_seconds": [
+        7.814178250031546,
+        7.7851727090310305,
+        7.796777750132605
+      ],
+      "wall_seconds_with_startup": [
+        8.26640516705811,
+        8.240753958001733,
+        8.265780958114192
+      ],
+      "peak_rss_bytes": [
+        649723904,
+        636223488,
+        629800960
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 7.796777750132605,
+      "min_end_to_end_seconds": 7.7851727090310305,
+      "max_end_to_end_seconds": 7.814178250031546,
+      "median_peak_rss_bytes": 636223488,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 7.796777750132605,
+        "5_replays_of_one_prepared_log": 7.249255916429684,
+        "20_replays_of_one_prepared_log": 7.146595572610385
+      }
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 2,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 192548.57504944102,
+      "speedup_vs_single_worker": 1.5006461821229138,
+      "phases_seconds": {
+        "prepare": [
+          0.676153999986127,
+          0.6803672919049859,
+          0.6636488339863718
+        ],
+        "compute": [
+          3.7891528748441488,
+          3.8266149580013007,
+          3.95550995785743
+        ],
+        "export": [
+          0.6448200407903641,
+          0.639189291279763,
+          0.6380820830818266
+        ]
+      },
+      "end_to_end_seconds": [
+        5.160364457871765,
+        5.195613624993712,
+        5.306677334010601
+      ],
+      "wall_seconds_with_startup": [
+        5.609261832898483,
+        5.648818833054975,
+        5.780328458175063
+      ],
+      "peak_rss_bytes": [
+        907018240,
+        912162816,
+        891715584
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 5.195613624993712,
+      "min_end_to_end_seconds": 5.160364457871765,
+      "max_end_to_end_seconds": 5.306677334010601,
+      "median_peak_rss_bytes": 907018240,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 5.195613624993712,
+        "5_replays_of_one_prepared_log": 4.6546904250048105,
+        "20_replays_of_one_prepared_log": 4.553267325006891
+      }
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 4,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 243966.71736920348,
+      "speedup_vs_single_worker": 1.9013785113244752,
+      "phases_seconds": {
+        "prepare": [
+          0.677523042075336,
+          0.6731958340387791,
+          0.6869523329660296
+        ],
+        "compute": [
+          2.7290441249497235,
+          2.7390995000023395,
+          2.8323024578858167
+        ],
+        "export": [
+          0.6398242090363055,
+          0.6387737090699375,
+          0.6378752500750124
+        ]
+      },
+      "end_to_end_seconds": [
+        4.095878167077899,
+        4.100592124974355,
+        4.2066604578867555
+      ],
+      "wall_seconds_with_startup": [
+        4.572686208179221,
+        4.56810958404094,
+        4.66400304203853
+      ],
+      "peak_rss_bytes": [
+        1258618880,
+        1278394368,
+        1265729536
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 4.100592124974355,
+      "min_end_to_end_seconds": 4.095878167077899,
+      "max_end_to_end_seconds": 4.2066604578867555,
+      "median_peak_rss_bytes": 1265729536,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 4.100592124974355,
+        "5_replays_of_one_prepared_log": 3.5585736913140864,
+        "20_replays_of_one_prepared_log": 3.456945235002786
+      }
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "replay",
+      "variant": "default",
+      "workers": 8,
+      "partitions": 8,
+      "chunk_size": 50000,
+      "reference_engine": "batch",
+      "equivalent_to_reference": true,
+      "throughput_events_per_second": 225205.08306204708,
+      "speedup_vs_single_worker": 1.755157876421354,
+      "phases_seconds": {
+        "prepare": [
+          0.6787991661112756,
+          0.6869035419076681,
+          0.6854794579558074
+        ],
+        "compute": [
+          3.105072416830808,
+          3.0601216671057045,
+          3.059431290952489
+        ],
+        "export": [
+          0.6394128329120576,
+          0.6447528328280896,
+          0.6407052499707788
+        ]
+      },
+      "end_to_end_seconds": [
+        4.472669583046809,
+        4.442208792082965,
+        4.434861124958843
+      ],
+      "wall_seconds_with_startup": [
+        4.948571249842644,
+        4.908530083019286,
+        4.896865457994863
+      ],
+      "peak_rss_bytes": [
+        1903181824,
+        1876213760,
+        1859305472
+      ],
+      "status": "ok",
+      "reason": null,
+      "rows_out": 183351,
+      "median_end_to_end_seconds": 4.442208792082965,
+      "min_end_to_end_seconds": 4.434861124958843,
+      "max_end_to_end_seconds": 4.472669583046809,
+      "median_peak_rss_bytes": 1876213760,
+      "amortised_seconds_per_replay": {
+        "1_replays_of_one_prepared_log": 4.442208792082965,
+        "5_replays_of_one_prepared_log": 3.8938252257183192,
+        "20_replays_of_one_prepared_log": 3.7910033070249485
+      }
+    },
+    {
+      "workload_id": "zipf-1000000",
+      "engine": "oracle",
+      "variant": "default",
+      "workers": 1,
+      "partitions": null,
+      "chunk_size": null,
+      "reference_engine": "batch",
+      "equivalent_to_reference": null,
+      "throughput_events_per_second": null,
+      "speedup_vs_single_worker": null,
+      "status": "skipped",
+      "reason": "The oracle compares every prediction with every version of its entity. It is a correctness reference and was not attempted at this size."
+    }
+  ],
+  "notes": [
+    "Single machine, synthetic data, local files. Not a measurement of any distributed system.",
+    "The oracle is a correctness reference written for clarity, not speed. Its times are shown for scale only.",
+    "end_to_end excludes interpreter start-up; wall_seconds_with_startup includes it.",
+    "Speedups are reported only where the outputs were equivalent to the batch backend's.",
+    "Replay prepare (sorting and compaction) is paid once per prepared log. amortised_seconds_per_replay states the number of replays it is spread over."
+  ]
+}

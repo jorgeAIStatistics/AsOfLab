@@ -1,0 +1,397 @@
+{
+  "manifest_version": 1,
+  "run_id": "combined-seed20263-eb0e7d1b",
+  "kind": "clinical_experiment",
+  "created_at": "2026-10-13T05:37:35+00:00",
+  "synthetic_data": true,
+  "identity": {
+    "generator_version": "clinical-sim/1",
+    "generator_config_hash": "f387a5e15fc0d31b529cefe440a86ccf14a8340a051be130df884dd292f2cc2e",
+    "feature_config_hash": "59e41cb4ebeba625ad4ecfe4472c4219e7a679d4d83979fc1618c8d048edbab1",
+    "contract_version": "1.0.0",
+    "asoflab_version": "0.1.0",
+    "analysis_settings_hash": "5e357ee581383783641f539c1b2ce1a927d5c8f17d83a5a892fb37004be8bb91"
+  },
+  "generator": {
+    "version": "clinical-sim/1",
+    "config": {
+      "scenario": {
+        "name": "combined",
+        "description": "Everything on: delays, revisions, delayed outcomes, several encounters, site differences.",
+        "delayed_labs": true,
+        "corrections": true,
+        "delayed_outcomes": true,
+        "multiple_encounters": true,
+        "site_variation": true
+      },
+      "seed": 20263,
+      "n_patients": 3000,
+      "study_start": "2025-01-01T00:00:00Z",
+      "study_days": 180,
+      "parameters": {
+        "horizon_hours": 12,
+        "prediction_interval_hours": 4,
+        "first_prediction_hour": 4,
+        "patient_effect_sd": 0.6,
+        "encounter_effect_sd": 0.3,
+        "age_bands": [
+          "under_50",
+          "50_to_69",
+          "70_plus"
+        ],
+        "age_band_shares": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "age_band_effects": [
+          0.0,
+          0.2,
+          0.4
+        ],
+        "ar_coefficient": 0.95,
+        "innovation_sd": 0.25,
+        "hazard_intercept": -6.2,
+        "hazard_slope": 1.0,
+        "extra_encounter_rate": 0.6,
+        "max_encounters": 4,
+        "gap_days_mean": 20.0,
+        "length_min_hours": 24,
+        "length_gamma_shape": 2.0,
+        "length_gamma_scale_hours": 24.0,
+        "length_max_hours": 240,
+        "lab_correction_rate": 0.08,
+        "lab_retraction_rate": 0.015,
+        "lab_event_time_error_rate": 0.01,
+        "vital_correction_rate": 0.02,
+        "correction_delay_median_hours": 6.0,
+        "correction_delay_sigma": 0.6,
+        "retraction_delay_median_hours": 8.0,
+        "event_time_error_sd_minutes": 45.0,
+        "outcome_delay_median_hours": 8.0,
+        "outcome_delay_sigma": 0.8,
+        "outcome_delay_max_hours": 72,
+        "sites": [
+          {
+            "name": "site_a",
+            "share": 0.5,
+            "measurement_interval_scale": 1.0,
+            "lab_delay_scale": 1.0,
+            "pipeline_batch_minutes": 5,
+            "pipeline_processing_minutes": 1
+          },
+          {
+            "name": "site_b",
+            "share": 0.3,
+            "measurement_interval_scale": 0.75,
+            "lab_delay_scale": 1.5,
+            "pipeline_batch_minutes": 15,
+            "pipeline_processing_minutes": 2
+          },
+          {
+            "name": "site_c",
+            "share": 0.2,
+            "measurement_interval_scale": 1.5,
+            "lab_delay_scale": 2.5,
+            "pipeline_batch_minutes": 60,
+            "pipeline_processing_minutes": 10
+          }
+        ],
+        "streams": [
+          {
+            "event_type": "vital.heart_rate",
+            "short_name": "hr",
+            "unit": "bpm",
+            "is_lab": false,
+            "interval_hours": 2.0,
+            "severity_frequency": 0.2,
+            "intercept": 80.0,
+            "slope": 10.0,
+            "noise_sd": 7.0,
+            "log_scale": false,
+            "decimals": 0,
+            "delay_median_minutes": 0.0,
+            "delay_sigma": 0.0,
+            "correction_error_sd": 0.25
+          },
+          {
+            "event_type": "vital.resp_rate",
+            "short_name": "rr",
+            "unit": "breaths/min",
+            "is_lab": false,
+            "interval_hours": 4.0,
+            "severity_frequency": 0.2,
+            "intercept": 18.0,
+            "slope": 2.5,
+            "noise_sd": 2.5,
+            "log_scale": false,
+            "decimals": 0,
+            "delay_median_minutes": 0.0,
+            "delay_sigma": 0.0,
+            "correction_error_sd": 0.25
+          },
+          {
+            "event_type": "lab.lactate",
+            "short_name": "lac",
+            "unit": "mmol/L",
+            "is_lab": true,
+            "interval_hours": 10.0,
+            "severity_frequency": 0.4,
+            "intercept": 0.4,
+            "slope": 0.35,
+            "noise_sd": 0.3,
+            "log_scale": true,
+            "decimals": 1,
+            "delay_median_minutes": 60.0,
+            "delay_sigma": 0.5,
+            "correction_error_sd": 0.5
+          },
+          {
+            "event_type": "lab.creatinine",
+            "short_name": "cre",
+            "unit": "mg/dL",
+            "is_lab": true,
+            "interval_hours": 16.0,
+            "severity_frequency": 0.1,
+            "intercept": 0.0,
+            "slope": 0.2,
+            "noise_sd": 0.25,
+            "log_scale": true,
+            "decimals": 2,
+            "delay_median_minutes": 120.0,
+            "delay_sigma": 0.5,
+            "correction_error_sd": 0.5
+          }
+        ]
+      }
+    }
+  },
+  "seed": 20263,
+  "scenario": "combined",
+  "data_hashes": {
+    "patients": "1e936cc0f75708240d2fd8b4cbdedb452f0941a4b14cdb7aca85fc9552a0529d",
+    "encounters": "8785ddc81ac937cc929524df35fcdb734bca0ab53e56d85be9b8048744787589",
+    "events": "323c6c27a5e182208c3770f5bf4db15e3aa52a3e8f9d354f04085dc882d132c4",
+    "spine": "2b4f27e580b5d4604e7f2d01a1c5477c5a5eac4a223a98f7a4af67eda922fe05",
+    "outcomes": "611310e5d059e35593bf2095f3ad8a83dd84748474a4ccc20c95258f15e20dd3",
+    "follow_up": "1d5c5816a715e15ef01c8694b6a55102d5f6364723aa40d3dc14923f991c052c"
+  },
+  "schema_hashes": {
+    "patients": "599213dca843896aa2c175b08fe7fb2ae9cf651a61712b2c54d1cd38d20540c6",
+    "encounters": "78f7438f2dd052ee5eff7d29bccb04001033581442376050a152f741fd5e1406",
+    "events": "a476ea4de9831b9975a0620fa6a6e241ba8bf5cb79a34ccb888b70a82be4fdb8",
+    "spine": "97c33ed04537545604a782828dcca650470e88ca6173492a7b20a62c493dbf2c",
+    "outcomes": "dc02b56ee112ba454606cef22b5ba2a016c04a6f36d1e0901aba0e97790e586f",
+    "follow_up": "6dfd7f51818b5c5cdcb2320a2d434893eaa5cd24c0bf79932b127fad0987ed0d"
+  },
+  "feature_config": {
+    "feature_set_version": "clinical-1",
+    "features": [
+      {
+        "name": "hr_last_4h",
+        "event_type": "vital.heart_rate",
+        "aggregation": "last",
+        "window_seconds": 14400,
+        "scope": "entity"
+      },
+      {
+        "name": "hr_mean_8h",
+        "event_type": "vital.heart_rate",
+        "aggregation": "mean",
+        "window_seconds": 28800,
+        "scope": "entity"
+      },
+      {
+        "name": "rr_last_4h",
+        "event_type": "vital.resp_rate",
+        "aggregation": "last",
+        "window_seconds": 14400,
+        "scope": "entity"
+      },
+      {
+        "name": "rr_mean_8h",
+        "event_type": "vital.resp_rate",
+        "aggregation": "mean",
+        "window_seconds": 28800,
+        "scope": "entity"
+      },
+      {
+        "name": "lac_last_24h",
+        "event_type": "lab.lactate",
+        "aggregation": "last",
+        "window_seconds": 86400,
+        "scope": "entity"
+      },
+      {
+        "name": "lac_mean_24h",
+        "event_type": "lab.lactate",
+        "aggregation": "mean",
+        "window_seconds": 86400,
+        "scope": "entity"
+      },
+      {
+        "name": "lac_count_24h",
+        "event_type": "lab.lactate",
+        "aggregation": "count",
+        "window_seconds": 86400,
+        "scope": "entity"
+      },
+      {
+        "name": "lac_since_24h",
+        "event_type": "lab.lactate",
+        "aggregation": "time_since_last",
+        "window_seconds": 86400,
+        "scope": "entity"
+      },
+      {
+        "name": "cre_last_48h",
+        "event_type": "lab.creatinine",
+        "aggregation": "last",
+        "window_seconds": 172800,
+        "scope": "entity"
+      },
+      {
+        "name": "cre_count_48h",
+        "event_type": "lab.creatinine",
+        "aggregation": "count",
+        "window_seconds": 172800,
+        "scope": "entity"
+      }
+    ]
+  },
+  "time_policies": [
+    {
+      "policy": "pipeline_as_known",
+      "strictness": "strict",
+      "faithful_replay": true,
+      "feature_table_hash": "11bc6969d47427dab4a56878efc80a29f751f3f43f8592fc54e71a05d9cde572"
+    },
+    {
+      "policy": "source_as_known",
+      "strictness": "strict",
+      "faithful_replay": true,
+      "feature_table_hash": "f81ad9155750aab4abcf4b2ef1dc726409503bb6d3b8629235a00aedf8e24a4c"
+    },
+    {
+      "policy": "latest_revised",
+      "strictness": "retrospective",
+      "faithful_replay": false,
+      "feature_table_hash": "2612e11b11d0abf989d37f7eef66043e9732fdcd4d34ca217684d38c41039ad7"
+    },
+    {
+      "policy": "naive_event_time",
+      "strictness": "diagnostic",
+      "faithful_replay": false,
+      "feature_table_hash": "212549609b3755911e26cf24ad0323db665cd0c6d1657753075b3dabed45f54c"
+    }
+  ],
+  "reference_policy": "pipeline_as_known",
+  "label_spec": {
+    "outcome_type": "deterioration",
+    "horizon_seconds": 43200,
+    "max_ascertainment_lag_seconds": 259200
+  },
+  "label_cutoff": null,
+  "label_cutoff_note": "Main analysis uses the completed study: every outcome ascertained.",
+  "splits": {
+    "patient_holdout": {
+      "seed": 1,
+      "hash": "5b832e56706571ef02e4604cb47dbe7692a09526dd4e480eafb6af3b11b65c22"
+    },
+    "chronological": {
+      "cutoff": "2025-05-01T00:00:00+00:00",
+      "hash": "d7b1c994376c0dc20153917cfa4effe65b6be3974b7a75796840ed810933f539",
+      "counts": {
+        "excluded_label_not_mature_at_cutoff": {
+          "predictions": 1312,
+          "patients": 158
+        },
+        "excluded_patient_seen_before_cutoff": {
+          "predictions": 4975,
+          "patients": 268
+        },
+        "test": {
+          "predictions": 16627,
+          "patients": 803
+        },
+        "train": {
+          "predictions": 33391,
+          "patients": 1585
+        },
+        "validation": {
+          "predictions": 10909,
+          "patients": 523
+        }
+      },
+      "rules": [
+        "A prediction is used for fitting only if its label was mature at the cutoff: prediction time + horizon + maximum ascertainment lag <= cutoff.",
+        "Fitting labels are computed from outcomes ascertained by the cutoff.",
+        "Test predictions are those after the cutoff from patients first seen after the cutoff.",
+        "A patient seen before the cutoff who returns afterwards is excluded from the test set."
+      ],
+      "fitting_labels_that_differ_from_final_labels": 0
+    }
+  },
+  "analysis_settings": {
+    "bootstrap": {
+      "replicates": 2000,
+      "seed": 20261013,
+      "level": 0.95,
+      "min_completed_fraction": 0.95,
+      "method": "percentile"
+    },
+    "subgroup_replicates": 500,
+    "split_seed": 1,
+    "chronological_cutoff_day": 120,
+    "data_cut_day": 150,
+    "replay_parity": true,
+    "oracle_sample_patients": 25,
+    "max_audit_examples": 25
+  },
+  "environment": {
+    "asoflab_version": "0.1.0",
+    "contract_version": "1.0.0",
+    "python": "3.12.15",
+    "implementation": "CPython",
+    "platform": "macOS-14.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "Apple M3 Pro",
+    "logical_cpus": 11,
+    "physical_cpus": 11,
+    "memory_bytes": 19327352832,
+    "libraries": {
+      "duckdb": "1.5.6",
+      "pyarrow": "26.0.0",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "pydantic": "2.14.1",
+      "hypothesis": "6.169.0"
+    },
+    "code_commit": "20b67ce67ef55080bf61090a4b3338b3c428b47c",
+    "code_dirty": false
+  },
+  "outputs": {
+    "audit.json": {
+      "sha256": "d64f131fb1ff6aa4aa16028a34bb700c0af2b764f3c10921394c10b69d53cad8",
+      "bytes": 35599
+    },
+    "labels.parquet": {
+      "sha256": "7f36f28b4adb326ef6d482b12c2d5cec706f8ae201014446ff2860a17fec1cad",
+      "bytes": 1223124
+    },
+    "predictions.parquet": {
+      "sha256": "96e60ca1c312e6c1e266ecb63a5d6b4925a660de521fa1e3d31d136f3d561e57",
+      "bytes": 5007540
+    },
+    "splits.parquet": {
+      "sha256": "ff6bfb231bda037db1f29127f41dd1f3faeaa1549c3db8ff7c541a4113eba55f",
+      "bytes": 7108
+    },
+    "statistics.json": {
+      "sha256": "ab3f81f5d442aadfc8e7c790f47dcbb17c97aadc2e3f0bc987e52729bd2a4f80",
+      "bytes": 73681
+    }
+  },
+  "note": "Hashes identify content and detect accidental or unrecorded changes. They are not evidence that the content, the availability times, or any conclusion is correct."
+}

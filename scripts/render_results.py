@@ -213,7 +213,7 @@ def experiments_section() -> str:
         for s in scenarios.values()
     ]
     chart = bar_chart(
-        [name.replace("_", " ") for name in scenarios],
+        [name.replace("_", "\n") for name in scenarios],
         [("share of predictions", share_values)],
         title="Predictions where the naive policy read something unavailable (%)",
         y_label="percent of predictions",
@@ -418,7 +418,12 @@ def benchmark_section() -> str:
         return None
 
     layouts = sorted({(r["partitions"], r["workers"]) for r in runs if r["engine"] == "replay"})
-    widest = max(layouts, key=lambda layout: (layout[1], layout[0])) if layouts else None
+    # The parallel layout shown in the charts: 8 partitions with 4 workers when it was run.
+    widest = (
+        (8, 4)
+        if (8, 4) in layouts
+        else (max(layouts, key=lambda layout: (layout[1], layout[0])) if layouts else None)
+    )
     for skew in sorted({w["skew"] for w in document["workloads"]}):
         ids = [w["workload_id"] for w in document["workloads"] if w["skew"] == skew]
         series = []

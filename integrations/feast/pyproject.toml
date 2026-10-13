@@ -1,0 +1,11 @@
+[project]
+name = "asoflab-feast-comparison"
+version = "0.1.0"
+description = "Isolated environment for comparing AsOfLab with Feast on the semantics they share."
+requires-python = ">=3.12,<3.13"
+# Feast pins a large dependency set of its own, so it lives in a separate environment
+# and the two sides exchange Parquet files instead of importing each other.
+dependencies = ["feast[duckdb]==0.66.0"]
+
+[tool.uv]
+package = false

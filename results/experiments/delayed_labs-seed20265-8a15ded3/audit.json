@@ -1,0 +1,930 @@
+{
+  "synthetic_data": true,
+  "validation": {
+    "ok": true,
+    "counts": {
+      "event_versions": 212069,
+      "exact_duplicate_rows": 0,
+      "logical_events": 212069,
+      "entities": 3000,
+      "versions_quarantined_unknown_availability": 0,
+      "logical_events_with_quarantined_later_revision": 0,
+      "versions_with_assumed_availability": 0,
+      "predictions": 45016
+    },
+    "findings": []
+  },
+  "policies": {
+    "pipeline_as_known": {
+      "strictness": "strict",
+      "faithful_replay": true
+    },
+    "source_as_known": {
+      "strictness": "strict",
+      "faithful_replay": true
+    },
+    "latest_revised": {
+      "strictness": "retrospective",
+      "faithful_replay": false
+    },
+    "naive_event_time": {
+      "strictness": "diagnostic",
+      "faithful_replay": false
+    }
+  },
+  "feature_differences_from_reference": {
+    "source_as_known": {
+      "predictions_with_any_feature_changed": 418,
+      "share_of_predictions": 0.009285587346721165,
+      "by_feature": {
+        "hr_last_4h": 0,
+        "hr_mean_8h": 0,
+        "rr_last_4h": 0,
+        "rr_mean_8h": 0,
+        "lac_last_24h": 256,
+        "lac_mean_24h": 272,
+        "lac_count_24h": 275,
+        "lac_since_24h": 269,
+        "cre_last_48h": 141,
+        "cre_count_48h": 143
+      }
+    },
+    "latest_revised": {
+      "predictions_with_any_feature_changed": 0,
+      "share_of_predictions": 0.0,
+      "by_feature": {
+        "hr_last_4h": 0,
+        "hr_mean_8h": 0,
+        "rr_last_4h": 0,
+        "rr_mean_8h": 0,
+        "lac_last_24h": 0,
+        "lac_mean_24h": 0,
+        "lac_count_24h": 0,
+        "lac_since_24h": 0,
+        "cre_last_48h": 0,
+        "cre_count_48h": 0
+      }
+    },
+    "naive_event_time": {
+      "predictions_with_any_feature_changed": 11219,
+      "share_of_predictions": 0.24922249866714058,
+      "by_feature": {
+        "hr_last_4h": 0,
+        "hr_mean_8h": 0,
+        "rr_last_4h": 0,
+        "rr_mean_8h": 0,
+        "lac_last_24h": 5577,
+        "lac_mean_24h": 5790,
+        "lac_count_24h": 5893,
+        "lac_since_24h": 5837,
+        "cre_last_48h": 6092,
+        "cre_count_48h": 6205
+      }
+    }
+  },
+  "parity": {
+    "replay_vs_batch": {
+      "pipeline_as_known": {
+        "left": "batch",
+        "right": "replay",
+        "rows_left": 45016,
+        "rows_right": 45016,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 1.3322676295501878e-15,
+        "examples": []
+      },
+      "source_as_known": {
+        "left": "batch",
+        "right": "replay",
+        "rows_left": 45016,
+        "rows_right": 45016,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 1.7763568394002505e-15,
+        "examples": []
+      },
+      "latest_revised": {
+        "left": "batch",
+        "right": "replay",
+        "rows_left": 45016,
+        "rows_right": 45016,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 1.3322676295501878e-15,
+        "examples": []
+      },
+      "naive_event_time": {
+        "left": "batch",
+        "right": "replay",
+        "rows_left": 45016,
+        "rows_right": 45016,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 1.3322676295501878e-15,
+        "examples": []
+      }
+    },
+    "oracle_vs_batch_on_a_patient_sample": {
+      "pipeline_as_known": {
+        "patients": 25,
+        "left": "oracle",
+        "right": "batch",
+        "rows_left": 358,
+        "rows_right": 358,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 4.440892098500626e-16,
+        "examples": []
+      },
+      "source_as_known": {
+        "patients": 25,
+        "left": "oracle",
+        "right": "batch",
+        "rows_left": 358,
+        "rows_right": 358,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 4.440892098500626e-16,
+        "examples": []
+      },
+      "latest_revised": {
+        "patients": 25,
+        "left": "oracle",
+        "right": "batch",
+        "rows_left": 358,
+        "rows_right": 358,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 4.440892098500626e-16,
+        "examples": []
+      },
+      "naive_event_time": {
+        "patients": 25,
+        "left": "oracle",
+        "right": "batch",
+        "rows_left": 358,
+        "rows_right": 358,
+        "equivalent": true,
+        "n_mismatches": 0,
+        "max_abs_difference_within_tolerance": 4.440892098500626e-16,
+        "examples": []
+      }
+    }
+  },
+  "differential": {
+    "reference_policy": "pipeline_as_known",
+    "candidate_policy": "naive_event_time",
+    "scope": "Timing and revision differences only. Not a test of clinical appropriateness, causality, or data validity.",
+    "predictions": 45016,
+    "predictions_with_findings": 11219,
+    "findings_total": 12607,
+    "findings_shown": 25,
+    "by_type": {
+      "used_before_available": {
+        "count": 12607,
+        "severity": "high",
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      "used_with_unknown_availability": {
+        "count": 0,
+        "severity": "high",
+        "meaning": "The candidate used an observation whose availability time is unknown.",
+        "remediation": "Recover the availability time, or exclude the observation and report the count."
+      },
+      "value_revised_later": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "Both used the observation, but the candidate read a revision that was not yet known at the prediction time.",
+        "remediation": "Read the version in force at the prediction time, not today's latest version."
+      },
+      "used_after_later_revision": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "At the prediction time the observation was withdrawn or dated outside the window; the candidate read a later revision that brought it in.",
+        "remediation": "Resolve revisions as known at the prediction time before applying the window."
+      },
+      "missed_later_retracted": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "The observation was in force at the prediction time and was withdrawn afterwards. The candidate omits it, so it does not reproduce what was used.",
+        "remediation": "Apply a retraction only from the moment the retraction was known."
+      },
+      "missed_event_time_moved": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "The observation was inside the window as known at the prediction time; a later revision moved its event time, so the candidate omits it.",
+        "remediation": "Resolve revisions as known at the prediction time before applying the window."
+      }
+    },
+    "by_event_type": {
+      "lab.creatinine": {
+        "used_before_available": 6548
+      },
+      "lab.lactate": {
+        "used_before_available": 6059
+      }
+    },
+    "examples": [
+      {
+        "finding_id": "P000000-E1-T008|P000000-E1-lac-0002",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000000-E1-T008",
+        "entity_id": "P000000",
+        "prediction_time": "2025-01-21T17:39:00+00:00",
+        "logical_event_id": "P000000-E1-lac-0002",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-01-21T19:11:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-01-21T17:07:00+00:00",
+          "value": 1.4
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000001-E1-T020|P000001-E1-cre-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000001-E1-T020",
+        "entity_id": "P000001",
+        "prediction_time": "2025-02-03T11:58:00+00:00",
+        "logical_event_id": "P000001-E1-cre-0000",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-03T12:36:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-03T11:16:00+00:00",
+          "value": 1.02
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000001-E1-T040|P000001-E1-cre-0001",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000001-E1-T040",
+        "entity_id": "P000001",
+        "prediction_time": "2025-02-04T07:58:00+00:00",
+        "logical_event_id": "P000001-E1-cre-0001",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-04T08:11:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-04T04:44:00+00:00",
+          "value": 0.93
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000001-E1-T060|P000001-E1-lac-0002",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000001-E1-T060",
+        "entity_id": "P000001",
+        "prediction_time": "2025-02-05T03:58:00+00:00",
+        "logical_event_id": "P000001-E1-lac-0002",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-05T05:26:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-05T03:00:00+00:00",
+          "value": 1.0
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000001-E1-T064|P000001-E1-lac-0003",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000001-E1-T064",
+        "entity_id": "P000001",
+        "prediction_time": "2025-02-05T07:58:00+00:00",
+        "logical_event_id": "P000001-E1-lac-0003",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-05T09:01:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-05T07:18:00+00:00",
+          "value": 1.4
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000002-E1-T008|P000002-E1-lac-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000002-E1-T008",
+        "entity_id": "P000002",
+        "prediction_time": "2025-01-21T23:05:00+00:00",
+        "logical_event_id": "P000002-E1-lac-0000",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-01-21T23:36:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-01-21T22:49:00+00:00",
+          "value": 0.9
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000002-E1-T012|P000002-E1-cre-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000002-E1-T012",
+        "entity_id": "P000002",
+        "prediction_time": "2025-01-22T03:05:00+00:00",
+        "logical_event_id": "P000002-E1-cre-0000",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-01-22T03:21:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-01-22T02:07:00+00:00",
+          "value": 1.25
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000002-E1-T032|P000002-E1-cre-0001",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000002-E1-T032",
+        "entity_id": "P000002",
+        "prediction_time": "2025-01-22T23:05:00+00:00",
+        "logical_event_id": "P000002-E1-cre-0001",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-01-23T00:46:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-01-22T22:48:00+00:00",
+          "value": 0.56
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000003-E1-T008|P000003-E1-lac-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000003-E1-T008",
+        "entity_id": "P000003",
+        "prediction_time": "2025-04-06T10:28:00+00:00",
+        "logical_event_id": "P000003-E1-lac-0000",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-06T12:26:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-06T10:16:00+00:00",
+          "value": 2.3
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T016|P000004-E1-cre-0001",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T016",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-05T14:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0001",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-05T17:31:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-05T14:22:00+00:00",
+          "value": 1.05
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T020|P000004-E1-cre-0002",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T020",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-05T18:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0002",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-05T19:36:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-05T18:38:00+00:00",
+          "value": 0.93
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T028|P000004-E1-lac-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T028",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-06T02:58:00+00:00",
+        "logical_event_id": "P000004-E1-lac-0000",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-06T03:01:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-05T23:43:00+00:00",
+          "value": 2.6
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T032|P000004-E1-cre-0003",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T032",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-06T06:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0003",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-06T09:06:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-06T06:32:00+00:00",
+          "value": 1.48
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T036|P000004-E1-cre-0004",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T036",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-06T10:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0004",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-06T13:41:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-06T07:21:00+00:00",
+          "value": 1.04
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T040|P000004-E1-cre-0006",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T040",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-06T14:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0006",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-06T17:51:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-06T14:39:00+00:00",
+          "value": 0.97
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T044|P000004-E1-cre-0007",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T044",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-06T18:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0007",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-06T20:21:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-06T18:55:00+00:00",
+          "value": 1.34
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T048|P000004-E1-cre-0009",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T048",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-06T22:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0009",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-07T00:31:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-06T21:40:00+00:00",
+          "value": 0.89
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T064|P000004-E1-lac-0002",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T064",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-07T14:58:00+00:00",
+        "logical_event_id": "P000004-E1-lac-0002",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-07T15:11:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-07T13:51:00+00:00",
+          "value": 0.8
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000004-E1-T072|P000004-E1-cre-0010",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000004-E1-T072",
+        "entity_id": "P000004",
+        "prediction_time": "2025-04-07T22:58:00+00:00",
+        "logical_event_id": "P000004-E1-cre-0010",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-08T00:01:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-07T22:39:00+00:00",
+          "value": 0.63
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000005-E1-T020|P000005-E1-cre-0001",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000005-E1-T020",
+        "entity_id": "P000005",
+        "prediction_time": "2025-04-09T00:26:00+00:00",
+        "logical_event_id": "P000005-E1-cre-0001",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-04-09T01:41:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-04-08T23:43:00+00:00",
+          "value": 1.12
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000006-E1-T008|P000006-E1-cre-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000006-E1-T008",
+        "entity_id": "P000006",
+        "prediction_time": "2025-02-15T20:10:00+00:00",
+        "logical_event_id": "P000006-E1-cre-0000",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-15T20:41:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-15T18:58:00+00:00",
+          "value": 1.26
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000006-E1-T024|P000006-E1-lac-0005",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000006-E1-T024",
+        "entity_id": "P000006",
+        "prediction_time": "2025-02-16T12:10:00+00:00",
+        "logical_event_id": "P000006-E1-lac-0005",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-16T12:36:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-16T10:51:00+00:00",
+          "value": 1.8
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000006-E1-T024|P000006-E1-lac-0006",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000006-E1-T024",
+        "entity_id": "P000006",
+        "prediction_time": "2025-02-16T12:10:00+00:00",
+        "logical_event_id": "P000006-E1-lac-0006",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-02-16T13:16:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-02-16T12:10:00+00:00",
+          "value": 2.3
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000007-E1-T004|P000007-E1-lac-0000",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000007-E1-T004",
+        "entity_id": "P000007",
+        "prediction_time": "2025-01-01T20:00:00+00:00",
+        "logical_event_id": "P000007-E1-lac-0000",
+        "event_type": "lab.lactate",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-01-01T20:06:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-01-01T18:13:00+00:00",
+          "value": 2.3
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      {
+        "finding_id": "P000007-E1-T048|P000007-E1-cre-0003",
+        "type": "used_before_available",
+        "severity": "high",
+        "prediction_id": "P000007-E1-T048",
+        "entity_id": "P000007",
+        "prediction_time": "2025-01-03T16:00:00+00:00",
+        "logical_event_id": "P000007-E1-cre-0003",
+        "event_type": "lab.creatinine",
+        "expected": {
+          "eligible": false,
+          "source_revision": null,
+          "operation": null,
+          "event_time": null,
+          "value": null,
+          "first_available": "2025-01-03T17:41:00+00:00"
+        },
+        "actual": {
+          "used": true,
+          "source_revision": 1,
+          "event_time": "2025-01-03T15:37:00+00:00",
+          "value": 2.17
+        },
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      }
+    ]
+  },
+  "differential_latest_revised": {
+    "reference_policy": "pipeline_as_known",
+    "candidate_policy": "latest_revised",
+    "scope": "Timing and revision differences only. Not a test of clinical appropriateness, causality, or data validity.",
+    "predictions": 45016,
+    "predictions_with_findings": 0,
+    "findings_total": 0,
+    "findings_shown": 0,
+    "by_type": {
+      "used_before_available": {
+        "count": 0,
+        "severity": "high",
+        "meaning": "The candidate used an observation that no version of which was available yet.",
+        "remediation": "Require the availability time on the replayed clock to be at or before the prediction time."
+      },
+      "used_with_unknown_availability": {
+        "count": 0,
+        "severity": "high",
+        "meaning": "The candidate used an observation whose availability time is unknown.",
+        "remediation": "Recover the availability time, or exclude the observation and report the count."
+      },
+      "value_revised_later": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "Both used the observation, but the candidate read a revision that was not yet known at the prediction time.",
+        "remediation": "Read the version in force at the prediction time, not today's latest version."
+      },
+      "used_after_later_revision": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "At the prediction time the observation was withdrawn or dated outside the window; the candidate read a later revision that brought it in.",
+        "remediation": "Resolve revisions as known at the prediction time before applying the window."
+      },
+      "missed_later_retracted": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "The observation was in force at the prediction time and was withdrawn afterwards. The candidate omits it, so it does not reproduce what was used.",
+        "remediation": "Apply a retraction only from the moment the retraction was known."
+      },
+      "missed_event_time_moved": {
+        "count": 0,
+        "severity": "medium",
+        "meaning": "The observation was inside the window as known at the prediction time; a later revision moved its event time, so the candidate omits it.",
+        "remediation": "Resolve revisions as known at the prediction time before applying the window."
+      }
+    },
+    "by_event_type": {}
+  }
+}

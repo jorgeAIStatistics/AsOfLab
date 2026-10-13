@@ -1,0 +1,374 @@
+{
+  "generated_at": "2026-10-13T05:35:58+00:00",
+  "command": "uv run python integrations/feast/run_comparison.py",
+  "synthetic_data": true,
+  "environment": {
+    "asoflab_version": "0.1.0",
+    "contract_version": "1.0.0",
+    "python": "3.12.15",
+    "implementation": "CPython",
+    "platform": "macOS-14.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "Apple M3 Pro",
+    "logical_cpus": 11,
+    "physical_cpus": 11,
+    "memory_bytes": 19327352832,
+    "libraries": {
+      "duckdb": "1.5.6",
+      "pyarrow": "26.0.0",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "pydantic": "2.14.1",
+      "hypothesis": "6.169.0"
+    },
+    "code_commit": "20b67ce67ef55080bf61090a4b3338b3c428b47c",
+    "code_dirty": false
+  },
+  "scope": "One feature ('last' value of one event type, 24 h window), Feast local file sources, synthetic data. Agreement is expected only inside the shared semantics. Differences in the case marked outside the shared semantics are unsupported semantics, not defects in Feast.",
+  "mapping": {
+    "feast default": "asoflab naive_event_time",
+    "feast filter_by_created_timestamp=True": "asoflab pipeline_as_known",
+    "feast event_timestamp": "event_time of each upsert version",
+    "feast created_timestamp_column": "pipeline_available_time of each version",
+    "feast ttl": "the feature's lookback window"
+  },
+  "cases": {
+    "delays_only": {
+      "what": "Results arrive after a delay. No corrections, no retractions.",
+      "within_shared_semantics": true,
+      "event_versions": 3995,
+      "retractions_not_representable_in_feast": 0,
+      "predictions": 4000,
+      "stores": {
+        "duckdb": {
+          "status": "ok",
+          "modes": {
+            "default": {
+              "compared_with_asoflab_policy": "naive_event_time",
+              "feast_rows_returned": 4000,
+              "predictions_with_equal_value": 4000,
+              "predictions_with_a_different_value": 0,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 0,
+              "predictions_absent_from_feast_output": 0,
+              "absent_predictions_where_asoflab_has_no_value": 0,
+              "examples_of_differences": []
+            },
+            "filter_by_created_timestamp": {
+              "compared_with_asoflab_policy": "pipeline_as_known",
+              "feast_rows_returned": 4000,
+              "predictions_with_equal_value": 4000,
+              "predictions_with_a_different_value": 0,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 0,
+              "predictions_absent_from_feast_output": 0,
+              "absent_predictions_where_asoflab_has_no_value": 0,
+              "examples_of_differences": []
+            }
+          }
+        },
+        "dask": {
+          "status": "ok",
+          "modes": {
+            "default": {
+              "compared_with_asoflab_policy": "naive_event_time",
+              "feast_rows_returned": 1863,
+              "predictions_with_equal_value": 1863,
+              "predictions_with_a_different_value": 0,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 0,
+              "predictions_absent_from_feast_output": 2137,
+              "absent_predictions_where_asoflab_has_no_value": 2137,
+              "examples_of_differences": []
+            },
+            "filter_by_created_timestamp": {
+              "compared_with_asoflab_policy": "pipeline_as_known",
+              "feast_rows_returned": 1863,
+              "predictions_with_equal_value": 1863,
+              "predictions_with_a_different_value": 0,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 0,
+              "predictions_absent_from_feast_output": 2137,
+              "absent_predictions_where_asoflab_has_no_value": 2137,
+              "examples_of_differences": []
+            }
+          }
+        }
+      },
+      "feast_version": "0.66.0"
+    },
+    "corrections_in_arrival_order": {
+      "what": "Values are corrected later. The event time never changes and revisions arrive in order.",
+      "within_shared_semantics": true,
+      "event_versions": 3970,
+      "retractions_not_representable_in_feast": 0,
+      "predictions": 3478,
+      "stores": {
+        "duckdb": {
+          "status": "ok",
+          "modes": {
+            "default": {
+              "compared_with_asoflab_policy": "naive_event_time",
+              "feast_rows_returned": 3478,
+              "predictions_with_equal_value": 3478,
+              "predictions_with_a_different_value": 0,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 0,
+              "predictions_absent_from_feast_output": 0,
+              "absent_predictions_where_asoflab_has_no_value": 0,
+              "examples_of_differences": []
+            },
+            "filter_by_created_timestamp": {
+              "compared_with_asoflab_policy": "pipeline_as_known",
+              "feast_rows_returned": 3478,
+              "predictions_with_equal_value": 3478,
+              "predictions_with_a_different_value": 0,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 0,
+              "predictions_absent_from_feast_output": 0,
+              "absent_predictions_where_asoflab_has_no_value": 0,
+              "examples_of_differences": []
+            }
+          }
+        },
+        "dask": {
+          "status": "ok",
+          "modes": {
+            "default": {
+              "compared_with_asoflab_policy": "naive_event_time",
+              "feast_rows_returned": 1696,
+              "predictions_with_equal_value": 1600,
+              "predictions_with_a_different_value": 96,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 96,
+              "predictions_absent_from_feast_output": 1782,
+              "absent_predictions_where_asoflab_has_no_value": 1782,
+              "examples_of_differences": [
+                {
+                  "prediction_id": "Q000000053",
+                  "feast": 39.25,
+                  "asoflab": 41.19
+                },
+                {
+                  "prediction_id": "Q000000123",
+                  "feast": 50.88,
+                  "asoflab": 50.05
+                },
+                {
+                  "prediction_id": "Q000000130",
+                  "feast": 35.09,
+                  "asoflab": 27.44
+                },
+                {
+                  "prediction_id": "Q000000212",
+                  "feast": 74.12,
+                  "asoflab": 75.31
+                },
+                {
+                  "prediction_id": "Q000000215",
+                  "feast": 47.03,
+                  "asoflab": 45.55
+                }
+              ]
+            },
+            "filter_by_created_timestamp": {
+              "compared_with_asoflab_policy": "pipeline_as_known",
+              "feast_rows_returned": 1696,
+              "predictions_with_equal_value": 1645,
+              "predictions_with_a_different_value": 51,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 51,
+              "predictions_absent_from_feast_output": 1782,
+              "absent_predictions_where_asoflab_has_no_value": 1782,
+              "examples_of_differences": [
+                {
+                  "prediction_id": "Q000000038",
+                  "feast": 55.44,
+                  "asoflab": 59.57
+                },
+                {
+                  "prediction_id": "Q000000117",
+                  "feast": 52.47,
+                  "asoflab": 37.93
+                },
+                {
+                  "prediction_id": "Q000000135",
+                  "feast": 34.12,
+                  "asoflab": 34.85
+                },
+                {
+                  "prediction_id": "Q000000199",
+                  "feast": 34.54,
+                  "asoflab": 34.07
+                },
+                {
+                  "prediction_id": "Q000000286",
+                  "feast": 28.83,
+                  "asoflab": 28.25
+                }
+              ]
+            }
+          }
+        }
+      },
+      "feast_version": "0.66.0"
+    },
+    "revisions_outside_feasts_model": {
+      "what": "Retractions, corrections that move the event time, and lower revisions delivered late.",
+      "within_shared_semantics": false,
+      "event_versions": 4009,
+      "retractions_not_representable_in_feast": 182,
+      "predictions": 3333,
+      "stores": {
+        "duckdb": {
+          "status": "ok",
+          "modes": {
+            "default": {
+              "compared_with_asoflab_policy": "naive_event_time",
+              "feast_rows_returned": 3333,
+              "predictions_with_equal_value": 3145,
+              "predictions_with_a_different_value": 188,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 24,
+              "predictions_absent_from_feast_output": 0,
+              "absent_predictions_where_asoflab_has_no_value": 0,
+              "examples_of_differences": [
+                {
+                  "prediction_id": "Q000000020",
+                  "feast": 26.19,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000027",
+                  "feast": 67.47,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000039",
+                  "feast": 39.08,
+                  "asoflab": 38.64
+                },
+                {
+                  "prediction_id": "Q000000067",
+                  "feast": 26.19,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000075",
+                  "feast": 56.02,
+                  "asoflab": 52.09
+                }
+              ]
+            },
+            "filter_by_created_timestamp": {
+              "compared_with_asoflab_policy": "pipeline_as_known",
+              "feast_rows_returned": 3333,
+              "predictions_with_equal_value": 3212,
+              "predictions_with_a_different_value": 121,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 19,
+              "predictions_absent_from_feast_output": 0,
+              "absent_predictions_where_asoflab_has_no_value": 0,
+              "examples_of_differences": [
+                {
+                  "prediction_id": "Q000000020",
+                  "feast": 26.19,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000039",
+                  "feast": 39.08,
+                  "asoflab": 38.64
+                },
+                {
+                  "prediction_id": "Q000000084",
+                  "feast": 57.61,
+                  "asoflab": 53.47
+                },
+                {
+                  "prediction_id": "Q000000129",
+                  "feast": 52.49,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000173",
+                  "feast": 38.97,
+                  "asoflab": 39.18
+                }
+              ]
+            }
+          }
+        },
+        "dask": {
+          "status": "ok",
+          "modes": {
+            "default": {
+              "compared_with_asoflab_policy": "naive_event_time",
+              "feast_rows_returned": 1618,
+              "predictions_with_equal_value": 1408,
+              "predictions_with_a_different_value": 210,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 46,
+              "predictions_absent_from_feast_output": 1715,
+              "absent_predictions_where_asoflab_has_no_value": 1714,
+              "examples_of_differences": [
+                {
+                  "prediction_id": "Q000000020",
+                  "feast": 26.19,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000027",
+                  "feast": 67.47,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000039",
+                  "feast": 39.08,
+                  "asoflab": 38.64
+                },
+                {
+                  "prediction_id": "Q000000067",
+                  "feast": 26.19,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000075",
+                  "feast": 56.02,
+                  "asoflab": 52.09
+                }
+              ]
+            },
+            "filter_by_created_timestamp": {
+              "compared_with_asoflab_policy": "pipeline_as_known",
+              "feast_rows_returned": 1618,
+              "predictions_with_equal_value": 1473,
+              "predictions_with_a_different_value": 145,
+              "differences_that_are_another_version_at_the_same_event_timestamp": 43,
+              "predictions_absent_from_feast_output": 1715,
+              "absent_predictions_where_asoflab_has_no_value": 1714,
+              "examples_of_differences": [
+                {
+                  "prediction_id": "Q000000020",
+                  "feast": 26.19,
+                  "asoflab": null
+                },
+                {
+                  "prediction_id": "Q000000039",
+                  "feast": 39.08,
+                  "asoflab": 38.64
+                },
+                {
+                  "prediction_id": "Q000000084",
+                  "feast": 57.61,
+                  "asoflab": 53.47
+                },
+                {
+                  "prediction_id": "Q000000121",
+                  "feast": 54.56,
+                  "asoflab": 61.46
+                },
+                {
+                  "prediction_id": "Q000000129",
+                  "feast": 52.49,
+                  "asoflab": null
+                }
+              ]
+            }
+          }
+        }
+      },
+      "feast_version": "0.66.0"
+    }
+  }
+}

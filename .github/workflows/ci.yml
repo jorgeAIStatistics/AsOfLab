@@ -27,7 +27,7 @@ jobs:
             python: "3.12"
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           enable-cache: true
       - name: Install the locked environment
@@ -40,8 +40,13 @@ jobs:
         run: uv run mypy
       - name: Tests
         run: uv run pytest -q
-      - name: Small demo reproduces the committed reference
+      - name: Small demo runs end to end
         run: uv run asoflab demo --out runs/demo --reference results/demo
+      - name: Demo output is identical to the committed reference (informational)
+        # The reference was produced on macOS arm64. Bit-identical output on another
+        # platform is not guaranteed, so a difference is reported without failing the job.
+        continue-on-error: true
+        run: uv run asoflab demo --out runs/demo --reference results/demo --strict
       - name: Benchmark harness runs (smoke profile, timings not asserted)
         run: uv run python benchmarks/run_benchmarks.py --profile smoke --out /tmp/bench-smoke.json
 

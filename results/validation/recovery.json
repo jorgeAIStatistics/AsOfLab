@@ -1,0 +1,139 @@
+{
+  "generated_at": "2026-10-13T05:38:37+00:00",
+  "command": "uv run python scripts/recovery_report.py",
+  "synthetic_data": true,
+  "environment": {
+    "asoflab_version": "0.1.0",
+    "contract_version": "1.0.0",
+    "python": "3.12.15",
+    "implementation": "CPython",
+    "platform": "macOS-14.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "Apple M3 Pro",
+    "logical_cpus": 11,
+    "physical_cpus": 11,
+    "memory_bytes": 19327352832,
+    "libraries": {
+      "duckdb": "1.5.6",
+      "pyarrow": "26.0.0",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "scikit-learn": "1.9.1",
+      "pydantic": "2.14.1",
+      "hypothesis": "6.169.0"
+    },
+    "code_commit": "20b67ce67ef55080bf61090a4b3338b3c428b47c",
+    "code_dirty": false
+  },
+  "scope": "One machine, one local SQLite file per partition. Each case kills the replay process outright and restarts it. This demonstrates the local recovery contract only; it is not end-to-end exactly-once delivery and says nothing about external sinks or other machines.",
+  "workload": {
+    "generator_version": "1",
+    "n_events": 20000,
+    "seed": 20261,
+    "skew": "zipf",
+    "events_per_entity": 100,
+    "events_per_prediction": 5,
+    "span_days": 30,
+    "correction_rate": 0.06,
+    "retraction_rate": 0.02,
+    "event_time_change_rate": 0.1,
+    "late_rate": 0.03,
+    "out_of_order_rate": 0.2,
+    "unknown_availability_rate": 0.002,
+    "duplicate_rate": 0.01,
+    "zipf_exponent": 1.1,
+    "event_versions": 20025,
+    "predictions": 3667,
+    "partitions": 2,
+    "chunk_size": 2000
+  },
+  "crash_points": {
+    "mid_chunk": "half-way through processing a chunk, before anything is written",
+    "before_commit": "after the chunk's outputs, state changes and checkpoint are written, before COMMIT",
+    "after_commit": "immediately after COMMIT returns"
+  },
+  "cases": [
+    {
+      "crash_point": "mid_chunk",
+      "chunk": 0,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 0,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "mid_chunk",
+      "chunk": 2,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 4000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "mid_chunk",
+      "chunk": 5,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 10000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "before_commit",
+      "chunk": 0,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 0,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "before_commit",
+      "chunk": 2,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 4000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "before_commit",
+      "chunk": 5,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 10000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "after_commit",
+      "chunk": 0,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 2000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "after_commit",
+      "chunk": 2,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 6000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    },
+    {
+      "crash_point": "after_commit",
+      "chunk": 5,
+      "how": "process ended with os._exit(86): no cleanup, no rollback call",
+      "exit_code": 86,
+      "resumed_from_offset": 12000,
+      "predictions": 3667,
+      "outputs_equal_uninterrupted": true
+    }
+  ],
+  "all_recovered": true
+}
