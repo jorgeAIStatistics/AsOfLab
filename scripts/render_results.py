@@ -72,6 +72,15 @@ def provenance(document: dict[str, Any], path: str) -> str:
     )
 
 
+def phase_median(run: dict[str, Any], phase: str) -> float:
+    return float(statistics.median(run["phases_seconds"][phase]))
+
+
+def spread(values: list[float], digits: int = 4) -> str:
+    """'mean (min to max)' of a contrast across seeds."""
+    return f"{signed(statistics.fmean(values), digits)} ({signed(min(values), digits)} to {signed(max(values), digits)})"
+
+
 def validation_section() -> str:
     parts = ["## 1. Validation\n"]
     seeded = load("validation/seeded_bugs.json")
@@ -155,7 +164,12 @@ def experiments_section() -> str:
         return (
             "## 2. Statistical demonstration\n\nNot generated. Run `asoflab experiment matrix`.\n"
         )
-    scenarios = summary["scenarios"]
+    order = ["negative_control", "delayed_labs", "corrections", "delayed_outcomes", "multiple_encounters",
+             "site_variation", "combined"]  # fmt: skip
+    found = summary["scenarios"]
+    scenarios = {
+        name: found[name] for name in [*order, *sorted(set(found) - set(order))] if name in found
+    }
     first = next(iter(scenarios.values()))["per_seed"][0]
     parts = [
         "## 2. Statistical demonstration\n",
@@ -265,16 +279,24 @@ def experiments_section() -> str:
             b["optimism_of_the_naive_pipeline"]["auroc"],
             b["as_known_training_minus_naive_training_at_deployment"]["auroc"],
         )
-        timing = scenario["across_seeds"]["label_timing_auroc_contrast"]
         premature = scenario["across_seeds"]["premature_negative_share_of_positives"]
         parts.append(
             f"Experiment B, AUROC, mean across seeds (min to max): what a naive pipeline reports minus what its model "
             f"delivers on as-known features {signed(optimism['mean'])} ({signed(optimism['min'])} to {signed(optimism['max'])}); "
             f"as-known training minus naive training, both on as-known features {signed(training['mean'])} "
-            f"({signed(training['min'])} to {signed(training['max'])}). "
-            f"Labels: {premature['mean']:.1%} of positive labels would have been recorded as negative by a pipeline that "
-            f"labels when the horizon ends; scoring against those labels changes AUROC by {signed(timing['mean'])} on average.\n"
+            f"({signed(training['min'])} to {signed(training['max'])}).\n"
         )
+        if premature["mean"] > 0:
+            timing = [entry["label_timing_contrast"] for entry in per_seed]
+            parts.append(
+                f"Label timing: {premature['mean']:.1%} of positive labels (min {premature['min']:.1%}, max "
+                f"{premature['max']:.1%}) would have been recorded as negative by a pipeline that labels the moment "
+                "the horizon ends. Scoring the same predictions against those labels instead of the mature ones "
+                "changes, as mean (min to max) across seeds: AUROC "
+                f"{spread([t['auroc']['point'] for t in timing])}, average precision "
+                f"{spread([t['average_precision']['point'] for t in timing])}, Brier score "
+                f"{spread([t['brier']['point'] for t in timing], 5)}.\n"
+            )
     commits = sorted(
         {str(entry["code_commit"])[:12] for s in scenarios.values() for entry in s["per_seed"]}
     )
@@ -348,15 +370,14 @@ def benchmark_section() -> str:
                 ]
             )
             continue
-        median = lambda phase: statistics.median(run["phases_seconds"][phase])  # noqa: E731
         rows.append(
             [
                 f"`{run['workload_id']}`",
                 label(run),
                 f"{run['median_end_to_end_seconds']:.2f} ({run['min_end_to_end_seconds']:.2f} to {run['max_end_to_end_seconds']:.2f})",
-                f"{median('prepare'):.2f}",
-                f"{median('compute'):.2f}",
-                f"{median('export'):.2f}",
+                f"{phase_median(run, 'prepare'):.2f}",
+                f"{phase_median(run, 'compute'):.2f}",
+                f"{phase_median(run, 'export'):.2f}",
                 f"{run['median_peak_rss_bytes'] / 2**20:,.0f} MiB",
                 "yes" if run["equivalent_to_reference"] else "**NO**",
                 f"{run['speedup_vs_single_worker']:.2f}x vs 1 worker"
@@ -524,6 +545,82 @@ def demo_section() -> str:
     )
 
 
+def interop_section() -> str:
+    comparison = load("interop/feast.json")
+    if comparison is None:
+        return "## 5. Feast comparison\n\nNot generated. See `integrations/feast/README.md`.\n"
+    rows = []
+    for name, case in comparison["cases"].items():
+        for store, entry in case["stores"].items():
+            if entry["status"] != "ok":
+                rows.append(
+                    [
+                        f"`{name}`",
+                        "yes" if case["within_shared_semantics"] else "no",
+                        store,
+                        "",
+                        f"**{entry['status']}**",
+                        "",
+                        "",
+                        "",
+                    ]
+                )
+                continue
+            for mode, numbers in entry["modes"].items():
+                rows.append(
+                    [
+                        f"`{name}`",
+                        "yes" if case["within_shared_semantics"] else "no",
+                        store,
+                        "created-timestamp filter"
+                        if mode == "filter_by_created_timestamp"
+                        else "default",
+                        f"`{numbers['compared_with_asoflab_policy']}`",
+                        f"{numbers['predictions_with_equal_value']:,}",
+                        f"{numbers['predictions_with_a_different_value']:,}",
+                        f"{numbers['predictions_absent_from_feast_output']:,}",
+                    ]
+                )
+    feast_version = next(iter(comparison["cases"].values())).get("feast_version", "unknown")
+    parts = [
+        "## 5. Feast comparison (optional interoperability check)\n",
+        f"{comparison['scope']} Feast version {feast_version}.\n",
+        table(
+            ["Case", "Shared semantics", "Feast offline store", "Feast mode", "AsOfLab policy", "Equal",
+             "Different", "Absent from Feast output"],
+            rows,
+        ),
+        "",
+        "Differences in the case outside the shared semantics are expected and are not defects. "
+        "`integrations/feast/README.md` explains the mapping, and the two observations about Feast's Dask "
+        "offline store that account for its other differences and its absent rows.\n",
+        provenance(comparison, "interop/feast.json") + "\n",
+    ]  # fmt: skip
+    tiebreak = load("interop/feast_created_tiebreak.json")
+    if tiebreak is not None:
+        cases = [
+            c
+            for c in tiebreak["cases"]
+            if c["event_times"] == "one per entity" and not c["filter_by_created_timestamp"]
+        ]
+        parts += [
+            "### Which row wins when two rows share an event timestamp\n",
+            f"{tiebreak['what']} Feast {tiebreak['feast_version']}, pandas {tiebreak['pandas_version']}, "
+            f"dask {tiebreak['dask_version']}. One event time per entity, default mode. Not reported upstream.\n",
+            table(
+                ["Offline store", "Entities", "Later-created row returned", "Earlier-created row returned"],
+                [
+                    [c["offline_store"], f"{c['entities']:,}", f"{c.get('later_created_value_returned', 'error'):,}"
+                     if "error" not in c else "error", f"{c.get('earlier_created_value_returned', 0):,}"]
+                    for c in cases
+                ],
+            ),
+            "",
+            f"Source: `results/interop/feast_created_tiebreak.json`, by `{tiebreak['command']}`.\n",
+        ]  # fmt: skip
+    return "\n".join(parts)
+
+
 def main() -> None:
     DOCS.mkdir(exist_ok=True)
     document = "\n".join(
@@ -537,6 +634,7 @@ def main() -> None:
             experiments_section(),
             benchmark_section(),
             demo_section(),
+            interop_section(),
         ]
     )
     (DOCS / "results.md").write_text(document)

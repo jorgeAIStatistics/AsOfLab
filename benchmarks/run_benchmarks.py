@@ -66,7 +66,8 @@ PROFILES: dict[str, dict[str, Any]] = {
         "repetitions": 3,
         # (partitions, workers)
         "replay_layouts": [(1, 1), (8, 1), (8, 2), (8, 4), (8, 8)],
-        "oracle_max_events": {"uniform": 100_000, "zipf": 100_000},
+        # Under skew the oracle's cost grows with the square of the largest entity.
+        "oracle_max_events": {"uniform": 100_000, "zipf": 10_000},
         "unbucketed_max_events": 1_000_000,
         "timeout_seconds": 900,
     },
